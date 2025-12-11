@@ -53,6 +53,7 @@ d) **Labor Rights**: Ensure that development and deployment respect workers' rig
 ### 5. Prohibited Applications
 
 This software may not be used for:
+
 - Surveillance systems that violate human rights
 - Discriminatory decision-making systems
 - Applications that exploit vulnerable populations
@@ -61,6 +62,7 @@ This software may not be used for:
 ### 6. Community Contribution
 
 Licensees are encouraged to:
+
 - Contribute improvements back to the community
 - Share knowledge and best practices
 - Support open-source development
