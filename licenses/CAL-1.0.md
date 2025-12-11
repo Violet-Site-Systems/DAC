@@ -70,9 +70,10 @@ d) **Infrastructure Choices**: Select data centers and cloud providers with rene
 a) **Hierarchy of Action**: Prioritize emissions reduction over offsetting.
 
 b) **High-Quality Offsets**: If using carbon offsets, ensure they are:
+
 - Additional (would not have happened otherwise)
-   - Permanent (carbon stored long-term)
-   - Verified by credible third parties
+  - Permanent (carbon stored long-term)
+  - Verified by credible third parties
   - Avoid double-counting
 
 c) **Offset Disclosure**: Clearly disclose the use of offsets and their quality criteria.

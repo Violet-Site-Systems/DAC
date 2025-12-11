@@ -23,6 +23,7 @@ Traditional software licenses focus primarily on intellectual property rights an
 The SUL-1.0 requires users to minimize energy consumption, reduce carbon footprints, support renewable energy, and promote circular economy principles. It's ideal for projects where computational efficiency and environmental sustainability are core values.
 
 **Key Requirements**:
+
 - Minimize energy consumption and optimize code efficiency
 - Reduce and measure carbon footprint
 - Prioritize renewable energy-powered infrastructure
@@ -42,6 +43,7 @@ The SUL-1.0 requires users to minimize energy consumption, reduce carbon footpri
 The EIL-1.0 requires thorough environmental impact assessments throughout the software lifecycle, from development through deployment to decommissioning. It emphasizes transparency, mitigation measures, and green infrastructure choices.
 
 **Key Requirements**:
+
 - Conduct regular environmental impact assessments
 - Consider full lifecycle environmental costs
 - Implement optimization and mitigation measures
@@ -62,6 +64,7 @@ The EIL-1.0 requires thorough environmental impact assessments throughout the so
 The SBL-1.0 ensures software serves the public good, promotes accessibility and inclusion, bridges the digital divide, and protects against harmful uses. It emphasizes stakeholder engagement and community benefit.
 
 **Key Requirements**:
+
 - Use software for public good and social benefit
 - Ensure accessibility (WCAG 2.1 AA or equivalent)
 - Promote equity and prevent discrimination
@@ -85,6 +88,7 @@ The SBL-1.0 ensures software serves the public good, promotes accessibility and 
 The CGL-1.0 establishes requirements for community participation in project governance, ensuring projects are democratically managed with inclusive leadership, transparent decision-making, and accountability mechanisms.
 
 **Key Requirements**:
+
 - Implement democratic decision-making processes
 - Ensure inclusive, representative leadership
 - Maintain transparency in communications and decisions
@@ -107,6 +111,7 @@ The CGL-1.0 establishes requirements for community participation in project gove
 The EAL-1.0 provides comprehensive ethical requirements for AI and machine learning systems, covering fairness, transparency, privacy, safety, and accountability. It includes strict prohibitions on harmful AI applications.
 
 **Key Requirements**:
+
 - Ensure fairness and non-discrimination
 - Provide transparency and explainability
 - Establish clear accountability
@@ -133,6 +138,7 @@ The EAL-1.0 provides comprehensive ethical requirements for AI and machine learn
 The CAL-1.0 requires rigorous carbon accounting, science-based emissions reduction targets, and alignment with the Paris Agreement's 1.5°C goal. It emphasizes transparency and continuous improvement in climate performance.
 
 **Key Requirements**:
+
 - Measure and report carbon footprint (Scopes 1, 2, and 3)
 - Set science-based emissions reduction targets
 - Align with Paris Agreement (1.5°C pathway)
@@ -174,6 +180,7 @@ These licenses rely on good-faith compliance and community accountability. While
 ## Scale Considerations
 
 Most licenses include graduated requirements:
+
 - **Individual developers and small projects**: Apply principles and best practices
 - **Medium deployments**: Implement monitoring and improvement processes
 - **Large-scale operations**: Full reporting, third-party verification, and public disclosure
@@ -185,6 +192,7 @@ These licenses were developed in December 2025 as part of the BGINexus.io initia
 ## Contributing
 
 We welcome feedback and suggestions for improving these licenses. Please:
+
 - Open issues for discussion
 - Propose amendments through pull requests
 - Share your experiences using these licenses
@@ -193,6 +201,7 @@ We welcome feedback and suggestions for improving these licenses. Please:
 ## Questions and Support
 
 For questions about these licenses:
+
 - Review the individual license files for detailed terms
 - Open an issue in this repository for clarification
 - Connect with the BGINexus.io community
