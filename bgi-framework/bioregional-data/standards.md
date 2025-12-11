@@ -430,27 +430,27 @@ This specification defines data formats, integration protocols, and standards fo
 
 ### Retrieve Bioregional Data
 
-```
+```http
 GET /api/v1/bioregion/{bioregion_id}
 GET /api/v1/bioregion/by-location?lat={lat}&lon={lon}
 ```
 
 ### Submit Data Updates
 
-```
+```http
 POST /api/v1/bioregion/{bioregion_id}/data
 Authorization: Required (verified data contributor)
 ```
 
 ### Query Historical Trends
 
-```
+```http
 GET /api/v1/bioregion/{bioregion_id}/trends?metric={metric}&start={date}&end={date}
 ```
 
 ### Restoration Project Tracking
 
-```
+```http
 GET /api/v1/bioregion/{bioregion_id}/restoration
 POST /api/v1/bioregion/{bioregion_id}/restoration/update
 ```

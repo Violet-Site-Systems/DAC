@@ -163,40 +163,34 @@ The Biocentric Impact Assessment API provides a standardized interface for evalu
 
 ### Assessment
 
+```http
 POST /api/v1/biocentric/assess
 Content-Type: application/json
 Authorization: Bearer {token}
 
 Request: AssessmentRequest
 Response: AssessmentResponse
-
 ```
 
 ### Continuous Monitoring
 
-```
-
+```http
 GET /api/v1/biocentric/monitor/{assessment_id}
 Response: Current monitoring data and compliance status
-
 ```
 
 ### Bioregional Context
 
-```
-
+```http
 GET /api/v1/biocentric/bioregion/{bioregion_id}
 Response: Current bioregional baseline data
-
 ```
 
 ### Historical Assessments
 
-```
-
+```http
 GET /api/v1/biocentric/history?action_type={type}&bioregion={id}
 Response: Historical assessment data for learning
-
 ```
 
 ## Integration Requirements
@@ -245,8 +239,7 @@ Response: Historical assessment data for learning
 
 ### Software Deployment
 
-```
-
+```text
 Action: Deploy new data center
 Resources: 10 MW power, 5 hectares land, water cooling
 Bioregion: Arkansas Ozarks
@@ -259,25 +252,21 @@ Assessment:
 - Operations: Model long-term effects
 
 Result: Conditional approval with solar requirement
-
 ```
 
 ### Algorithm Optimization
 
-```
-
+```text
 Action: Optimize ML training efficiency
 Resources: Reduced 40% compute (energy)
 Bioregion: Cloud distributed (multiple)
 
 Assessment:
-
 - Carbon reduction from efficiency
 - Enabled by renewable energy hosting
 - No physical land/water impact
 
 Result: Approved, net positive contribution
-
 ```
 
 ## Error Handling

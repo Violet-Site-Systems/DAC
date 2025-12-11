@@ -20,7 +20,7 @@ Technical tags that indicate the presence and type of sapient agency in decision
 
 #### Syntax
 
-```
+```text
 #RightsOfSapience[type:human|ai|collective, context:string, timestamp:ISO8601]
 ```
 

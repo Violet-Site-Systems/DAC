@@ -83,7 +83,7 @@ Ancestral accountability: All decisions traceable to ecological consequences.
 
 ## Integration Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │           Three-Tier Consent Architecture               │
 │  ┌─────────────┐  ┌─────────────┐  ┌────────────────┐  │
