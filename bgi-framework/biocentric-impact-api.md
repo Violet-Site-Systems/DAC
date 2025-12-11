@@ -104,34 +104,40 @@ The Biocentric Impact Assessment API provides a standardized interface for evalu
 ## Assessment Dimensions
 
 ### 1. Biodiversity Impact
+
 - Native species population effects
 - Habitat quality and connectivity
 - Invasive species risk
 - Genetic diversity preservation
 
 ### 2. Water Systems
+
 - Watershed health
 - Water quality (chemical, biological)
 - Aquatic ecosystem integrity
 - Groundwater recharge capacity
 
 ### 3. Soil Health
+
 - Organic matter content
 - Microbial diversity
 - Erosion rates
 - Carbon sequestration capacity
 
 ### 4. Air Quality
+
 - Emissions (GHG and other pollutants)
 - Local air quality impacts
 - Microclimate effects
 
 ### 5. Carbon Cycle
+
 - Net carbon emissions/sequestration
 - Long-term carbon storage
 - Feedback loop impacts
 
 ### 6. Regeneration Capacity
+
 - Ecosystem resilience
 - Recovery time from disturbance
 - Self-organization potential
@@ -140,6 +146,7 @@ The Biocentric Impact Assessment API provides a standardized interface for evalu
 ## Scoring System
 
 ### Overall Score (-100 to +100)
+
 - **+50 to +100**: Net positive, enhances biosphere regeneration
 - **+1 to +49**: Minor positive impact
 - **0**: True neutral (rare)
@@ -147,6 +154,7 @@ The Biocentric Impact Assessment API provides a standardized interface for evalu
 - **-50 to -100**: Significant harm, likely rejection
 
 ### Zero Net Harm Threshold
+
 - Net harm score must be ≤ 0
 - If harm > 0, mitigation measures required to bring to ≤ 0
 - Confidence interval must be ≥ 75%
@@ -154,46 +162,59 @@ The Biocentric Impact Assessment API provides a standardized interface for evalu
 ## API Endpoints
 
 ### Assessment
-```
+
 POST /api/v1/biocentric/assess
 Content-Type: application/json
 Authorization: Bearer {token}
 
 Request: AssessmentRequest
 Response: AssessmentResponse
+
 ```
 
 ### Continuous Monitoring
+
 ```
+
 GET /api/v1/biocentric/monitor/{assessment_id}
 Response: Current monitoring data and compliance status
+
 ```
 
 ### Bioregional Context
+
 ```
+
 GET /api/v1/biocentric/bioregion/{bioregion_id}
 Response: Current bioregional baseline data
+
 ```
 
 ### Historical Assessments
+
 ```
+
 GET /api/v1/biocentric/history?action_type={type}&bioregion={id}
 Response: Historical assessment data for learning
+
 ```
 
 ## Integration Requirements
 
 ### With Three-Tier Consent Architecture
+
 - This API provides Tier 1: Biocentric impact assessment
 - Must complete before Tier 2 (Sapient intent) and Tier 3 (Intergenerational)
 - Results feed into consent decision pipeline
 
 ### With Bioregional Data Standards
+
 - Consumes standardized bioregional data (Issue #11)
 - Uses geolocation binding for accurate assessment
 - Requires current baseline metrics
 
 ### With Monitoring Systems
+
 - Generates monitoring requirements
 - Tracks actual vs. predicted impacts
 - Feeds back into model improvement
@@ -201,18 +222,21 @@ Response: Historical assessment data for learning
 ## Implementation Notes
 
 ### Data Sources
+
 1. **Bioregional baselines** (from bioregional data integration)
 2. **Scientific models** (ecosystem dynamics, carbon cycle, etc.)
 3. **Historical impact data** (learning from past assessments)
 4. **Real-time monitoring** (current conditions)
 
 ### Calculation Engine
+
 - Multi-model ensemble approach
 - Uncertainty quantification
 - Sensitivity analysis
 - Bias correction for optimistic projections
 
 ### Validation
+
 - Peer review of assessment methodology
 - Third-party audits of significant assessments
 - Continuous improvement from monitoring data
@@ -220,37 +244,46 @@ Response: Historical assessment data for learning
 ## Example Use Cases
 
 ### Software Deployment
+
 ```
+
 Action: Deploy new data center
 Resources: 10 MW power, 5 hectares land, water cooling
 Bioregion: Arkansas Ozarks
 
 Assessment:
+
 - Energy source: Check renewable percentage
 - Land use: Assess habitat disruption
 - Water use: Evaluate watershed impact
 - Operations: Model long-term effects
 
 Result: Conditional approval with solar requirement
+
 ```
 
 ### Algorithm Optimization
+
 ```
+
 Action: Optimize ML training efficiency
 Resources: Reduced 40% compute (energy)
 Bioregion: Cloud distributed (multiple)
 
 Assessment:
+
 - Carbon reduction from efficiency
 - Enabled by renewable energy hosting
 - No physical land/water impact
 
 Result: Approved, net positive contribution
+
 ```
 
 ## Error Handling
 
 ### Insufficient Data
+
 ```json
 {
   "status": "insufficient_data",
@@ -260,6 +293,7 @@ Result: Approved, net positive contribution
 ```
 
 ### Uncertainty Too High
+
 ```json
 {
   "status": "high_uncertainty",
@@ -272,12 +306,14 @@ Result: Approved, net positive contribution
 ## Compliance and Auditing
 
 ### Audit Trail
+
 - All assessments logged permanently
 - Decision rationale recorded
 - Model versions tracked
 - Data sources documented
 
 ### Appeals Process
+
 - Independent review available
 - Scientific peer review
 - Community input integration

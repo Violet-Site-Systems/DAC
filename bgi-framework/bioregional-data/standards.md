@@ -401,6 +401,7 @@ This specification defines data formats, integration protocols, and standards fo
 ## Data Collection & Updates
 
 ### Data Sources
+
 1. **Government Monitoring**: USGS, EPA, State environmental agencies
 2. **Academic Research**: University field studies, long-term ecological research
 3. **Citizen Science**: Community monitoring programs, iNaturalist
@@ -409,6 +410,7 @@ This specification defines data formats, integration protocols, and standards fo
 6. **IoT Sensors**: Real-time environmental monitoring
 
 ### Update Frequency
+
 - **Real-time**: Water quality sensors, air quality monitors
 - **Daily**: Weather, stream flow
 - **Weekly**: Rapid assessment indicators
@@ -417,6 +419,7 @@ This specification defines data formats, integration protocols, and standards fo
 - **Annual**: Comprehensive ecosystem health assessments
 
 ### Quality Assurance
+
 - Peer review of data collection methodology
 - Cross-validation with multiple sources
 - Statistical quality control
@@ -426,23 +429,27 @@ This specification defines data formats, integration protocols, and standards fo
 ## API Endpoints
 
 ### Retrieve Bioregional Data
+
 ```
 GET /api/v1/bioregion/{bioregion_id}
 GET /api/v1/bioregion/by-location?lat={lat}&lon={lon}
 ```
 
 ### Submit Data Updates
+
 ```
 POST /api/v1/bioregion/{bioregion_id}/data
 Authorization: Required (verified data contributor)
 ```
 
 ### Query Historical Trends
+
 ```
 GET /api/v1/bioregion/{bioregion_id}/trends?metric={metric}&start={date}&end={date}
 ```
 
 ### Restoration Project Tracking
+
 ```
 GET /api/v1/bioregion/{bioregion_id}/restoration
 POST /api/v1/bioregion/{bioregion_id}/restoration/update
@@ -486,15 +493,18 @@ POST /api/v1/bioregion/{bioregion_id}/restoration/update
 ## Integration with BGI Systems
 
 ### With Biocentric Impact Assessment API
+
 - Provides baseline data for impact calculations
 - Enables accurate geolocation binding
 - Supplies restoration metrics for positive impact validation
 
 ### With Context Drift Detection
+
 - Validates geolocation matches bioregional context
 - Alerts when location data inconsistent with claimed bioregion
 
 ### With Temporal Fidelity Clock
+
 - Provides seasonal/phenological data
 - Enables biological rhythm synchronization
 

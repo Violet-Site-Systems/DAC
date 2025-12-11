@@ -448,6 +448,7 @@ function validateSapienceMarkers(context) {
 ### Logging Requirements
 
 All sapience markers must be logged with:
+
 - Timestamp
 - Context
 - Sapient parties involved
@@ -493,16 +494,19 @@ All sapience markers must be logged with:
 ## Integration with BGI Systems
 
 ### With Context Drift Detection (Issue #8)
+
 - Validates presence of sapience markers
 - Alerts when markers missing or drifting
 - Triggers correction ritual
 
 ### With LOVE-Evolution Checkpoints (Issue #5)
+
 - Provides neurodivergent support infrastructure
 - Implements circadian vulnerability detection
 - Enables collaborative decision-making
 
 ### With Three-Tier Consent (Issue #7)
+
 - Implements Tier 2: Sapient intent confirmation
 - Provides explicit consent mechanisms
 - Ensures veto authority

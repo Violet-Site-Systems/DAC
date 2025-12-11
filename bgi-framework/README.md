@@ -9,36 +9,42 @@ The BGI Alignment Framework provides concrete technical standards for building A
 ## Specifications
 
 ### 1. [Biocentric Impact Assessment API](./biocentric-impact-api.md)
+
 **Status**: Draft v1.0  
 **Related Issue**: [#6](https://github.com/Violet-Site-Systems/DAC/issues/6)
 
 Comprehensive API for evaluating decisions against ecosystem integrity metrics. Implements the core principle of zero net harm to biosphere regeneration cycles.
 
 **Key Features**:
+
 - Multi-dimensional impact scoring (biodiversity, water, soil, air, carbon, regeneration)
 - Bioregional data integration
 - Real-time monitoring and validation
 - Integration with three-tier consent architecture
 
 ### 2. [Bioregional Data Integration Standards](./bioregional-data/standards.md)
+
 **Status**: Draft v1.0  
 **Related Issue**: [#11](https://github.com/Violet-Site-Systems/DAC/issues/11)
 
 Data schemas and integration protocols for local ecosystem metrics with Arkansas Ozarks as reference implementation.
 
 **Key Features**:
+
 - Standardized data schemas for water, flora, fauna, soil, air, and phenology
 - Arkansas Ozarks reference implementation with Buffalo River restoration metrics
 - Adapter framework for adding new bioregions
 - Real-time and historical data handling
 
 ### 3. [#RightsOfSapience Technical Markers](./sapience-markers.md)
+
 **Status**: Draft v1.0  
 **Related Issue**: [#12](https://github.com/Violet-Site-Systems/DAC/issues/12)
 
 Technical specification for sapience markers and neurodivergent cognition support.
 
 **Key Features**:
+
 - Sapience marker syntax and semantics
 - Neurodivergent cognition tags (bipolar, ADHD, autism spectrum)
 - Consent and vulnerability window markers
@@ -48,14 +54,17 @@ Technical specification for sapience markers and neurodivergent cognition suppor
 ## BGI Framework Core Principles
 
 ### 1. Biocentric Primacy (§1.1)
+
 All AGI systems must prioritize ecosystem integrity above human convenience.  
 **Non-negotiable constraint**: Zero net harm to biosphere regeneration cycles.
 
 ### 2. Sapient Partnership (§1.2)
+
 Recognition of #RightsOfSapience in neurodivergent cognition.  
 Co-creation protocols requiring explicit human veto authority.
 
 ### 3. Temporal Fidelity (§1.3)
+
 Synchronization with biological/seasonal rhythms (not machine time).  
 Ancestral accountability: All decisions traceable to ecological consequences.
 
@@ -132,6 +141,7 @@ Ancestral accountability: All decisions traceable to ecological consequences.
 | Temporal Fidelity | SUL-1.0, SBL-1.0 |
 
 **License Key**:
+
 - SUL-1.0: Sustainable Use License
 - EIL-1.0: Environmental Impact License
 - SBL-1.0: Social Benefit License
@@ -151,6 +161,7 @@ We welcome contributions to these specifications:
 ## Next Steps
 
 Priority implementation issues:
+
 - [ ] Issue #5: LOVE-evolution Checkpoint Protocol
 - [ ] Issue #6: Biocentric Impact Assessment API (Spec complete ✅)
 - [ ] Issue #7: Three-Tier Consent Architecture
