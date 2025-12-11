@@ -63,6 +63,7 @@ c) **Community Veto**: Provide mechanisms for the community to challenge decisio
 ### 6. Stakeholder Inclusion
 
 Governance must consider:
+
 - End users and their needs
 - Contributors of all types (code, documentation, community support, etc.)
 - Organizations and entities that depend on the software
@@ -71,6 +72,7 @@ Governance must consider:
 ### 7. Adaptation and Evolution
 
 Governance structures should:
+
 - Evolve based on community needs and feedback
 - Be reviewed and updated regularly
 - Allow for community-initiated improvements
@@ -78,6 +80,7 @@ Governance structures should:
 ### 8. Prohibited Governance Practices
 
 Projects may not:
+
 - Silence or exclude community members arbitrarily
 - Make critical decisions without community input
 - Use governance structures to entrench power

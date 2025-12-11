@@ -31,10 +31,11 @@ d) **Climate Justice**: Consider the disproportionate climate impacts on vulnera
 Licensees operating at significant scale must:
 
 a) **Measure Carbon Footprint**: Calculate the carbon emissions from:
-   - Energy consumption (compute, storage, network)
-   - Embedded emissions in hardware
-   - Employee travel and operations
-   - Supply chain emissions (Scope 3)
+
+- Energy consumption (compute, storage, network)
+  - Embedded emissions in hardware
+  - Employee travel and operations
+  - Supply chain emissions (Scope 3)
 
 b) **Reporting Standards**: Use recognized standards such as the GHG Protocol or ISO 14064.
 
@@ -69,10 +70,10 @@ d) **Infrastructure Choices**: Select data centers and cloud providers with rene
 a) **Hierarchy of Action**: Prioritize emissions reduction over offsetting.
 
 b) **High-Quality Offsets**: If using carbon offsets, ensure they are:
-   - Additional (would not have happened otherwise)
+- Additional (would not have happened otherwise)
    - Permanent (carbon stored long-term)
    - Verified by credible third parties
-   - Avoid double-counting
+  - Avoid double-counting
 
 c) **Offset Disclosure**: Clearly disclose the use of offsets and their quality criteria.
 
@@ -123,6 +124,7 @@ d) **Environmental Harm**: Applications that directly contribute to deforestatio
 ### 11. Reporting and Transparency
 
 Annual climate reports should include:
+
 - Total GHG emissions (Scope 1, 2, and 3 where material)
 - Emissions intensity metrics
 - Progress toward reduction targets
