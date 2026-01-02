@@ -17,6 +17,8 @@
 const LOVE_CHECKPOINT_CONFIG = {
   uncertaintyThreshold: 0.25,
   minConfidenceForAuto: 0.75,
+  lowConfidenceThreshold: 0.7,
+  maxSimilarPrecedents: 10,
   enableNeurodivergentSupport: true,
   detectCircadianWindows: true,
   allowDeferral: true,
@@ -40,12 +42,13 @@ const LOVE_CHECKPOINT_CONFIG = {
  * @param {number} decision.confidence - Confidence level (0-1)
  * @param {string} decision.type - Type of decision
  * @param {Object} decision.context - Additional context
+ * @param {Object} config - Configuration options
  * @returns {number} Uncertainty score (0-1, higher = more uncertain)
  */
-function calculateUncertainty(decision) {
+function calculateUncertainty(decision, config = LOVE_CHECKPOINT_CONFIG) {
   const factors = {
     confidence: decision.confidence ?? 0.5,
-    novelty: calculateNoveltyScore(decision),
+    novelty: calculateNoveltyScore(decision, config),
     stakes: calculateStakesScore(decision),
     conflictingMetrics: calculateMetricConflictScore(decision),
     precedentLack: calculatePrecedentScore(decision)
@@ -72,9 +75,10 @@ function calculateUncertainty(decision) {
 /**
  * Calculate novelty score based on similarity to known patterns
  * @param {Object} decision - Decision to evaluate
+ * @param {Object} config - Configuration with maxSimilarPrecedents
  * @returns {number} Novelty score (0-1)
  */
-function calculateNoveltyScore(decision) {
+function calculateNoveltyScore(decision, config = LOVE_CHECKPOINT_CONFIG) {
   if (!decision.context?.historicalDecisions) {
     return 0.5; // Unknown = moderate novelty
   }
@@ -84,9 +88,9 @@ function calculateNoveltyScore(decision) {
   );
   
   if (similar.length === 0) return 1.0; // Completely novel
-  if (similar.length > 10) return 0.1;  // Well-established pattern
+  if (similar.length > config.maxSimilarPrecedents) return 0.1;  // Well-established pattern
   
-  return 1 - (similar.length / 10);
+  return 1 - (similar.length / config.maxSimilarPrecedents);
 }
 
 /**
@@ -146,16 +150,17 @@ function calculatePrecedentScore(decision) {
  * Identify specific reasons for uncertainty
  * @param {Object} decision - Decision to evaluate
  * @param {number} uncertaintyScore - Calculated uncertainty score
+ * @param {Object} config - Configuration with thresholds
  * @returns {Array<string>} Array of uncertainty reasons
  */
-function identifyUncertaintyReasons(decision, uncertaintyScore) {
+function identifyUncertaintyReasons(decision, uncertaintyScore, config = LOVE_CHECKPOINT_CONFIG) {
   const reasons = [];
   
-  if (decision.confidence < 0.7) {
+  if (decision.confidence < config.lowConfidenceThreshold) {
     reasons.push(`Low confidence level (${(decision.confidence * 100).toFixed(1)}%)`);
   }
   
-  const novelty = calculateNoveltyScore(decision);
+  const novelty = calculateNoveltyScore(decision, config);
   if (novelty > 0.6) {
     reasons.push('Novel situation with limited precedent');
   }
@@ -199,8 +204,33 @@ function inVulnerabilityWindow(userProfile) {
   const currentTime = currentHour * 60 + currentMinute;
   
   return userProfile.vulnerabilityWindows.some(window => {
-    const [startHour, startMinute] = window.start.split(':').map(Number);
-    const [endHour, endMinute] = window.end.split(':').map(Number);
+    // Validate time format
+    if (!window.start || !window.end || 
+        typeof window.start !== 'string' || typeof window.end !== 'string') {
+      console.warn('Invalid vulnerability window format:', window);
+      return false;
+    }
+    
+    const startParts = window.start.split(':');
+    const endParts = window.end.split(':');
+    
+    if (startParts.length !== 2 || endParts.length !== 2) {
+      console.warn('Invalid time format in vulnerability window:', window);
+      return false;
+    }
+    
+    const startHour = parseInt(startParts[0], 10);
+    const startMinute = parseInt(startParts[1], 10);
+    const endHour = parseInt(endParts[0], 10);
+    const endMinute = parseInt(endParts[1], 10);
+    
+    // Validate parsed values
+    if (isNaN(startHour) || isNaN(startMinute) || isNaN(endHour) || isNaN(endMinute) ||
+        startHour < 0 || startHour > 23 || endHour < 0 || endHour > 23 ||
+        startMinute < 0 || startMinute > 59 || endMinute < 0 || endMinute > 59) {
+      console.warn('Invalid time values in vulnerability window:', window);
+      return false;
+    }
     
     const startTime = startHour * 60 + startMinute;
     const endTime = endHour * 60 + endMinute;
@@ -481,7 +511,7 @@ async function loveEvolutionCheckpoint(params) {
     decision: params.decision,
     uncertaintyScore: params.uncertaintyScore,
     uncertaintyReasons: params.uncertaintyReasons ?? 
-      identifyUncertaintyReasons(params.decision, params.uncertaintyScore),
+      identifyUncertaintyReasons(params.decision, params.uncertaintyScore, config),
     context: params.context,
     alternatives: params.alternatives ?? 
       generateAlternatives(params.decision, config),

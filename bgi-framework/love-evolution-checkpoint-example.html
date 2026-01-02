@@ -356,15 +356,28 @@
         }
 
         function closeCheckpoint() {
-            document.getElementById('checkpoint-modal').style.display = 'none';
-            document.getElementById('rationale').value = '';
+            const modal = document.getElementById('checkpoint-modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+            
+            const rationale = document.getElementById('rationale');
+            if (rationale) {
+                rationale.value = '';
+            }
+            
             // Reset radio buttons
             document.querySelectorAll('input[name="alternative"]').forEach(r => r.checked = false);
         }
 
         function handleApprove() {
-            const rationale = document.getElementById('rationale').value;
-            if (!rationale.trim()) {
+            const rationale = document.getElementById('rationale');
+            if (!rationale) {
+                console.error('Rationale element not found');
+                return;
+            }
+            
+            if (!rationale.value.trim()) {
                 alert('Please provide your reasoning for this decision.');
                 return;
             }
@@ -383,14 +396,19 @@
 
         function handleModify() {
             const selected = document.querySelector('input[name="alternative"]:checked');
-            const rationale = document.getElementById('rationale').value;
+            const rationale = document.getElementById('rationale');
+            
+            if (!rationale) {
+                console.error('Rationale element not found');
+                return;
+            }
             
             if (!selected) {
                 alert('Please select an alternative path.');
                 return;
             }
             
-            if (!rationale.trim()) {
+            if (!rationale.value.trim()) {
                 alert('Please provide your reasoning for this decision.');
                 return;
             }
@@ -412,8 +430,13 @@
         }
 
         function handleVeto() {
-            const rationale = document.getElementById('rationale').value;
-            if (!rationale.trim()) {
+            const rationale = document.getElementById('rationale');
+            if (!rationale) {
+                console.error('Rationale element not found');
+                return;
+            }
+            
+            if (!rationale.value.trim()) {
                 alert('Please explain why you are vetoing this decision.');
                 return;
             }
@@ -432,8 +455,9 @@
         }
 
         function handleDefer() {
-            const rationale = document.getElementById('rationale').value || 
-                            'Deferred to optimal decision window';
+            const rationale = document.getElementById('rationale');
+            const rationaleValue = rationale ? rationale.value : '';
+            const finalRationale = rationaleValue || 'Deferred to optimal decision window';
             
             // Calculate next optimal window
             const now = new Date();
@@ -443,7 +467,7 @@
             
             console.log('⏰ Decision Deferred');
             console.log('Defer Until:', tomorrow9am.toISOString());
-            console.log('Rationale:', rationale);
+            console.log('Rationale:', finalRationale);
             console.log('Audit Trail: Logged with #RightsOfSapience marker');
             
             alert('⏰ Decision Deferred\n\n' +
