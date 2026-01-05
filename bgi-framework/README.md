@@ -151,7 +151,6 @@ Ancestral accountability: All decisions traceable to ecological consequences.
 1. **Biocentric Assessment**: Integrate the Impact Assessment API into your decision pipeline
 2. **Bioregional Grounding**: Connect to relevant bioregional data sources
 3. **Sapience Markers**: Add #RightsOfSapience markers to decision points in your codebase
-4. **Neurodivergent Support**: Implement circadian awareness and adaptive UIs
 
 ## Relation to Sustainability Licenses
 
