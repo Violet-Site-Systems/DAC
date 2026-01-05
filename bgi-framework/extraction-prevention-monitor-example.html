@@ -324,7 +324,7 @@
                         ✅ Compliant System<br>
                         <small style="opacity: 0.8;">Ecosystem-first, ethical design</small>
                     </button>
-                    <button class="example-btn extractive" onclick="analyzeExtractivSystem()">
+                    <button class="example-btn extractive" onclick="analyzeExtractiveSystem()">
                         ⚠️ Extractive System<br>
                         <small style="opacity: 0.8;">Engagement-focused, dark patterns</small>
                     </button>
@@ -355,7 +355,7 @@
             displayResults(result, 'compliant');
         }
         
-        function analyzeExtractivSystem() {
+        function analyzeExtractiveSystem() {
             const systemState = window.ExtractionPreventionMonitor.createExampleSystemState('extractive');
             const result = window.ExtractionPreventionMonitor.monitorExtractionPatterns(systemState);
             displayResults(result, 'extractive');

@@ -350,7 +350,7 @@ When critical violations detected:
 ### Obstructive Patterns
 - **Roach Motel**: Easy in, hard out
 - **Privacy Zuckering**: Privacy settings obstruction
-- **Price Confefe**: Price obfuscation
+- **Price Covfefe**: Price obfuscation
 - **Mushy Buttons**: Unclear button purposes
 
 ## Integration with BGI Framework
