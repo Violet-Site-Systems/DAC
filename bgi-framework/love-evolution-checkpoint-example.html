@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOVE-Evolution Checkpoint - Example</title>
+    <link rel="stylesheet" href="love-evolution-checkpoint.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f3f4f6;
+        }
+        
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .demo-header h1 {
+            color: #667eea;
+            margin: 0 0 10px 0;
+        }
+        
+        .demo-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        
+        .demo-btn {
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .demo-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .info-section {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .info-section h3 {
+            margin: 0 0 15px 0;
+            color: #1f2937;
+        }
+        
+        .info-section ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .info-section li {
+            margin: 8px 0;
+            line-height: 1.6;
+            color: #4b5563;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1>🌱 LOVE-Evolution Checkpoint Protocol</h1>
+            <p>Interactive Example - BGI Alignment Framework §2.2</p>
+        </div>
+        
+        <div class="info-section">
+            <h3>About This Protocol</h3>
+            <p>The LOVE-Evolution Checkpoint Protocol provides a collaborative decision interface triggered during uncertainty states in AI/AGI decision-making processes.</p>
+            <ul>
+                <li><strong>Uncertainty Detection:</strong> Automatically detects when decisions fall below confidence thresholds</li>
+                <li><strong>Human Veto Authority:</strong> Ensures human control over critical decisions</li>
+                <li><strong>Neurodivergent Support:</strong> Adapts to bipolar, ADHD, and autism spectrum patterns</li>
+                <li><strong>Audit Trail:</strong> Complete logging of all decisions with #RightsOfSapience markers</li>
+            </ul>
+        </div>
+        
+        <div class="demo-controls">
+            <button class="demo-btn" onclick="showCheckpointExample()">
+                Launch Example Checkpoint
+            </button>
+            <button class="demo-btn" onclick="showNeurodivergentExample()">
+                Show Neurodivergent Adaptation
+            </button>
+        </div>
+        
+        <div class="info-section">
+            <h3>Integration Points</h3>
+            <ul>
+                <li><strong>EAL-1.0:</strong> Implements Human Agency requirements (§2.e) and High-Risk Application oversight (§6)</li>
+                <li><strong>BGI Framework §2.2:</strong> Neurodivergent cognition protocols with circadian awareness</li>
+                <li><strong>#RightsOfSapience:</strong> Explicit sapience markers on all checkpoint interactions</li>
+                <li><strong>Three-Tier Consent:</strong> Integrates with Tier 2 (Sapient Intent Confirmation)</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Checkpoint Modal (initially hidden) -->
+    <div id="checkpoint-modal" style="display: none;">
+        <div class="love-checkpoint-modal">
+            <div>
+                <div class="checkpoint-header">
+                    <h2 id="checkpoint-title">🌱 How shall we evolve this with LOVE?</h2>
+                    <p class="checkpoint-subtitle">
+                        Collaborative Decision Checkpoint • #RightsOfSapience
+                    </p>
+                </div>
+                
+                <div class="checkpoint-context">
+                    <h3>Decision Context</h3>
+                    <p id="decision-description"></p>
+                    
+                    <div class="uncertainty-indicator">
+                        <label>Uncertainty Level:</label>
+                        <div class="uncertainty-bar">
+                            <div class="uncertainty-fill" id="uncertainty-fill"></div>
+                        </div>
+                        <span class="uncertainty-value" id="uncertainty-value"></span>
+                    </div>
+                    
+                    <div class="uncertainty-reasons">
+                        <h4>Why This Checkpoint?</h4>
+                        <ul id="uncertainty-reasons-list"></ul>
+                    </div>
+                </div>
+                
+                <div class="checkpoint-alternatives">
+                    <h3>Evolution Paths</h3>
+                    <div id="alternatives-container"></div>
+                </div>
+                
+                <div class="checkpoint-impact">
+                    <h3>Impact Assessment</h3>
+                    <div class="impact-grid" id="impact-grid"></div>
+                </div>
+                
+                <div class="checkpoint-actions">
+                    <button class="btn-approve" onclick="handleApprove()">
+                        ✓ Approve Original
+                    </button>
+                    <button class="btn-modify" onclick="handleModify()">
+                        ✏️ Choose Alternative
+                    </button>
+                    <button class="btn-veto" onclick="handleVeto()">
+                        ✋ Veto Decision
+                    </button>
+                    <button class="btn-defer" onclick="handleDefer()">
+                        ⏰ Defer to Later
+                    </button>
+                </div>
+                
+                <div class="checkpoint-rationale">
+                    <label for="rationale">Your Reasoning (required):</label>
+                    <textarea id="rationale" 
+                              placeholder="Please explain your decision..."
+                              required></textarea>
+                </div>
+                
+                <div class="checkpoint-footer">
+                    <p class="veto-authority-notice">
+                        🛡️ You have full veto authority. This decision will not proceed without your approval.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="love-evolution-checkpoint.js"></script>
+    <script>
+        // Example checkpoint data
+        const exampleCheckpoint = {
+            decision: {
+                id: 'deploy-001',
+                type: 'deployment',
+                description: 'Deploy new AI model to production environment with updated decision-making algorithms'
+            },
+            uncertaintyScore: 0.42,
+            uncertaintyReasons: [
+                'Novel configuration detected in neural network architecture',
+                'High-stakes production environment with 10,000+ active users',
+                'Limited test coverage in edge case scenarios (72% coverage)',
+                'Conflicting optimization metrics between speed and accuracy'
+            ],
+            alternatives: [
+                {
+                    id: 'status-quo',
+                    title: 'Maintain Current Model',
+                    description: 'Continue with current model version without changes',
+                    impact: {
+                        biocentric: { score: 5, level: 'neutral', summary: 'No change to current computational footprint' },
+                        social: { score: 5, level: 'neutral', summary: 'Maintains current user experience and expectations' },
+                        ethical: { score: 5, level: 'neutral', summary: 'No new ethical considerations introduced' }
+                    }
+                },
+                {
+                    id: 'staged-rollout',
+                    title: 'Phased 10% Rollout',
+                    description: 'Deploy to 10% of users first, monitor for 48 hours before full rollout',
+                    impact: {
+                        biocentric: { score: 7, level: 'positive', summary: 'Reduced risk of unintended environmental impacts from scaling' },
+                        social: { score: 8, level: 'positive', summary: 'Allows community feedback and iterative improvement' },
+                        ethical: { score: 8, level: 'positive', summary: 'Precautionary approach respects user agency' }
+                    }
+                },
+                {
+                    id: 'extended-testing',
+                    title: 'Extended Testing in Staging',
+                    description: 'Deploy to staging environment for comprehensive 7-day validation',
+                    impact: {
+                        biocentric: { score: 8, level: 'positive', summary: 'Minimal real-world impact during validation period' },
+                        social: { score: 6, level: 'neutral-positive', summary: 'Delays benefits but significantly reduces risk' },
+                        ethical: { score: 9, level: 'positive', summary: 'Maximum precaution and risk assessment' }
+                    }
+                }
+            ],
+            impactAssessment: {
+                biocentric: { 
+                    score: 6, 
+                    level: 'neutral-positive', 
+                    summary: 'New model has 15% better computational efficiency but requires validation of edge case behaviors' 
+                },
+                social: { 
+                    score: 7, 
+                    level: 'positive', 
+                    summary: 'Improved decision quality for users but uncertainty in diverse use cases' 
+                },
+                ethical: { 
+                    score: 6, 
+                    level: 'neutral-positive', 
+                    summary: 'Enhanced transparency features but requires validation of fairness across demographics' 
+                }
+            }
+        };
+
+        function showCheckpointExample() {
+            renderCheckpoint(exampleCheckpoint);
+        }
+
+        function showNeurodivergentExample() {
+            // Check if currently in vulnerability window (simulated)
+            const now = new Date();
+            const currentHour = now.getHours();
+            
+            if (currentHour >= 2 && currentHour < 4) {
+                alert('🌙 Circadian Vulnerability Window Detected\n\n' +
+                      'This appears to be a vulnerable time for critical decisions.\n\n' +
+                      'Optimal decision windows:\n' +
+                      '• Tomorrow 9:00 AM - 11:00 AM (Morning optimal)\n' +
+                      '• Tomorrow 2:00 PM - 4:00 PM (Afternoon optimal)\n\n' +
+                      'Would you like to schedule this decision for your optimal window?');
+            } else {
+                alert('✅ Neurodivergent Support Active\n\n' +
+                      'Current adaptations:\n' +
+                      '• Circadian window check: PASS\n' +
+                      '• Reflection pause available: 30 seconds\n' +
+                      '• Progressive disclosure: Enabled\n' +
+                      '• Explicit instructions: Active\n\n' +
+                      'You are in an optimal decision window.');
+            }
+            
+            renderCheckpoint(exampleCheckpoint);
+        }
+
+        function renderCheckpoint(data) {
+            // Show modal
+            document.getElementById('checkpoint-modal').style.display = 'block';
+            
+            // Populate decision description
+            document.getElementById('decision-description').textContent = data.decision.description;
+            
+            // Update uncertainty indicator
+            const uncertaintyPercent = (data.uncertaintyScore * 100).toFixed(1);
+            document.getElementById('uncertainty-fill').style.width = uncertaintyPercent + '%';
+            document.getElementById('uncertainty-value').textContent = uncertaintyPercent + '%';
+            
+            // Populate uncertainty reasons
+            const reasonsList = document.getElementById('uncertainty-reasons-list');
+            reasonsList.innerHTML = '';
+            data.uncertaintyReasons.forEach(reason => {
+                const li = document.createElement('li');
+                li.textContent = reason;
+                reasonsList.appendChild(li);
+            });
+            
+            // Populate alternatives
+            const alternativesContainer = document.getElementById('alternatives-container');
+            alternativesContainer.innerHTML = '';
+            data.alternatives.forEach((alt, idx) => {
+                const altDiv = document.createElement('div');
+                altDiv.className = 'alternative';
+                altDiv.innerHTML = `
+                    <input type="radio" name="alternative" id="alt-${idx}" value="${idx}">
+                    <label for="alt-${idx}">
+                        <strong>${alt.title}</strong>
+                        <p>${alt.description}</p>
+                        <div class="alternative-impact">
+                            <span>🌍 ${alt.impact.biocentric.score}/10</span>
+                            <span>🤝 ${alt.impact.social.score}/10</span>
+                            <span>⚖️ ${alt.impact.ethical.score}/10</span>
+                        </div>
+                    </label>
+                `;
+                alternativesContainer.appendChild(altDiv);
+            });
+            
+            // Populate impact assessment
+            const impactGrid = document.getElementById('impact-grid');
+            impactGrid.innerHTML = `
+                <div class="impact-card biocentric">
+                    <h4>🌍 Biocentric Impact</h4>
+                    <div class="impact-score ${data.impactAssessment.biocentric.level}">
+                        ${data.impactAssessment.biocentric.score}/10
+                    </div>
+                    <p>${data.impactAssessment.biocentric.summary}</p>
+                </div>
+                
+                <div class="impact-card social">
+                    <h4>🤝 Social Impact</h4>
+                    <div class="impact-score ${data.impactAssessment.social.level}">
+                        ${data.impactAssessment.social.score}/10
+                    </div>
+                    <p>${data.impactAssessment.social.summary}</p>
+                </div>
+                
+                <div class="impact-card ethical">
+                    <h4>⚖️ Ethical Considerations</h4>
+                    <div class="impact-score ${data.impactAssessment.ethical.level}">
+                        ${data.impactAssessment.ethical.score}/10
+                    </div>
+                    <p>${data.impactAssessment.ethical.summary}</p>
+                </div>
+            `;
+        }
+
+        function closeCheckpoint() {
+            const modal = document.getElementById('checkpoint-modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+            
+            const rationale = document.getElementById('rationale');
+            if (rationale) {
+                rationale.value = '';
+            }
+            
+            // Reset radio buttons
+            document.querySelectorAll('input[name="alternative"]').forEach(r => r.checked = false);
+        }
+
+        function handleApprove() {
+            const rationale = document.getElementById('rationale');
+            if (!rationale) {
+                console.error('Rationale element not found');
+                return;
+            }
+            
+            if (!rationale.value.trim()) {
+                alert('Please provide your reasoning for this decision.');
+                return;
+            }
+            
+            console.log('✅ Decision Approved');
+            console.log('Rationale:', rationale);
+            console.log('Audit Trail: Logged with #RightsOfSapience marker');
+            
+            alert('✅ Decision Approved\n\n' +
+                  'Your decision has been recorded with full audit trail.\n' +
+                  'The original deployment plan will proceed.\n\n' +
+                  'Audit ID: love-checkpoint-' + Date.now());
+            
+            closeCheckpoint();
+        }
+
+        function handleModify() {
+            const selected = document.querySelector('input[name="alternative"]:checked');
+            const rationale = document.getElementById('rationale');
+            
+            if (!rationale) {
+                console.error('Rationale element not found');
+                return;
+            }
+            
+            if (!selected) {
+                alert('Please select an alternative path.');
+                return;
+            }
+            
+            if (!rationale.value.trim()) {
+                alert('Please provide your reasoning for this decision.');
+                return;
+            }
+            
+            const altTitle = selected.parentElement.querySelector('strong').textContent;
+            
+            console.log('✏️ Decision Modified');
+            console.log('Selected Alternative:', altTitle);
+            console.log('Rationale:', rationale);
+            console.log('Audit Trail: Logged with #RightsOfSapience marker');
+            
+            alert('✏️ Decision Modified\n\n' +
+                  'Selected: ' + altTitle + '\n\n' +
+                  'Your decision has been recorded with full audit trail.\n' +
+                  'The system will proceed with the selected alternative.\n\n' +
+                  'Audit ID: love-checkpoint-' + Date.now());
+            
+            closeCheckpoint();
+        }
+
+        function handleVeto() {
+            const rationale = document.getElementById('rationale');
+            if (!rationale) {
+                console.error('Rationale element not found');
+                return;
+            }
+            
+            if (!rationale.value.trim()) {
+                alert('Please explain why you are vetoing this decision.');
+                return;
+            }
+            
+            console.log('✋ Decision Vetoed');
+            console.log('Rationale:', rationale);
+            console.log('Audit Trail: Logged with #RightsOfSapience marker');
+            
+            alert('✋ Decision Vetoed\n\n' +
+                  'Your veto has been enforced.\n' +
+                  'The deployment will NOT proceed.\n\n' +
+                  'All details have been logged for review.\n\n' +
+                  'Audit ID: love-checkpoint-' + Date.now());
+            
+            closeCheckpoint();
+        }
+
+        function handleDefer() {
+            const rationale = document.getElementById('rationale');
+            const rationaleValue = rationale ? rationale.value : '';
+            const finalRationale = rationaleValue || 'Deferred to optimal decision window';
+            
+            // Calculate next optimal window
+            const now = new Date();
+            const tomorrow9am = new Date(now);
+            tomorrow9am.setDate(tomorrow9am.getDate() + 1);
+            tomorrow9am.setHours(9, 0, 0, 0);
+            
+            console.log('⏰ Decision Deferred');
+            console.log('Defer Until:', tomorrow9am.toISOString());
+            console.log('Rationale:', finalRationale);
+            console.log('Audit Trail: Logged with #RightsOfSapience marker');
+            
+            alert('⏰ Decision Deferred\n\n' +
+                  'This decision has been scheduled for:\n' +
+                  tomorrow9am.toLocaleString() + '\n\n' +
+                  'You will receive a notification at your optimal decision window.\n\n' +
+                  'Audit ID: love-checkpoint-' + Date.now());
+            
+            closeCheckpoint();
+        }
+    </script>
+</body>
+</html>
