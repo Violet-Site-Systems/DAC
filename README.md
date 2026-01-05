@@ -43,6 +43,17 @@ Visit the [licenses directory](./licenses/) for:
 - Comparison table and use cases
 - Compliance requirements
 
+## DAO Guide Agent
+
+Need help creating your DAO? Our AI-powered [DAO Guide Agent](https://chakra-ai.io/agent/ded78833-31ec-442b-84b6-c123c107ba64/modify) assists with DAO creation and AI governance.
+
+This intelligent assistant helps you:
+
+- Design and structure your Decentralized Autonomous Organization
+- Navigate DAO governance frameworks
+- Implement AI-powered governance systems
+- Ensure alignment with community governance principles
+
 ## Contributing
 
 We welcome contributions, feedback, and suggestions for improving these licenses. Please open an issue or submit a pull request.
