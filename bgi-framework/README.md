@@ -73,6 +73,28 @@ Collaborative decision interface triggered during uncertainty states in AI/AGI d
 - [CSS Styles](./love-evolution-checkpoint.css) - UI components
 - [Interactive Example](./love-evolution-checkpoint-example.html) - Live demo
 
+### 5. [Intergenerational Consequence Audit Framework](./intergenerational-audit.md)
+
+**Status**: Implementation v1.0  
+**Related Issue**: [#13](https://github.com/Violet-Site-Systems/DAC/issues/13)
+
+Methodology and tools for tracing decisions to ecological consequences across multiple generations (up to 7 generations / ~200 years), implementing the BGI principle of Temporal Fidelity and Ancestral Accountability.
+
+**Key Features**:
+
+- Five time horizons: Immediate (1 year), Near-term (1-10 years), Medium-term (10-50 years), Long-term (50-200 years), Deep Time (200+ years)
+- Five consequence categories: Ecological, Climate, Resources, Cultural, Genetic
+- Agent-based ecosystem modeling with climate projection integration
+- Feedback loop identification and tipping point detection
+- Intergenerational equity analysis across 7 generations
+- Uncertainty quantification and risk assessment
+- Integration with Three-Tier Consent Architecture (Tier 3)
+
+**Implementation**:
+
+- [Specification Document](./intergenerational-audit.md) - Complete framework specification
+- [JavaScript Module](./intergenerational-audit.js) - Core audit engine and modeling functions
+
 ## BGI Framework Core Principles
 
 ### 1. Biocentric Primacy (§1.1)
@@ -102,7 +124,7 @@ Ancestral accountability: All decisions traceable to ecological consequences.
 | Context Drift Detection | 📋 Planned | ⏳ Not Started | Issue #8 |
 | Temporal Fidelity Clock | 📋 Planned | ⏳ Not Started | Issue #9 |
 | Extraction Prevention | 📋 Planned | ⏳ Not Started | Issue #10 |
-| Intergenerational Audit | 📋 Planned | ⏳ Not Started | Issue #13 |
+| Intergenerational Audit | ✅ Complete | ✅ Complete | v1.0 |
 
 ## Integration Architecture
 
@@ -189,6 +211,7 @@ Priority implementation issues:
 - [ ] Issue #7: Three-Tier Consent Architecture
 - [ ] Issue #11: Bioregional Data Standards (Spec complete ✅)
 - [ ] Issue #12: #RightsOfSapience Markers (Spec complete ✅)
+- [x] Issue #13: Intergenerational Consequence Audit Framework (✅ Complete - v1.0)
 
 See [all BGI issues](https://github.com/Violet-Site-Systems/DAC/labels/bgi-framework) for complete roadmap.
 
