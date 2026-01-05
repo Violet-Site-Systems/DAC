@@ -38,12 +38,13 @@ const INTERGENERATIONAL_CONFIG = {
   },
   
   // Threshold values
+  // Based on precautionary principle and intergenerational equity standards
   thresholds: {
-    criticalRiskScore: -75,
-    equityMinimum: -50,
-    approvalMinimum: 0,
-    confidenceMinimum: 0.6,
-    tippingPointProbability: 0.3
+    criticalRiskScore: -75,        // Threshold below which action is rejected outright
+    equityMinimum: -50,            // Minimum equity score for approval (lower = more inequitable)
+    approvalMinimum: 0,            // Actions must have non-negative overall impact
+    confidenceMinimum: 0.6,        // Minimum confidence level for reliable projections
+    tippingPointProbability: 0.3   // Max acceptable probability of triggering tipping points
   },
   
   // Category weights for overall scoring
@@ -183,9 +184,17 @@ class GenerationRisk {
     
     const avgScore = scores.reduce((sum, s) => sum + s, 0) / scores.length;
     
-    if (avgScore >= 50) this.riskProfile.overallRisk = 'low';
-    else if (avgScore >= 0) this.riskProfile.overallRisk = 'medium';
-    else if (avgScore >= -50) this.riskProfile.overallRisk = 'high';
+    // Risk classification thresholds aligned with INTERGENERATIONAL_CONFIG
+    const RISK_THRESHOLDS = {
+      LOW: 50,      // Positive impact, low risk to future generations
+      MEDIUM: 0,    // Neutral to slightly negative, manageable risks
+      HIGH: -50,    // Significant negative impacts requiring mitigation
+      CRITICAL: -75 // Severe impacts, likely rejection
+    };
+    
+    if (avgScore >= RISK_THRESHOLDS.LOW) this.riskProfile.overallRisk = 'low';
+    else if (avgScore >= RISK_THRESHOLDS.MEDIUM) this.riskProfile.overallRisk = 'medium';
+    else if (avgScore >= RISK_THRESHOLDS.HIGH) this.riskProfile.overallRisk = 'high';
     else this.riskProfile.overallRisk = 'critical';
   }
   
@@ -1014,6 +1023,66 @@ function determineReviewTimeline(result) {
 }
 
 // ============================================================================
+// Modeling Coefficients
+// ============================================================================
+
+// These coefficients are simplified for initial implementation
+// In production, these should be calibrated using:
+// - Historical ecological data
+// - Peer-reviewed scientific models
+// - Bioregion-specific parameters
+// - Continuous learning from monitoring data
+
+const MODELING_COEFFICIENTS = {
+  population: {
+    habitatImpactFactor: 0.1,      // Population change per km² per year
+    extinctionScaleFactor: 10000    // Scale factor for extinction risk calculation
+  },
+  biodiversity: {
+    habitatLossFactor: 2.0,         // Biodiversity loss multiplier
+    timeDecayFactor: 1.0            // Logarithmic time decay factor
+  },
+  habitat: {
+    degradationRate: 0.5,           // Annual degradation per km²
+    fragmentationRate: 0.8          // Fragmentation impact factor
+  },
+  ecosystem: {
+    trophicCascadeFactor: 0.15,     // Trophic cascade intensity
+    resilienceLossFactor: 3.0,      // Resilience loss multiplier
+    functionDisruptionRate: 0.2     // Function disruption rate
+  },
+  climate: {
+    emissionFactor: 0.5,            // kg CO2 per kWh (grid average, replace with regional data)
+    sequestrationRate: -10,         // tons CO2 per km² per year (forest baseline)
+    climateSensitivity: 0.000001,   // degrees C per ton CO2 (simplified)
+    globalCarbonBudget: 1000000000000, // PLACEHOLDER: Update with current IPCC carbon budget
+    extremeEventRate: 0.01          // Annual increase in extreme events per year
+  },
+  soil: {
+    fertilityLossRate: 0.3,         // Annual fertility loss per km²
+    erosionBaseline: 0.5,           // tons/ha/year baseline erosion
+    organicMatterLossRate: 0.25     // Annual organic matter loss
+  },
+  water: {
+    depletionThreshold: 1000000,    // Local water supply baseline (m³)
+    qualityDegradationRate: 0.1,    // Quality loss per unit wastewater
+    availabilityFactor: 100         // Availability calculation multiplier
+  },
+  cultural: {
+    knowledgeLossRate: 0.2,         // Traditional knowledge loss per km²
+    languageLossRate: 0.5,          // Ecological language loss per year
+    connectionLossRate: 0.3,        // Human-nature connection loss
+    commodificationRate: 0.5        // Commodification increase per year
+  },
+  genetic: {
+    bottleneckThreshold: 100,       // Population impact threshold for bottlenecks
+    inbreedingFactor: 0.8,          // Inbreeding risk relative to bottlenecks
+    adaptiveLossFactor: 0.9,        // Adaptive potential loss factor
+    geneFlowFactor: 0.85            // Gene flow disruption factor
+  }
+};
+
+// ============================================================================
 // Placeholder Modeling Functions (to be replaced with actual models)
 // ============================================================================
 
@@ -1024,29 +1093,29 @@ function determineReviewTimeline(result) {
 function calculatePopulationDynamics(action, years, baseline) {
   // Simplified: Assume linear decline based on habitat loss
   const habitatImpact = action.scope?.geographic?.area_affected_km2 || 0;
-  return Math.max(-100, -habitatImpact * years * 0.1);
+  return Math.max(-100, -habitatImpact * years * MODELING_COEFFICIENTS.population.habitatImpactFactor);
 }
 
 function calculateExtinctionRisk(action, years) {
   // Simplified: Risk increases with time and impact scale
   const scale = action.scope?.geographic?.area_affected_km2 || 0;
-  return Math.min(1.0, (scale * years) / 10000);
+  return Math.min(1.0, (scale * years) / MODELING_COEFFICIENTS.population.extinctionScaleFactor);
 }
 
 function calculateBiodiversityChange(action, years, baseline) {
-  // Simplified: Biodiversity loss over time
+  // Simplified: Biodiversity loss over time with logarithmic decay
   const habitatImpact = action.scope?.geographic?.area_affected_km2 || 0;
-  return Math.max(-100, -habitatImpact * Math.log(years + 1) * 2);
+  return Math.max(-100, -habitatImpact * Math.log(years + MODELING_COEFFICIENTS.biodiversity.timeDecayFactor) * MODELING_COEFFICIENTS.biodiversity.habitatLossFactor);
 }
 
 function calculateHabitatDegradation(action, years) {
   const area = action.scope?.geographic?.area_affected_km2 || 0;
-  return Math.max(-100, -area * years * 0.5);
+  return Math.max(-100, -area * years * MODELING_COEFFICIENTS.habitat.degradationRate);
 }
 
 function calculateFragmentation(action, years) {
   const area = action.scope?.geographic?.area_affected_km2 || 0;
-  return Math.max(-100, -area * Math.sqrt(years) * 0.8);
+  return Math.max(-100, -area * Math.sqrt(years) * MODELING_COEFFICIENTS.habitat.fragmentationRate);
 }
 
 function calculateHabitatLoss(action, years) {
@@ -1057,45 +1126,43 @@ function calculateHabitatLoss(action, years) {
 function modelTrophicCascades(action, years) {
   // Simplified cascade modeling
   const habitatImpact = action.scope?.geographic?.area_affected_km2 || 0;
-  return Math.max(-100, -habitatImpact * years * 0.15);
+  return Math.max(-100, -habitatImpact * years * MODELING_COEFFICIENTS.ecosystem.trophicCascadeFactor);
 }
 
 function calculateResilienceLoss(action, years) {
   const impact = action.scope?.geographic?.area_affected_km2 || 0;
-  return Math.max(-100, -impact * Math.log(years + 1) * 3);
+  return Math.max(-100, -impact * Math.log(years + 1) * MODELING_COEFFICIENTS.ecosystem.resilienceLossFactor);
 }
 
 function calculateFunctionDisruption(action, years) {
   const impact = action.scope?.geographic?.area_affected_km2 || 0;
-  return Math.max(-100, -impact * years * 0.2);
+  return Math.max(-100, -impact * years * MODELING_COEFFICIENTS.ecosystem.functionDisruptionRate);
 }
 
 function calculateCumulativeEmissions(action, years) {
   const energyKwh = action.resourceFlows?.inputs?.find(i => i.type === 'energy')?.quantity || 0;
-  const emissionFactor = 0.5; // kg CO2 per kWh (simplified)
-  return energyKwh * years * emissionFactor;
+  return energyKwh * years * MODELING_COEFFICIENTS.climate.emissionFactor;
 }
 
 function calculateSequestrationChange(action, years) {
   const landChange = action.scope?.geographic?.area_affected_km2 || 0;
-  const sequestrationRate = -10; // tons CO2 per km² per year (loss if positive area)
-  return landChange * years * sequestrationRate;
+  return landChange * years * MODELING_COEFFICIENTS.climate.sequestrationRate;
 }
 
 function calculateLocalTemperatureChange(action, years, netCarbon) {
   // Simplified climate sensitivity
-  const sensitivity = 0.000001; // degrees C per ton CO2
-  return netCarbon * sensitivity;
+  return netCarbon * MODELING_COEFFICIENTS.climate.climateSensitivity;
 }
 
 function calculateGlobalContribution(action, years, netCarbon) {
-  const globalBudget = 1000000000000; // 1 trillion tons simplified
-  return netCarbon / globalBudget;
+  // NOTE: globalCarbonBudget is a PLACEHOLDER - update with current IPCC estimates
+  // See: https://www.ipcc.ch/report/ar6/wg1/ for latest carbon budget data
+  return netCarbon / MODELING_COEFFICIENTS.climate.globalCarbonBudget;
 }
 
 function calculateExtremeEventChange(action, years) {
   // Simplified extreme event frequency change
-  return years * 0.01; // 1% increase per year
+  return years * MODELING_COEFFICIENTS.climate.extremeEventRate;
 }
 
 function calculatePrecipitationChange(action, years, tempImpact) {
@@ -1109,33 +1176,32 @@ function calculateSeasonalShift(action, years) {
 
 function calculateSoilFertilityChange(action, years) {
   const landUse = action.scope?.geographic?.area_affected_km2 || 0;
-  return Math.max(-100, -landUse * years * 0.3);
+  return Math.max(-100, -landUse * years * MODELING_COEFFICIENTS.soil.fertilityLossRate);
 }
 
 function calculateErosionRate(action, years) {
   const landDisturbance = action.scope?.geographic?.area_affected_km2 || 0;
-  return landDisturbance * 0.5; // tons/ha/year
+  return landDisturbance * MODELING_COEFFICIENTS.soil.erosionBaseline;
 }
 
 function calculateOrganicMatterChange(action, years) {
   const landUse = action.scope?.geographic?.area_affected_km2 || 0;
-  return Math.max(-100, -landUse * years * 0.25);
+  return Math.max(-100, -landUse * years * MODELING_COEFFICIENTS.soil.organicMatterLossRate);
 }
 
 function calculateWaterDepletion(action, years) {
   const waterUse = action.resourceFlows?.inputs?.find(i => i.type === 'water')?.quantity || 0;
-  const localSupply = 1000000; // Simplified local supply
-  return waterUse * years / localSupply;
+  return waterUse * years / MODELING_COEFFICIENTS.water.depletionThreshold;
 }
 
 function calculateWaterQualityChange(action, years) {
   const wasteWater = action.resourceFlows?.outputs?.find(o => o.type === 'wastewater')?.quantity || 0;
-  return Math.max(-100, -wasteWater * years * 0.1);
+  return Math.max(-100, -wasteWater * years * MODELING_COEFFICIENTS.water.qualityDegradationRate);
 }
 
 function calculateWaterAvailability(action, years) {
   const depletionRate = calculateWaterDepletion(action, years);
-  return Math.max(-100, -depletionRate * 100);
+  return Math.max(-100, -depletionRate * MODELING_COEFFICIENTS.water.availabilityFactor);
 }
 
 function calculateGeneticResourceLoss(action, years) {
@@ -1150,11 +1216,11 @@ function calculateFunctionalDiversityChange(action, years) {
 
 function calculateTraditionalPracticeLoss(action, years) {
   const landChange = action.scope?.geographic?.area_affected_km2 || 0;
-  return Math.max(-100, -landChange * years * 0.2);
+  return Math.max(-100, -landChange * years * MODELING_COEFFICIENTS.cultural.knowledgeLossRate);
 }
 
 function calculateEcologicalLanguageLoss(action, years) {
-  return Math.max(-100, -years * 0.5); // Gradual loss over time
+  return Math.max(-100, -years * MODELING_COEFFICIENTS.cultural.languageLossRate);
 }
 
 function calculateKnowledgeTransmission(action, years) {
@@ -1164,32 +1230,43 @@ function calculateKnowledgeTransmission(action, years) {
 
 function calculateConnectionLoss(action, years) {
   const disturbance = action.scope?.geographic?.area_affected_km2 || 0;
-  return Math.max(-100, -disturbance * years * 0.3);
+  return Math.max(-100, -disturbance * years * MODELING_COEFFICIENTS.cultural.connectionLossRate);
 }
 
 function calculateCommodificationIncrease(action, years) {
-  // Simplified commodification trend
-  return years * 0.5;
+  return years * MODELING_COEFFICIENTS.cultural.commodificationRate;
 }
 
 function calculateSacredSiteImpact(action, years) {
-  // Would require specific sacred site data
-  return 0; // Placeholder
+  // INCOMPLETE: Requires integration with sacred site database
+  // In production, this should:
+  // 1. Query sacred site locations from bioregional data
+  // 2. Calculate overlap with action geographic scope
+  // 3. Assess cultural significance and impact severity
+  // 4. Include consultation with Indigenous communities
+  
+  // For now, return conservative estimate based on land disturbance
+  const landImpact = action.scope?.geographic?.area_affected_km2 || 0;
+  if (landImpact > 0) {
+    // Assume potential impact requires further investigation
+    return -landImpact * 10; // Placeholder severity scoring
+  }
+  return 0;
 }
 
 function calculateBottleneckRisk(action, years) {
   const populationImpact = calculatePopulationDynamics(action, years, {});
-  return Math.max(0, Math.min(1, -populationImpact / 100));
+  return Math.max(0, Math.min(1, -populationImpact / MODELING_COEFFICIENTS.genetic.bottleneckThreshold));
 }
 
 function calculateInbreedingRisk(action, years) {
   const bottleneckRisk = calculateBottleneckRisk(action, years);
-  return bottleneckRisk * 0.8;
+  return bottleneckRisk * MODELING_COEFFICIENTS.genetic.inbreedingFactor;
 }
 
 function calculateAdaptivePotentialLoss(action, years) {
   const geneticDiversity = calculateBiodiversityChange(action, years, {});
-  return geneticDiversity * 0.9;
+  return geneticDiversity * MODELING_COEFFICIENTS.genetic.adaptiveLossFactor;
 }
 
 function calculateSelectivePressureChanges(action, years) {
@@ -1199,7 +1276,7 @@ function calculateSelectivePressureChanges(action, years) {
 
 function calculateGeneFlowDisruption(action, years) {
   const fragmentation = calculateFragmentation(action, years);
-  return fragmentation * 0.85;
+  return fragmentation * MODELING_COEFFICIENTS.genetic.geneFlowFactor;
 }
 
 function calculateEvolutionaryConstraints(action, years) {
