@@ -194,14 +194,14 @@ class ReasoningLineage {
     this.structure = config.structure || 'chain'; // chain|tree|dag
     
     // Decision summary
-    this.summary = config.summary || {
-      input: null,
-      output: null,
-      totalNodes: 0,
-      depth: 0,
-      branches: 0,
-      averageConfidence: 0,
-      uncertaintyPoints: []
+    this.summary = {
+      input: config.summary?.input || null,
+      output: config.summary?.output || null,
+      totalNodes: config.summary?.totalNodes || 0,
+      depth: config.summary?.depth || 0,
+      branches: config.summary?.branches || 0,
+      averageConfidence: config.summary?.averageConfidence || 0,
+      uncertaintyPoints: config.summary?.uncertaintyPoints || []
     };
     
     // Human oversight
@@ -806,14 +806,14 @@ function checkContextDrift(lineage, expectedContext = {}) {
  * Generate unique node ID
  */
 function generateNodeId() {
-  return `node-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  return `node-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 }
 
 /**
  * Generate unique lineage ID
  */
 function generateLineageId() {
-  return `lineage-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  return `lineage-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 }
 
 /**
