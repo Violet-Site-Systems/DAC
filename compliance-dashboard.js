@@ -99,7 +99,7 @@ function showLicenseDetails(licenseName) {
     // In a real implementation, this would show a modal with detailed compliance info
     console.log(`Showing details for ${licenseName}`);
     
-    // Simple alert for demonstration
+    // For now, log to console - in production, implement a proper modal dialog
     const messages = {
         'SUL-1.0': 'Sustainable Use License:\n• Energy efficiency: 87.3%\n• Resource optimization: 78.5%\n• Carbon reduction: On track\n• Circular economy: 65% implementation',
         'EIL-1.0': 'Environmental Impact License:\n• Lifecycle assessment: Complete\n• Baseline metrics: Established\n• Green infrastructure: 72% deployed\n• Impact monitoring: Active',
@@ -109,7 +109,7 @@ function showLicenseDetails(licenseName) {
         'CAL-1.0': 'Climate Accountability License:\n• Carbon footprint: 245 tCO₂e\n• Reduction target: -32% YoY\n• Renewable energy: 72%\n• Paris alignment: On track'
     };
 
-    alert(messages[licenseName] || 'License details not available');
+    console.info(messages[licenseName] || 'License details not available');
 }
 
 function simulateRealTimeUpdates() {
@@ -269,46 +269,29 @@ function generateComplianceData() {
             ]
         }
     };
-}
-
-// Export for potential use in other modules
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-        generateComplianceData,
-        initializeDashboard
-    };
-}
-
-// Add smooth scrolling for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
+    // Add smooth scrolling for anchor links (after DOM is loaded)
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
     });
-});
 
-// Add keyboard navigation support
-document.addEventListener('keydown', function(e) {
-    // Press 'D' to go to dashboard top
-    if (e.key === 'd' || e.key === 'D') {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-});
-
-// Console welcome message
-console.log('%c🌱 Sustainability Compliance Dashboard', 'color: #667eea; font-size: 20px; font-weight: bold;');
-console.log('%cDAC - Decentralized Autonomous Communities', 'color: #764ba2; font-size: 14px;');
-console.log('%cMonitoring BGI Framework Alignment & License Compliance', 'color: #4a5568; font-size: 12px;');
-console.log('\n%cDashboard Features:', 'font-weight: bold; font-size: 14px;');
-console.log('• Real-time compliance metrics');
-console.log('• BGI Framework pillar tracking');
-console.log('• License-specific compliance status');
-console.log('• Environmental impact monitoring');
-console.log('• Gap analysis and remediation roadmap');
-console.log('\n%cFor more information, visit the BGI Framework documentation.', 'color: #667eea;');
+    // Console welcome message
+    console.log('%c🌱 Sustainability Compliance Dashboard', 'color: #667eea; font-size: 20px; font-weight: bold;');
+    console.log('%cDAC - Decentralized Autonomous Communities', 'color: #764ba2; font-size: 14px;');
+    console.log('%cMonitoring BGI Framework Alignment & License Compliance', 'color: #4a5568; font-size: 12px;');
+    console.log('\n%cDashboard Features:', 'font-weight: bold; font-size: 14px;');
+    console.log('• Real-time compliance metrics');
+    console.log('• BGI Framework pillar tracking');
+    console.log('• License-specific compliance status');
+    console.log('• Environmental impact monitoring');
+    console.log('• Gap analysis and remediation roadmap');
+    console.log('\n%cFor more information, visit the BGI Framework documentation.', 'color: #667eea;');
+}

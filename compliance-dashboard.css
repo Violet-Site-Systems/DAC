@@ -123,7 +123,9 @@ body {
     stroke: var(--primary-color);
     stroke-width: 15;
     stroke-linecap: round;
+    /* Circle circumference = 2πr = 2 * π * 90 = 565.48 */
     stroke-dasharray: 565.48;
+    /* Initial offset = 50% of circumference */
     stroke-dashoffset: 282.74;
     transition: stroke-dashoffset 2s ease;
 }
