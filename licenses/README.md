@@ -198,6 +198,17 @@ We welcome feedback and suggestions for improving these licenses. Please:
 - Share your experiences using these licenses
 - Contribute case studies and implementation guides
 
+### BGI Framework Alignment
+
+For comprehensive analysis of how these licenses align with the Beneficial AGI (BGI) Alignment Framework, see:
+
+- **[BGI License Alignment Matrix](../bgi-framework/BGI-License-Alignment-Matrix.md)**: Detailed mapping of each license to BGI principles
+- **[BGI Gap Analysis](../bgi-framework/BGI-Gap-Analysis.md)**: Identification of gaps and improvement opportunities
+- **[BGI Compliance Checklist](../bgi-framework/BGI-Compliance-Checklist.md)**: Practical verification tool for compliance
+- **[BGI License Amendments](../bgi-framework/BGI-License-Amendments.md)**: Proposed enhancements for stronger alignment
+
+Current licenses provide approximately 50% coverage of full BGI Framework requirements, with clear pathways to 85%+ alignment through proposed amendments.
+
 ## Questions and Support
 
 For questions about these licenses:

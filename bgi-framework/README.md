@@ -242,6 +242,30 @@ Co-creation protocols requiring explicit human veto authority.
 Synchronization with biological/seasonal rhythms (not machine time).  
 Ancestral accountability: All decisions traceable to ecological consequences.
 
+## BGI Compliance Resources
+
+The project includes comprehensive resources for verifying BGI Framework alignment with sustainability licenses:
+
+- **[License Alignment Matrix](./BGI-License-Alignment-Matrix.md)**: Detailed mapping of how each of the six sustainability licenses (SUL, EIL, SBL, CGL, EAL, CAL) aligns with BGI Framework principles. Includes coverage heatmap and alignment scores (current average: 50%).
+
+- **[Gap Analysis](./BGI-Gap-Analysis.md)**: Comprehensive identification of gaps between current licenses and BGI Framework requirements. Categorizes gaps by severity (Critical, High, Medium, Low) and provides prioritized remediation roadmap across four phases.
+
+- **[Compliance Checklist](./BGI-Compliance-Checklist.md)**: Practical verification tool for developers, organizations, and auditors. Covers all BGI requirements with evidence templates, scale guidelines, and compliance scoring. Defines levels: Full Compliance (≥95%), Substantial (75-94%), Partial (50-74%), Emerging (<50%).
+
+- **[License Amendments](./BGI-License-Amendments.md)**: Specific proposed amendments to each license to address identified gaps. Includes universal amendments (CFSA framework, intergenerational auditing, quantitative thresholds) and license-specific enhancements. Provides phased implementation roadmap with backward compatibility.
+
+### Key Findings
+
+**Current State**: Sustainability licenses provide ~50% coverage of BGI Framework requirements.
+
+**Major Gaps**:
+- Mathematical rigor (Coherence-First Sensitivity Analysis) - missing across all licenses
+- Temporal Fidelity and intergenerational accountability - weak coverage
+- Neurodivergent-specific cognition protocols - minimal coverage
+- Bioregional grounding and context sensitivity - partial coverage
+
+**Roadmap to 85%+ Alignment**: Four-phase approach over 18 months addressing critical gaps first (CFSA, temporal fidelity, neurodivergent protocols, three-tier consent), then high-priority integration (bioregional grounding, context drift, extraction prevention), followed by refinements and tool development.
+
 ## Implementation Status
 
 | Component | Specification | Implementation | Status |
