@@ -21,7 +21,7 @@ const TEMPORAL_FIDELITY_CONFIG = {
     defaultVulnerabilityWindows: [
       { start: '02:00', end: '04:00', severity: 'critical', label: 'Deep circadian low (2-4 AM)' },
       { start: '13:00', end: '15:00', severity: 'moderate', label: 'Post-lunch dip' },
-      { start: '22:00', end: '23:59', severity: 'moderate', label: 'Evening fatigue' }
+      { start: '22:00', end: '00:00', severity: 'moderate', label: 'Evening fatigue' }
     ],
     // Optimal decision windows (peak cognitive performance)
     defaultOptimalWindows: [
@@ -520,7 +520,7 @@ function getLunarPhase(datetime = new Date(), config = TEMPORAL_FIDELITY_CONFIG)
     age: lunarAge,
     influence: phaseData.influence,
     energyLevel: phaseData.energyLevel,
-    label: `${phaseEmoji} ${phaseName.replace(/([A-Z])/g, ' $1').trim()}`
+    label: `${phaseEmoji} ${phaseName.replace(/([a-z])([A-Z])/g, '$1 $2')}`
   };
 }
 
@@ -1003,8 +1003,13 @@ function processOverride(decisionPause, userProfile, acknowledgment, config = TE
   }
   
   // Check daily override limit
-  // In production, this would check a persistent store
-  const overridesToday = 0; // Placeholder
+  // TODO: In production, implement persistent storage for override tracking
+  // This should:
+  // 1. Store override records with userId and timestamp in database/file
+  // 2. Count overrides for current user within current calendar day
+  // 3. Enforce maxOverridesPerDay limit
+  // For now, this validation is skipped in reference implementation
+  const overridesToday = 0; // Placeholder - always allows overrides in reference implementation
   if (overridesToday >= config.override.maxOverridesPerDay) {
     return {
       allowed: false,
