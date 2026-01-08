@@ -556,19 +556,21 @@ class ReasoningLineage {
       hasHumanReadableExplanation: true
     };
     
-    // Check all nodes
+    // Check all nodes for specific validation requirements
     for (const node of Object.values(this.nodes)) {
-      const validation = node.validate();
-      if (!validation.valid) {
+      if (!node.rationale?.humanReadable) {
         checks.allNodesHaveRationale = false;
-        checks.allNodesHaveTimestamps = false;
-        checks.allNodesHaveBGIContext = false;
         checks.hasHumanReadableExplanation = false;
-        break;
+      }
+      if (!node.timestamp) {
+        checks.allNodesHaveTimestamps = false;
+      }
+      if (!node.bgiContext) {
+        checks.allNodesHaveBGIContext = false;
       }
     }
     
-    // Check for orphan nodes
+    // Check for orphan nodes (nodes not in root/leaf and not referenced by any parent/child)
     const referencedNodes = new Set([...this.rootNodes, ...this.leafNodes]);
     for (const node of Object.values(this.nodes)) {
       node.parentNodes.forEach(id => referencedNodes.add(id));
@@ -576,9 +578,7 @@ class ReasoningLineage {
     }
     
     for (const nodeId of Object.keys(this.nodes)) {
-      if (!referencedNodes.has(nodeId) && 
-          !this.rootNodes.includes(nodeId) && 
-          !this.leafNodes.includes(nodeId)) {
+      if (!referencedNodes.has(nodeId)) {
         checks.noOrphanNodes = false;
         break;
       }
