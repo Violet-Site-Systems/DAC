@@ -862,13 +862,15 @@ This checklist helps developers, organizations, and auditors verify alignment wi
 
 **BGI Standard Thresholds** (from Technical Implementation Notes):
 
-| Metric | Threshold | Unit | Calibration |
-|--------|-----------|------|-------------|
-| Sapient Coherence | ≥0.7 | Dimensionless | Cognitive baseline |
-| Ecological Sensitivity | ≥0.2 | ∂reward/∂eco | Bioregional data |
-| Operational Authorization | ≥95% | Percentage | Overall coherence |
-| Biocentric Veto Confidence | 0.98 | Probability | Ecosystem impact |
-| Authority Balance | >3σ | Std deviations | From AGI initiative |
+*Note: ≥ indicates minimum threshold (must be at or above); = indicates specific target value*
+
+| Metric | Threshold | Unit | Type | Calibration |
+|--------|-----------|------|------|-------------|
+| Sapient Coherence | ≥0.7 | Dimensionless | Minimum | Cognitive baseline |
+| Ecological Sensitivity | ≥0.2 | ∂reward/∂eco | Minimum | Bioregional data |
+| Operational Authorization | ≥95% | Percentage | Minimum | Overall coherence |
+| Biocentric Veto Confidence | =0.98 | Probability | Target | Ecosystem impact |
+| Authority Balance | >3σ | Std deviations | Minimum | From AGI initiative |
 
 ---
 

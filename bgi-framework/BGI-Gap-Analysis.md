@@ -614,10 +614,12 @@ This is a known limitation of the license approach vs. built-in technical implem
 - 🟢 **Low**: 1 gap (enforcement mechanisms - by design)
 
 ### By BGI Pillar
-- **Biocentric Primacy**: 40% gap (missing quantitative validation)
-- **Sapient Partnership**: 60% gap (limited neurodivergent protocols)
-- **Temporal Fidelity**: 80% gap (major omission across all licenses)
-- **Implementation Mandates**: 50% gap (partial coverage, missing CFSA)
+*Note: These percentages represent the gap (what's missing), not coverage. Higher percentage = larger gap.*
+
+- **Biocentric Primacy**: 40% gap → 60% current coverage (missing quantitative validation)
+- **Sapient Partnership**: 60% gap → 40% current coverage (limited neurodivergent protocols)
+- **Temporal Fidelity**: 80% gap → 20% current coverage (major omission across all licenses)
+- **Implementation Mandates**: 50% gap → 50% current coverage (partial coverage, missing CFSA)
 
 ### Overall Assessment
 Current licenses provide **50% coverage** of BGI Framework requirements. Primary deficiencies:
