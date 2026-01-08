@@ -318,6 +318,9 @@ async function tier1BiocentricAssessment(action, options = {}) {
 /**
  * Perform biocentric assessment (integration with Biocentric Impact Assessment API)
  * This is a simplified implementation - production would integrate with the full API
+ * specified in biocentric-impact-api.md (Issue #6)
+ * 
+ * TODO: Replace with actual API integration when Biocentric Impact Assessment API is implemented
  */
 async function performBiocentricAssessment(action, options) {
   // Simplified scoring for demonstration
@@ -488,7 +491,10 @@ async function tier2SapientIntentConfirmation(action, options = {}) {
 
 /**
  * Request sapient intent confirmation from human
- * Integrates with LOVE-evolution checkpoint system
+ * Integrates with LOVE-evolution checkpoint system (Issue #5)
+ * 
+ * TODO: Full integration with love-evolution-checkpoint.js when available
+ * Currently implements simplified version of vulnerability window checking
  */
 async function requestSapientIntentConfirmation(action, options) {
   // Check if we're in a vulnerability window (neurodivergent support)
@@ -640,7 +646,10 @@ async function tier3IntergenerationalAudit(action, options = {}) {
 
 /**
  * Perform intergenerational audit
- * Integrates with intergenerational-audit.js module
+ * Integrates with intergenerational-audit.js module (Issue #13)
+ * 
+ * TODO: Full integration with intergenerational-audit.js performIntergenerationalAudit function
+ * Currently implements simplified version for demonstration purposes
  */
 async function performIntergenerationalAudit(action, options) {
   // Import ProposedAction structure from intergenerational-audit.js if available
@@ -886,6 +895,11 @@ async function requestEmergencyOverride(validationResult, overrideRequest) {
   validationResult.makeDecision();
   
   // Permanent audit logging (in production, this would go to secure storage)
+  // PRODUCTION NOTE: Replace console.warn with secure audit logging system:
+  // - Tamper-proof storage (blockchain, secure ledger)
+  // - Multiple approver verification chain
+  // - Regulatory compliance logging
+  // - Alert security team for review
   console.warn('⚠️  EMERGENCY OVERRIDE ACTIVATED');
   console.warn('Justification:', override.justification);
   console.warn('Approvers:', override.approvers.join(', '));
@@ -911,6 +925,13 @@ function generateValidationId() {
 
 /**
  * Log validation result to permanent audit trail
+ * 
+ * PRODUCTION NOTE: This implementation stores audit logs in memory for demonstration.
+ * For production use, integrate with:
+ * - Immutable append-only database (e.g., blockchain, secure ledger)
+ * - Encrypted storage with tamper detection
+ * - Geographic redundancy for 10-year retention requirement
+ * - Compliance with EAL-1.0 accountability requirements
  */
 async function logValidationAudit(validationResult) {
   const auditEntry = {
@@ -962,11 +983,20 @@ function getValidationAuditEntries(filters = {}) {
 }
 
 // ============================================================================
-// Exports
+// Exports (Universal Module Definition for Node.js and Browser)
 // ============================================================================
 
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = {
+// UMD pattern for both Node.js and browser compatibility
+(function(root, factory) {
+  if (typeof module !== 'undefined' && module.exports) {
+    // Node.js/CommonJS
+    module.exports = factory();
+  } else {
+    // Browser globals
+    root.ThreeTierConsent = factory();
+  }
+}(typeof self !== 'undefined' ? self : this, function() {
+  return {
     // Main functions
     performThreeTierValidation,
     requestEmergencyOverride,
@@ -989,4 +1019,4 @@ if (typeof module !== 'undefined' && module.exports) {
     // Configuration
     THREE_TIER_CONFIG
   };
-}
+}));
