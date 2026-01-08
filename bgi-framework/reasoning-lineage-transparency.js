@@ -806,14 +806,14 @@ function checkContextDrift(lineage, expectedContext = {}) {
  * Generate unique node ID
  */
 function generateNodeId() {
-  return `node-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+  return `node-${Date.now()}-${Math.random().toString(36).substring(2, 15).padEnd(13, '0')}`;
 }
 
 /**
  * Generate unique lineage ID
  */
 function generateLineageId() {
-  return `lineage-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+  return `lineage-${Date.now()}-${Math.random().toString(36).substring(2, 15).padEnd(13, '0')}`;
 }
 
 /**
