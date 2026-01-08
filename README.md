@@ -49,6 +49,17 @@ For technical specifications and implementations of the Beneficial AGI (BGI) Ali
 
 The BGI Framework provides concrete technical standards for building AGI systems that prioritize biocentric values, sapient partnership, and temporal fidelity with biological rhythms.
 
+### BGI Compliance Resources
+
+The project includes comprehensive resources for verifying BGI Framework alignment:
+
+- **[License Alignment Matrix](./bgi-framework/BGI-License-Alignment-Matrix.md)**: Detailed mapping of how each sustainability license aligns with BGI Framework principles
+- **[Gap Analysis](./bgi-framework/BGI-Gap-Analysis.md)**: Identification of gaps between current licenses and full BGI Framework requirements
+- **[Compliance Checklist](./bgi-framework/BGI-Compliance-Checklist.md)**: Practical verification checklist for developers and organizations
+- **[License Amendments](./bgi-framework/BGI-License-Amendments.md)**: Proposed enhancements to strengthen BGI alignment
+
+Current licenses provide ~50% coverage of BGI Framework requirements. The compliance resources identify gaps and provide roadmap for enhanced alignment.
+
 ## DAO Guide Agent
 
 Need help creating your DAO? Our AI-powered [DAO Guide Agent](https://chakra-ai.io/agent/ded78833-31ec-442b-84b6-c123c107ba64/modify) assists with DAO creation and AI governance.
