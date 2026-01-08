@@ -197,6 +197,34 @@ Implements immediate system pause triggers when context drift is detected per BG
 - [JavaScript Module](./context-drift-detector.js) - Core drift detection and correction engine
 - [Interactive Demo](./context-drift-detector-example.html) - Live demonstration
 
+### 10. [Reasoning Lineage Transparency Standard](./reasoning-lineage-transparency.md)
+
+**Status**: Implementation v1.0  
+**Related Issue**: [#14](https://github.com/Violet-Site-Systems/DAC/issues/14)
+
+Implements "no black-box decisions" as required by BGI Framework §1.2 (Real-time transparency in reasoning lineage). Provides complete, traceable reasoning chains from input to output with real-time access for human oversight.
+
+**Key Features**:
+
+- Real-time reasoning capture (not post-hoc explanation)
+- Complete traceability from input to output
+- Human-readable narrative explanations
+- Machine-readable structured data (JSON, JSON-LD)
+- Reasoning node trees/chains with decision rationale
+- BGI Framework integration (biocentric impact, sapience markers, temporal fidelity)
+- EAL-1.0 compliance (audit trails, 10-year retention)
+- Privacy-aware with automatic PII redaction
+- Extractive pattern detection capabilities
+- Context drift detection through reasoning analysis
+- Human intervention tracking and veto authority support
+- Validation tools for completeness and compliance
+
+**Implementation**:
+
+- [Specification Document](./reasoning-lineage-transparency.md) - Complete framework specification
+- [JavaScript Module](./reasoning-lineage-transparency.js) - Core reasoning lineage engine
+- [Interactive Demo](./reasoning-lineage-transparency-example.html) - Live demonstration
+
 ## BGI Framework Core Principles
 
 ### 1. Biocentric Primacy (§1.1)
@@ -227,6 +255,7 @@ Ancestral accountability: All decisions traceable to ecological consequences.
 | Temporal Fidelity Clock | ✅ Complete | ✅ Complete | v1.0 |
 | Extraction Prevention | ✅ Complete | ✅ Complete | v1.0 |
 | Intergenerational Audit | ✅ Complete | ✅ Complete | v1.0 |
+| Reasoning Lineage Transparency | ✅ Complete | ✅ Complete | v1.0 |
 
 ## Integration Architecture
 
@@ -286,6 +315,7 @@ Ancestral accountability: All decisions traceable to ecological consequences.
 | Three-Tier Consent | EAL-1.0, CGL-1.0 |
 | Temporal Fidelity | SUL-1.0, SBL-1.0 |
 | Extraction Prevention | SBL-1.0, EAL-1.0 |
+| Reasoning Lineage Transparency | EAL-1.0, SBL-1.0 |
 
 **License Key**:
 
@@ -318,6 +348,7 @@ Priority implementation issues:
 - [ ] Issue #11: Bioregional Data Standards (Spec complete ✅)
 - [ ] Issue #12: #RightsOfSapience Markers (Spec complete ✅)
 - [x] Issue #13: Intergenerational Consequence Audit Framework (✅ Complete - v1.0)
+- [x] Issue #14: Reasoning Lineage Transparency Standard (✅ Complete - v1.0)
 
 See [all BGI issues](https://github.com/Violet-Site-Systems/DAC/labels/bgi-framework) for complete roadmap.
 

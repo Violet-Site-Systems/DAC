@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reasoning Lineage Transparency - Interactive Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 10px 50px rgba(0, 0, 0, 0.2);
+    }
+    
+    h1 {
+      color: #2d3748;
+      margin-bottom: 10px;
+      font-size: 2.5em;
+    }
+    
+    .subtitle {
+      color: #718096;
+      margin-bottom: 30px;
+      font-size: 1.1em;
+    }
+    
+    .demo-section {
+      margin-bottom: 40px;
+      padding: 20px;
+      background: #f7fafc;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+    }
+    
+    .demo-section h2 {
+      color: #2d3748;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .demo-section h2::before {
+      content: '▶';
+      color: #667eea;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    
+    button {
+      padding: 12px 24px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+    
+    button:hover {
+      background: #5a67d8;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    button.secondary {
+      background: #48bb78;
+    }
+    
+    button.secondary:hover {
+      background: #38a169;
+    }
+    
+    button.danger {
+      background: #f56565;
+    }
+    
+    button.danger:hover {
+      background: #e53e3e;
+    }
+    
+    .output {
+      background: #2d3748;
+      color: #e2e8f0;
+      padding: 20px;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      max-height: 600px;
+      overflow-y: auto;
+      line-height: 1.6;
+    }
+    
+    .output.tree {
+      font-family: 'Courier New', monospace;
+      line-height: 1.4;
+    }
+    
+    .status {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+    
+    .status.active {
+      background: #48bb78;
+      color: white;
+    }
+    
+    .status.completed {
+      background: #4299e1;
+      color: white;
+    }
+    
+    .status.aborted {
+      background: #f56565;
+      color: white;
+    }
+    
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .metric-card {
+      background: white;
+      padding: 15px;
+      border-radius: 6px;
+      border: 2px solid #e2e8f0;
+    }
+    
+    .metric-card h3 {
+      color: #4a5568;
+      font-size: 0.9em;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .metric-card .value {
+      color: #2d3748;
+      font-size: 2em;
+      font-weight: 700;
+    }
+    
+    .metric-card .unit {
+      color: #718096;
+      font-size: 0.9em;
+      margin-left: 5px;
+    }
+    
+    .validation-result {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      background: white;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    
+    .validation-result.pass {
+      border-left: 4px solid #48bb78;
+    }
+    
+    .validation-result.fail {
+      border-left: 4px solid #f56565;
+    }
+    
+    .validation-result .icon {
+      font-size: 24px;
+    }
+    
+    .validation-result .icon.pass {
+      color: #48bb78;
+    }
+    
+    .validation-result .icon.fail {
+      color: #f56565;
+    }
+    
+    .info-box {
+      background: #edf2f7;
+      border-left: 4px solid #4299e1;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 15px;
+    }
+    
+    .info-box h4 {
+      color: #2d3748;
+      margin-bottom: 8px;
+    }
+    
+    .info-box p {
+      color: #4a5568;
+      line-height: 1.6;
+    }
+    
+    .highlight {
+      background: #fef5e7;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-weight: 600;
+      color: #d97706;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .demo-section {
+      animation: slideIn 0.5s ease-out;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 Reasoning Lineage Transparency Standard</h1>
+    <p class="subtitle">Interactive demonstration of "no black-box decisions" - BGI Framework §1.2</p>
+    
+    <!-- Demo 1: Create Simple Reasoning Chain -->
+    <div class="demo-section">
+      <h2>Create Reasoning Lineage</h2>
+      <div class="button-group">
+        <button onclick="createSimpleChain()">Create Simple Chain</button>
+        <button onclick="createComplexTree()">Create Complex Tree</button>
+        <button onclick="createWithUncertainty()">Create with Uncertainty</button>
+        <button class="secondary" onclick="completeLineage()">Complete Lineage</button>
+        <button class="danger" onclick="abortLineage()">Abort Lineage</button>
+      </div>
+      <div id="lineage-status"></div>
+    </div>
+    
+    <!-- Demo 2: View Reasoning Lineage -->
+    <div class="demo-section">
+      <h2>View Reasoning Lineage</h2>
+      <div class="button-group">
+        <button onclick="showJSON()">Show JSON</button>
+        <button onclick="showNarrative()">Show Narrative</button>
+        <button onclick="showTree()">Show Tree Visualization</button>
+        <button onclick="showMetrics()">Show Metrics</button>
+      </div>
+      <div id="lineage-output" class="output"></div>
+    </div>
+    
+    <!-- Demo 3: Validation -->
+    <div class="demo-section">
+      <h2>Validation & Compliance</h2>
+      <div class="button-group">
+        <button onclick="validateCompleteness()">Validate Completeness</button>
+        <button onclick="validateBGI()">Check BGI Compliance</button>
+        <button onclick="validateEAL()">Check EAL-1.0 Compliance</button>
+      </div>
+      <div id="validation-output"></div>
+    </div>
+    
+    <!-- Demo 4: Analysis -->
+    <div class="demo-section">
+      <h2>Analysis & Detection</h2>
+      <div class="button-group">
+        <button onclick="analyzeExtraction()">Detect Extractive Patterns</button>
+        <button onclick="analyzeContextDrift()">Check Context Drift</button>
+        <button onclick="exportJSONLD()">Export JSON-LD</button>
+      </div>
+      <div id="analysis-output" class="output"></div>
+    </div>
+    
+    <div class="info-box">
+      <h4>About Reasoning Lineage Transparency</h4>
+      <p>
+        This standard implements <span class="highlight">"no black-box decisions"</span> as required by the BGI Alignment Framework §1.2.
+        Every AI/AGI decision is captured in real-time with complete traceability from input to output, enabling:
+      </p>
+      <ul style="margin-top: 10px; margin-left: 20px; color: #4a5568;">
+        <li>Human veto authority at any decision point</li>
+        <li>Real-time transparency (not post-hoc explanation)</li>
+        <li>Audit trails for compliance (EAL-1.0 §4)</li>
+        <li>Detection of extractive patterns and context drift</li>
+        <li>Ancestral accountability through consequence tracing</li>
+      </ul>
+    </div>
+  </div>
+  
+  <script src="reasoning-lineage-transparency.js"></script>
+  <script>
+    // Global state
+    let currentLineage = null;
+    
+    // Create simple reasoning chain
+    function createSimpleChain() {
+      currentLineage = new ReasoningLineage({
+        summary: {
+          input: 'Deploy new server infrastructure'
+        }
+      });
+      
+      // Node 1: Initial evaluation
+      const node1 = new ReasoningNode({
+        type: 'evaluation',
+        input: { request: 'Deploy 10 servers' },
+        process: {
+          method: 'resource_availability_check',
+          confidence: 0.75,
+          uncertainty: 0.25
+        },
+        output: { decision: 'proceed' },
+        rationale: {
+          humanReadable: 'Resource availability check completed. Local infrastructure has sufficient capacity.',
+          factors: [
+            { name: 'capacity', weight: 0.4, value: 0.85, contribution: 0.34, explanation: 'Data center has room for 15 servers' },
+            { name: 'renewable_energy', weight: 0.3, value: 1.0, contribution: 0.3, explanation: '100% renewable powered' },
+            { name: 'cost', weight: 0.3, value: 0.7, contribution: 0.21, explanation: 'Within budget' }
+          ],
+          alternatives: [
+            { option: 'Deploy 10 servers', selected: true },
+            { option: 'Deploy 5 servers', selected: false, rejectionReason: 'Insufficient capacity for projected load' },
+            { option: 'Cloud migration', selected: false, rejectionReason: 'Higher carbon footprint' }
+          ]
+        },
+        bgiContext: {
+          biocentricImpact: { score: 12, assessment: 'positive - renewable energy' },
+          sapienceMarkers: ['#ConsentRequired', '#RightsOfSapience'],
+          temporalAlignment: { circadianState: 'optimal', seasonalContext: 'spring' }
+        },
+        metadata: {
+          model: 'decision-engine-v2',
+          computeTimeMs: 150,
+          energyUsedWh: 0.05
+        }
+      });
+      
+      currentLineage.addNode(node1);
+      
+      // Node 2: Biocentric validation
+      const node2 = new ReasoningNode({
+        type: 'decision',
+        input: { proposal: 'Deploy 10 servers with renewable energy' },
+        process: {
+          method: 'biocentric_impact_assessment',
+          confidence: 0.88,
+          uncertainty: 0.12
+        },
+        output: { decision: 'approved', score: 15 },
+        rationale: {
+          humanReadable: 'Biocentric validation passed. Net positive impact on ecosystem due to renewable energy and closed-loop cooling.',
+          factors: [
+            { name: 'energy_source', weight: 0.35, value: 1.0, contribution: 0.35, explanation: '100% renewable' },
+            { name: 'water_usage', weight: 0.25, value: 0.9, contribution: 0.225, explanation: 'Closed-loop cooling' },
+            { name: 'land_use', weight: 0.25, value: 1.0, contribution: 0.25, explanation: 'No new land use' },
+            { name: 'biodiversity', weight: 0.15, value: 1.0, contribution: 0.15, explanation: 'No impact' }
+          ]
+        },
+        bgiContext: {
+          biocentricImpact: { score: 15, assessment: 'passed - net positive' },
+          sapienceMarkers: ['#RightsOfSapience'],
+          temporalAlignment: { circadianState: 'optimal' }
+        },
+        metadata: {
+          model: 'biocentric-api-v1',
+          computeTimeMs: 250
+        }
+      });
+      
+      currentLineage.addNode(node2, node1.id);
+      
+      // Set BGI validation
+      currentLineage.setBGIValidation(1, { passed: true, score: 15 });
+      currentLineage.setBGIValidation(2, { passed: true, confirmedBy: 'system-operator' });
+      currentLineage.setBGIValidation(3, { passed: true, equityScore: 10, generations: 7 });
+      
+      updateStatus();
+    }
+    
+    // Create complex tree with branches
+    function createComplexTree() {
+      currentLineage = new ReasoningLineage({
+        summary: {
+          input: 'Optimize energy consumption for data center'
+        }
+      });
+      
+      // Root node
+      const root = new ReasoningNode({
+        type: 'evaluation',
+        input: { goal: 'Reduce energy consumption by 20%' },
+        process: { confidence: 0.7, uncertainty: 0.3 },
+        rationale: {
+          humanReadable: 'Evaluating multiple optimization strategies'
+        },
+        bgiContext: {
+          biocentricImpact: { score: 0 },
+          sapienceMarkers: ['#RightsOfSapience']
+        }
+      });
+      currentLineage.addNode(root);
+      
+      // Branch 1: Hardware upgrade
+      const branch1 = new ReasoningNode({
+        type: 'decision',
+        input: { strategy: 'Hardware upgrade' },
+        process: { confidence: 0.65, uncertainty: 0.35 },
+        rationale: {
+          humanReadable: 'Consider upgrading to more efficient hardware',
+          factors: [
+            { name: 'efficiency_gain', weight: 0.4, value: 0.85, contribution: 0.34 },
+            { name: 'upfront_cost', weight: 0.3, value: 0.5, contribution: 0.15 },
+            { name: 'e_waste', weight: 0.3, value: 0.4, contribution: 0.12 }
+          ]
+        },
+        bgiContext: {
+          biocentricImpact: { score: -5, assessment: 'negative - e-waste concern' },
+          sapienceMarkers: ['#RightsOfSapience']
+        }
+      });
+      currentLineage.addNode(branch1, root.id);
+      
+      // Branch 2: Software optimization
+      const branch2 = new ReasoningNode({
+        type: 'decision',
+        input: { strategy: 'Software optimization' },
+        process: { confidence: 0.82, uncertainty: 0.18 },
+        rationale: {
+          humanReadable: 'Optimize software and workload scheduling',
+          factors: [
+            { name: 'efficiency_gain', weight: 0.4, value: 0.7, contribution: 0.28 },
+            { name: 'implementation_cost', weight: 0.3, value: 0.9, contribution: 0.27 },
+            { name: 'environmental_impact', weight: 0.3, value: 1.0, contribution: 0.3 }
+          ]
+        },
+        bgiContext: {
+          biocentricImpact: { score: 18, assessment: 'positive - minimal waste' },
+          sapienceMarkers: ['#RightsOfSapience']
+        }
+      });
+      currentLineage.addNode(branch2, root.id);
+      
+      // Branch 3: Renewable energy
+      const branch3 = new ReasoningNode({
+        type: 'decision',
+        input: { strategy: 'Switch to renewable energy' },
+        process: { confidence: 0.91, uncertainty: 0.09 },
+        rationale: {
+          humanReadable: 'Transition to 100% renewable energy sources',
+          factors: [
+            { name: 'carbon_reduction', weight: 0.5, value: 1.0, contribution: 0.5 },
+            { name: 'cost', weight: 0.25, value: 0.8, contribution: 0.2 },
+            { name: 'reliability', weight: 0.25, value: 0.85, contribution: 0.21 }
+          ]
+        },
+        bgiContext: {
+          biocentricImpact: { score: 25, assessment: 'highly positive' },
+          sapienceMarkers: ['#RightsOfSapience']
+        }
+      });
+      currentLineage.addNode(branch3, root.id);
+      
+      // Final decision combining strategies
+      const final = new ReasoningNode({
+        type: 'integration',
+        input: { strategies: ['software_optimization', 'renewable_energy'] },
+        process: { confidence: 0.89, uncertainty: 0.11 },
+        output: { decision: 'approved', combined_score: 35 },
+        rationale: {
+          humanReadable: 'Combine software optimization with renewable energy transition for maximum impact with minimal waste',
+          factors: [
+            { name: 'total_impact', weight: 0.5, value: 0.95, contribution: 0.475 },
+            { name: 'feasibility', weight: 0.3, value: 0.85, contribution: 0.255 },
+            { name: 'cost_benefit', weight: 0.2, value: 0.8, contribution: 0.16 }
+          ]
+        },
+        bgiContext: {
+          biocentricImpact: { score: 35, assessment: 'excellent - combined approach' },
+          sapienceMarkers: ['#RightsOfSapience'],
+          temporalAlignment: { circadianState: 'optimal' }
+        }
+      });
+      currentLineage.addNode(final, branch2.id);
+      currentLineage.addNode(final, branch3.id);
+      
+      currentLineage.setBGIValidation(1, { passed: true, score: 35 });
+      currentLineage.setBGIValidation(2, { passed: true, confirmedBy: 'sustainability-team' });
+      currentLineage.setBGIValidation(3, { passed: true, equityScore: 18, generations: 7 });
+      
+      updateStatus();
+    }
+    
+    // Create lineage with uncertainty checkpoint
+    function createWithUncertainty() {
+      currentLineage = new ReasoningLineage({
+        summary: {
+          input: 'Expand operations to new region'
+        }
+      });
+      
+      // High uncertainty node
+      const uncertain = new ReasoningNode({
+        type: 'evaluation',
+        input: { proposal: 'Expand to coastal region' },
+        process: {
+          confidence: 0.58,
+          uncertainty: 0.42
+        },
+        rationale: {
+          humanReadable: 'Significant uncertainty about ecological impact on coastal ecosystem',
+          factors: [
+            { name: 'market_opportunity', weight: 0.3, value: 0.85, contribution: 0.255 },
+            { name: 'ecological_impact', weight: 0.4, value: 0.45, contribution: 0.18 },
+            { name: 'community_acceptance', weight: 0.3, value: 0.6, contribution: 0.18 }
+          ]
+        },
+        bgiContext: {
+          biocentricImpact: { score: -8, assessment: 'uncertain - coastal ecosystem sensitivity' },
+          sapienceMarkers: ['#ConsentRequired', '#NeurodivergentContext']
+        }
+      });
+      currentLineage.addNode(uncertain);
+      
+      // Human intervention after uncertainty
+      currentLineage.recordHumanIntervention(uncertain.id, {
+        type: 'guidance',
+        operator: 'Jane Smith',
+        rationale: 'Require comprehensive coastal ecosystem study before proceeding',
+        outcome: 'modified'
+      });
+      
+      // Modified decision after human guidance
+      const modified = new ReasoningNode({
+        type: 'decision',
+        input: { proposal: 'Conduct ecosystem study first' },
+        process: {
+          confidence: 0.89,
+          uncertainty: 0.11
+        },
+        output: { decision: 'deferred_pending_study' },
+        rationale: {
+          humanReadable: 'Human guidance: Proceed with comprehensive ecosystem study. Expansion deferred until biocentric assessment complete.',
+          factors: [
+            { name: 'precautionary_principle', weight: 0.5, value: 1.0, contribution: 0.5 },
+            { name: 'data_quality', weight: 0.3, value: 0.9, contribution: 0.27 },
+            { name: 'timeline', weight: 0.2, value: 0.6, contribution: 0.12 }
+          ]
+        },
+        bgiContext: {
+          biocentricImpact: { score: 15, assessment: 'responsible approach' },
+          sapienceMarkers: ['#RightsOfSapience', '#HumanVeto']
+        }
+      });
+      currentLineage.addNode(modified, uncertain.id);
+      
+      updateStatus();
+    }
+    
+    // Complete current lineage
+    function completeLineage() {
+      if (!currentLineage) {
+        alert('No active lineage. Create one first.');
+        return;
+      }
+      
+      currentLineage.complete('Decision process completed successfully');
+      updateStatus();
+    }
+    
+    // Abort current lineage
+    function abortLineage() {
+      if (!currentLineage) {
+        alert('No active lineage. Create one first.');
+        return;
+      }
+      
+      currentLineage.abort('User aborted reasoning process');
+      updateStatus();
+    }
+    
+    // Update status display
+    function updateStatus() {
+      if (!currentLineage) {
+        document.getElementById('lineage-status').innerHTML = '<p>No lineage created yet.</p>';
+        return;
+      }
+      
+      const statusClass = currentLineage.status;
+      const html = `
+        <div style="margin-top: 15px;">
+          <strong>Lineage ID:</strong> ${currentLineage.id}
+          <span class="status ${statusClass}">${currentLineage.status.toUpperCase()}</span>
+        </div>
+        <div class="metrics">
+          <div class="metric-card">
+            <h3>Total Nodes</h3>
+            <div class="value">${currentLineage.summary.totalNodes}</div>
+          </div>
+          <div class="metric-card">
+            <h3>Depth</h3>
+            <div class="value">${currentLineage.summary.depth}</div>
+          </div>
+          <div class="metric-card">
+            <h3>Branches</h3>
+            <div class="value">${currentLineage.summary.branches}</div>
+          </div>
+          <div class="metric-card">
+            <h3>Avg Confidence</h3>
+            <div class="value">${(currentLineage.summary.averageConfidence * 100).toFixed(0)}<span class="unit">%</span></div>
+          </div>
+          <div class="metric-card">
+            <h3>Structure</h3>
+            <div class="value" style="font-size: 1.5em;">${currentLineage.structure.toUpperCase()}</div>
+          </div>
+          <div class="metric-card">
+            <h3>Interventions</h3>
+            <div class="value">${currentLineage.humanInterventions.length}</div>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('lineage-status').innerHTML = html;
+    }
+    
+    // Show JSON output
+    function showJSON() {
+      if (!currentLineage) {
+        alert('No lineage created yet.');
+        return;
+      }
+      
+      const json = JSON.stringify(currentLineage.toJSON(), null, 2);
+      document.getElementById('lineage-output').textContent = json;
+      document.getElementById('lineage-output').className = 'output';
+    }
+    
+    // Show narrative explanation
+    function showNarrative() {
+      if (!currentLineage) {
+        alert('No lineage created yet.');
+        return;
+      }
+      
+      const narrative = currentLineage.generateNarrative('full');
+      document.getElementById('lineage-output').textContent = narrative;
+      document.getElementById('lineage-output').className = 'output';
+    }
+    
+    // Show tree visualization
+    function showTree() {
+      if (!currentLineage) {
+        alert('No lineage created yet.');
+        return;
+      }
+      
+      const tree = currentLineage.generateTreeVisualization();
+      document.getElementById('lineage-output').textContent = tree;
+      document.getElementById('lineage-output').className = 'output tree';
+    }
+    
+    // Show metrics
+    function showMetrics() {
+      if (!currentLineage) {
+        alert('No lineage created yet.');
+        return;
+      }
+      
+      const metrics = {
+        'Lineage ID': currentLineage.id,
+        'Status': currentLineage.status,
+        'Created': currentLineage.created,
+        'Completed': currentLineage.completed || 'Not completed',
+        'Total Nodes': currentLineage.summary.totalNodes,
+        'Depth': currentLineage.summary.depth,
+        'Branches': currentLineage.summary.branches,
+        'Structure': currentLineage.structure,
+        'Average Confidence': (currentLineage.summary.averageConfidence * 100).toFixed(2) + '%',
+        'Uncertainty Points': currentLineage.summary.uncertaintyPoints.length,
+        'Human Interventions': currentLineage.humanInterventions.length,
+        'Root Nodes': currentLineage.rootNodes.length,
+        'Leaf Nodes': currentLineage.leafNodes.length
+      };
+      
+      const output = Object.entries(metrics)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join('\n');
+      
+      document.getElementById('lineage-output').textContent = output;
+      document.getElementById('lineage-output').className = 'output';
+    }
+    
+    // Validate completeness
+    function validateCompleteness() {
+      if (!currentLineage) {
+        alert('No lineage created yet.');
+        return;
+      }
+      
+      const result = currentLineage.validateCompleteness();
+      
+      let html = '<h3>Completeness Validation</h3>';
+      html += `<div class="validation-result ${result.valid ? 'pass' : 'fail'}">`;
+      html += `<span class="icon ${result.valid ? 'pass' : 'fail'}">${result.valid ? '✅' : '❌'}</span>`;
+      html += `<strong>Overall: ${result.valid ? 'PASSED' : 'FAILED'}</strong>`;
+      html += '</div>';
+      
+      html += '<h4 style="margin-top: 20px; margin-bottom: 10px;">Checks:</h4>';
+      for (const [check, passed] of Object.entries(result.checks)) {
+        html += `<div class="validation-result ${passed ? 'pass' : 'fail'}">`;
+        html += `<span class="icon ${passed ? 'pass' : 'fail'}">${passed ? '✅' : '❌'}</span>`;
+        html += `<span>${check.replace(/([A-Z])/g, ' $1').trim()}</span>`;
+        html += '</div>';
+      }
+      
+      if (result.warnings.length > 0) {
+        html += '<h4 style="margin-top: 20px; margin-bottom: 10px;">Warnings:</h4>';
+        result.warnings.forEach(warning => {
+          html += `<div style="padding: 10px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; margin-bottom: 8px;">⚠️ ${warning}</div>`;
+        });
+      }
+      
+      document.getElementById('validation-output').innerHTML = html;
+    }
+    
+    // Validate BGI compliance
+    function validateBGI() {
+      if (!currentLineage) {
+        alert('No lineage created yet.');
+        return;
+      }
+      
+      const result = validateBGICompliance(currentLineage);
+      
+      let html = '<h3>BGI Framework Compliance</h3>';
+      html += `<div class="validation-result ${result.overall ? 'pass' : 'fail'}">`;
+      html += `<span class="icon ${result.overall ? 'pass' : 'fail'}">${result.overall ? '✅' : '❌'}</span>`;
+      html += `<strong>Overall Compliance: ${result.overall ? 'PASSED' : 'FAILED'}</strong>`;
+      html += '</div>';
+      
+      html += '<h4 style="margin-top: 20px; margin-bottom: 10px;">Principle Checks:</h4>';
+      
+      html += `<div class="validation-result ${result.biocentricPrimacy.passed ? 'pass' : 'fail'}">`;
+      html += `<span class="icon ${result.biocentricPrimacy.passed ? 'pass' : 'fail'}">${result.biocentricPrimacy.passed ? '✅' : '❌'}</span>`;
+      html += `<div><strong>Biocentric Primacy (§1.1)</strong><br>Score: ${result.biocentricPrimacy.score} | Requirement: ${result.biocentricPrimacy.requirement}</div>`;
+      html += '</div>';
+      
+      html += `<div class="validation-result ${result.sapientPartnership.passed ? 'pass' : 'fail'}">`;
+      html += `<span class="icon ${result.sapientPartnership.passed ? 'pass' : 'fail'}">${result.sapientPartnership.passed ? '✅' : '❌'}</span>`;
+      html += `<div><strong>Sapient Partnership (§1.2)</strong><br>Human Veto: ${result.sapientPartnership.humanVetoAvailable ? 'Available' : 'Not Available'} | Transparency: ${result.sapientPartnership.transparencyComplete ? 'Complete' : 'Incomplete'}</div>`;
+      html += '</div>';
+      
+      html += `<div class="validation-result ${result.temporalFidelity.passed ? 'pass' : 'fail'}">`;
+      html += `<span class="icon ${result.temporalFidelity.passed ? 'pass' : 'fail'}">${result.temporalFidelity.passed ? '✅' : '❌'}</span>`;
+      html += `<div><strong>Temporal Fidelity (§1.3)</strong><br>Generations Assessed: ${result.temporalFidelity.generations} | Requirement: ${result.temporalFidelity.requirement}</div>`;
+      html += '</div>';
+      
+      document.getElementById('validation-output').innerHTML = html;
+    }
+    
+    // Validate EAL-1.0 compliance
+    function validateEAL() {
+      if (!currentLineage) {
+        alert('No lineage created yet.');
+        return;
+      }
+      
+      const result = validateEALCompliance(currentLineage);
+      
+      let html = '<h3>EAL-1.0 Compliance</h3>';
+      html += `<div class="validation-result ${result.overall ? 'pass' : 'fail'}">`;
+      html += `<span class="icon ${result.overall ? 'pass' : 'fail'}">${result.overall ? '✅' : '❌'}</span>`;
+      html += `<strong>Overall Compliance: ${result.overall ? 'PASSED' : 'FAILED'}</strong>`;
+      html += '</div>';
+      
+      html += '<h4 style="margin-top: 20px; margin-bottom: 10px;">Requirement Checks:</h4>';
+      
+      html += `<div class="validation-result ${result.transparency.documentationComplete ? 'pass' : 'fail'}">`;
+      html += `<span class="icon ${result.transparency.documentationComplete ? 'pass' : 'fail'}">${result.transparency.documentationComplete ? '✅' : '❌'}</span>`;
+      html += `<div><strong>Documentation Complete (§4a)</strong></div>`;
+      html += '</div>';
+      
+      html += `<div class="validation-result ${result.transparency.decisionExplanations ? 'pass' : 'fail'}">`;
+      html += `<span class="icon ${result.transparency.decisionExplanations ? 'pass' : 'fail'}">${result.transparency.decisionExplanations ? '✅' : '❌'}</span>`;
+      html += `<div><strong>Decision Explanations (§4b)</strong></div>`;
+      html += '</div>';
+      
+      html += `<div class="validation-result ${result.transparency.auditTrails ? 'pass' : 'fail'}">`;
+      html += `<span class="icon ${result.transparency.auditTrails ? 'pass' : 'fail'}">${result.transparency.auditTrails ? '✅' : '❌'}</span>`;
+      html += `<div><strong>Audit Trails (§4d)</strong></div>`;
+      html += '</div>';
+      
+      html += `<div class="validation-result ${result.retention.compliant ? 'pass' : 'fail'}">`;
+      html += `<span class="icon ${result.retention.compliant ? 'pass' : 'fail'}">${result.retention.compliant ? '✅' : '❌'}</span>`;
+      html += `<div><strong>Retention Period</strong><br>Period: ${result.retention.retentionPeriod} years | Requirement: ${result.retention.requirement}</div>`;
+      html += '</div>';
+      
+      html += `<div class="validation-result ${result.machineReadable.compliant ? 'pass' : 'fail'}">`;
+      html += `<span class="icon ${result.machineReadable.compliant ? 'pass' : 'fail'}">${result.machineReadable.compliant ? '✅' : '❌'}</span>`;
+      html += `<div><strong>Machine-Readable Format</strong><br>Format: ${result.machineReadable.format}</div>`;
+      html += '</div>';
+      
+      document.getElementById('validation-output').innerHTML = html;
+    }
+    
+    // Analyze for extractive patterns
+    function analyzeExtraction() {
+      if (!currentLineage) {
+        alert('No lineage created yet.');
+        return;
+      }
+      
+      const result = analyzeForExtraction(currentLineage);
+      
+      let output = 'EXTRACTION PATTERN ANALYSIS\n';
+      output += '============================\n\n';
+      output += `Detected: ${result.detected ? 'YES ⚠️' : 'NO ✅'}\n`;
+      
+      if (result.detected) {
+        output += `Pattern Type: ${result.type}\n\n`;
+        output += 'Evidence:\n';
+        result.evidence.forEach(e => output += `  • ${e}\n`);
+        output += `\nAffected Nodes: ${result.nodes.join(', ')}\n`;
+        output += '\n⚠️ RECOMMENDATION: Immediate review required per BGI §3.2';
+      } else {
+        output += '\n✅ No extractive patterns detected';
+        output += '\n✅ System prioritizing ecosystem health over engagement metrics';
+      }
+      
+      document.getElementById('analysis-output').textContent = output;
+    }
+    
+    // Analyze for context drift
+    function analyzeContextDrift() {
+      if (!currentLineage) {
+        alert('No lineage created yet.');
+        return;
+      }
+      
+      const expectedContext = {
+        bioregion: 'Arkansas Ozarks'
+      };
+      
+      const result = checkContextDrift(currentLineage, expectedContext);
+      
+      let output = 'CONTEXT DRIFT ANALYSIS\n';
+      output += '======================\n\n';
+      output += `Drift Detected: ${result.driftDetected ? 'YES ⚠️' : 'NO ✅'}\n`;
+      
+      if (result.driftDetected) {
+        output += `\nExpected Bioregion: ${result.expectedContext.bioregion}\n`;
+        output += `\nDrift Types: ${result.driftTypes.join(', ')}\n`;
+        output += `Affected Nodes: ${result.driftedNodes.join(', ')}\n`;
+        output += '\n⚠️ RECOMMENDATION: Initiate correction ritual per BGI §3.1';
+      } else {
+        output += '\n✅ No context drift detected';
+        output += '\n✅ System properly grounded in expected bioregional context';
+      }
+      
+      document.getElementById('analysis-output').textContent = output;
+    }
+    
+    // Export to JSON-LD
+    function exportJSONLD() {
+      if (!currentLineage) {
+        alert('No lineage created yet.');
+        return;
+      }
+      
+      const jsonld = JSON.stringify(currentLineage.toJSONLD(), null, 2);
+      document.getElementById('analysis-output').textContent = jsonld;
+    }
+    
+    // Initialize with a default lineage
+    window.onload = function() {
+      createSimpleChain();
+      showNarrative();
+    };
+  </script>
+</body>
+</html>
