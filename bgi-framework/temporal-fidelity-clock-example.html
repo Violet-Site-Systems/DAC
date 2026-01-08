@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temporal Fidelity Clock System - Interactive Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      color: white;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      opacity: 0.95;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: #667eea;
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 10px;
+    }
+
+    .temporal-state {
+      display: grid;
+      gap: 15px;
+    }
+
+    .state-item {
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+    }
+
+    .state-item.vulnerable {
+      border-left-color: #e74c3c;
+      background: #fee;
+    }
+
+    .state-item.optimal {
+      border-left-color: #27ae60;
+      background: #efe;
+    }
+
+    .state-label {
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 5px;
+    }
+
+    .state-value {
+      font-size: 1.1rem;
+      color: #333;
+    }
+
+    .decision-form {
+      display: grid;
+      gap: 15px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #555;
+    }
+
+    select, input, textarea {
+      padding: 10px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.3s;
+    }
+
+    select:focus, input:focus, textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    button {
+      padding: 12px 24px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.1s;
+    }
+
+    button:hover {
+      background: #5568d3;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    button.secondary {
+      background: #95a5a6;
+    }
+
+    button.secondary:hover {
+      background: #7f8c8d;
+    }
+
+    .result-card {
+      grid-column: 1 / -1;
+    }
+
+    .assessment-result {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .assessment-result.show {
+      display: block;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    .result-header.proceed {
+      background: #d4edda;
+      border: 2px solid #28a745;
+    }
+
+    .result-header.pause {
+      background: #fff3cd;
+      border: 2px solid #ffc107;
+    }
+
+    .result-header.block {
+      background: #f8d7da;
+      border: 2px solid #dc3545;
+    }
+
+    .result-icon {
+      font-size: 3rem;
+    }
+
+    .result-title {
+      flex: 1;
+    }
+
+    .result-title h3 {
+      font-size: 1.5rem;
+      margin-bottom: 5px;
+    }
+
+    .result-sections {
+      display: grid;
+      gap: 20px;
+    }
+
+    .result-section {
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .result-section h4 {
+      color: #667eea;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    .metric {
+      padding: 15px;
+      background: white;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    .metric-label {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 5px;
+    }
+
+    .metric-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #667eea;
+    }
+
+    .recommendations {
+      list-style: none;
+    }
+
+    .recommendations li {
+      padding: 10px;
+      margin-bottom: 8px;
+      background: white;
+      border-radius: 6px;
+      border-left: 3px solid #667eea;
+    }
+
+    .violations {
+      list-style: none;
+    }
+
+    .violations li {
+      padding: 12px;
+      margin-bottom: 10px;
+      background: white;
+      border-radius: 6px;
+      border-left: 4px solid #e74c3c;
+    }
+
+    .violation-type {
+      font-weight: 600;
+      color: #e74c3c;
+      margin-bottom: 5px;
+    }
+
+    .override-section {
+      margin-top: 20px;
+      padding: 20px;
+      background: #fff3cd;
+      border: 2px solid #ffc107;
+      border-radius: 8px;
+    }
+
+    .override-section h4 {
+      color: #856404;
+      margin-bottom: 15px;
+    }
+
+    .accountability {
+      padding: 15px;
+      background: white;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+
+    .schedule-list {
+      list-style: none;
+      margin-top: 10px;
+    }
+
+    .schedule-list li {
+      padding: 10px;
+      margin-bottom: 8px;
+      background: #f8f9fa;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .schedule-horizon {
+      font-weight: 600;
+      color: #667eea;
+    }
+
+    .info-banner {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 4px solid #3498db;
+    }
+
+    .emoji {
+      font-size: 1.2rem;
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>⏰ Temporal Fidelity Clock System</h1>
+      <p>Biological & Seasonal Rhythm Synchronization</p>
+      <p style="font-size: 0.9rem; margin-top: 10px;">BGI Framework Section 1.3 - Interactive Demo</p>
+    </div>
+
+    <div class="info-banner">
+      <strong>ℹ️ About:</strong> This system replaces machine-time optimization with biological and seasonal rhythm alignment.
+      All operations synchronize with circadian cycles, seasonal patterns, lunar phases, and ecological phenomena.
+    </div>
+
+    <div class="main-grid">
+      <!-- Current Temporal State -->
+      <div class="card">
+        <h2>🌍 Current Temporal State</h2>
+        <div class="temporal-state" id="temporal-state">
+          <div class="state-item">
+            <div class="state-label">Loading temporal data...</div>
+          </div>
+        </div>
+        <button onclick="updateTemporalState()" style="margin-top: 15px; width: 100%;">🔄 Refresh State</button>
+      </div>
+
+      <!-- Decision Input -->
+      <div class="card">
+        <h2>📋 Test a Decision</h2>
+        <form class="decision-form" onsubmit="assessDecision(event)">
+          <div class="form-group">
+            <label for="decision-type">Decision Type</label>
+            <select id="decision-type" required>
+              <option value="growth">Growth/Expansion</option>
+              <option value="financial">Financial</option>
+              <option value="implementation">Implementation</option>
+              <option value="harvest">Harvest/Consolidation</option>
+              <option value="planning">Planning/Strategic</option>
+              <option value="emergency">Emergency</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="decision-criticality">Criticality</label>
+            <select id="decision-criticality" required>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="neurodivergent-pattern">Neurodivergent Pattern (Optional)</label>
+            <select id="neurodivergent-pattern">
+              <option value="">None</option>
+              <option value="bipolar">Bipolar</option>
+              <option value="adhd">ADHD</option>
+              <option value="autism_spectrum">Autism Spectrum</option>
+            </select>
+          </div>
+
+          <div class="form-group" id="mood-phase-group" style="display: none;">
+            <label for="mood-phase">Current Mood Phase</label>
+            <select id="mood-phase">
+              <option value="stable">Stable</option>
+              <option value="manic">Manic</option>
+              <option value="depressive">Depressive</option>
+            </select>
+          </div>
+
+          <button type="submit">🔍 Assess Decision</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Assessment Results -->
+    <div class="card result-card">
+      <h2>📊 Assessment Results</h2>
+      <div id="assessment-result" class="assessment-result">
+        <!-- Results will be inserted here -->
+      </div>
+    </div>
+  </div>
+
+  <script src="temporal-fidelity-clock.js"></script>
+  <script>
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      updateTemporalState();
+      
+      // Show/hide mood phase based on neurodivergent pattern
+      document.getElementById('neurodivergent-pattern').addEventListener('change', (e) => {
+        const moodPhaseGroup = document.getElementById('mood-phase-group');
+        if (e.target.value === 'bipolar') {
+          moodPhaseGroup.style.display = 'flex';
+        } else {
+          moodPhaseGroup.style.display = 'none';
+        }
+      });
+    });
+
+    function updateTemporalState() {
+      const now = new Date();
+      const circadian = window.TemporalFidelityClock.getCircadianPhase(now);
+      const seasonal = window.TemporalFidelityClock.getSeasonalPhase(now);
+      const lunar = window.TemporalFidelityClock.getLunarPhase(now);
+      const phenology = window.TemporalFidelityClock.getActivePhenologyEvents(now);
+
+      let html = '';
+
+      // Circadian state
+      const circadianClass = circadian.isVulnerable ? 'vulnerable' : (circadian.isOptimal ? 'optimal' : '');
+      html += `
+        <div class="state-item ${circadianClass}">
+          <div class="state-label">⏰ Circadian Phase</div>
+          <div class="state-value">${circadian.label}</div>
+          <div style="margin-top: 5px; font-size: 0.9rem;">
+            ${circadian.isOptimal ? '✅ Optimal for decisions' : ''}
+            ${circadian.isVulnerable ? '⚠️ Vulnerability window' : ''}
+            ${!circadian.isOptimal && !circadian.isVulnerable ? '📊 Normal activity period' : ''}
+          </div>
+        </div>
+      `;
+
+      // Seasonal state
+      html += `
+        <div class="state-item">
+          <div class="state-label">🍂 Seasonal Phase</div>
+          <div class="state-value">${seasonal.label}</div>
+          <div style="margin-top: 5px; font-size: 0.9rem;">
+            Energy alignment: ${seasonal.season}
+          </div>
+        </div>
+      `;
+
+      // Lunar state
+      if (lunar) {
+        html += `
+          <div class="state-item">
+            <div class="state-label">🌙 Lunar Phase</div>
+            <div class="state-value">${lunar.label}</div>
+            <div style="margin-top: 5px; font-size: 0.9rem;">
+              Influence: ${lunar.influence} (Energy: ${lunar.energyLevel})
+            </div>
+          </div>
+        `;
+      }
+
+      // Phenology events
+      if (phenology.length > 0) {
+        const events = phenology.map(e => `${e.name} (${e.significance})`).join(', ');
+        html += `
+          <div class="state-item">
+            <div class="state-label">🌿 Active Phenology</div>
+            <div class="state-value" style="font-size: 0.95rem;">${events}</div>
+          </div>
+        `;
+      }
+
+      document.getElementById('temporal-state').innerHTML = html;
+    }
+
+    function assessDecision(event) {
+      event.preventDefault();
+
+      const decisionType = document.getElementById('decision-type').value;
+      const criticality = document.getElementById('decision-criticality').value;
+      const pattern = document.getElementById('neurodivergent-pattern').value;
+      const moodPhase = document.getElementById('mood-phase').value;
+
+      const decision = {
+        id: 'dec-' + Date.now(),
+        type: decisionType,
+        criticality: criticality,
+        complexity: 'high'
+      };
+
+      let userProfile = null;
+      if (pattern) {
+        userProfile = { pattern: pattern };
+        if (pattern === 'bipolar') {
+          userProfile.currentMoodPhase = moodPhase;
+        }
+      }
+
+      const result = window.TemporalFidelityClock.assessTemporalFidelity(
+        decision,
+        userProfile,
+        [],
+        {},
+        { bioregion: 'arkansasOzarks', hemisphere: 'northern' }
+      );
+
+      displayResult(result);
+    }
+
+    function displayResult(result) {
+      const container = document.getElementById('assessment-result');
+      
+      let statusClass = 'proceed';
+      let statusIcon = '✅';
+      let statusText = 'Decision May Proceed';
+
+      if (result.decisionPause) {
+        if (result.decisionPause.blockDecision) {
+          statusClass = 'block';
+          statusIcon = '🚫';
+          statusText = 'Decision Blocked';
+        } else {
+          statusClass = 'pause';
+          statusIcon = '⚠️';
+          statusText = 'Decision Flagged - Caution Advised';
+        }
+      }
+
+      let html = `
+        <div class="result-header ${statusClass}">
+          <div class="result-icon">${statusIcon}</div>
+          <div class="result-title">
+            <h3>${statusText}</h3>
+            <div>Biological Alignment: ${(result.biologicalAlignment * 100).toFixed(0)}%</div>
+          </div>
+        </div>
+
+        <div class="result-sections">
+          <!-- Metrics -->
+          <div class="result-section">
+            <h4>📊 Key Metrics</h4>
+            <div class="metric-grid">
+              <div class="metric">
+                <div class="metric-label">Circadian Phase</div>
+                <div class="metric-value" style="font-size: 1.1rem;">
+                  ${result.temporalState.circadianPhase.label}
+                </div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Season</div>
+                <div class="metric-value" style="font-size: 1.1rem;">
+                  ${result.temporalState.seasonalPhase.season}
+                </div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Bio Alignment</div>
+                <div class="metric-value">${(result.biologicalAlignment * 100).toFixed(0)}%</div>
+              </div>
+              ${result.temporalState.lunarPhase ? `
+              <div class="metric">
+                <div class="metric-label">Lunar Phase</div>
+                <div class="metric-value" style="font-size: 1.1rem;">
+                  ${result.temporalState.lunarPhase.emoji}
+                </div>
+              </div>
+              ` : ''}
+            </div>
+          </div>
+      `;
+
+      // Decision Pause
+      if (result.decisionPause) {
+        html += `
+          <div class="result-section">
+            <h4>⏸️ Decision Pause Recommendation</h4>
+            <div class="accountability">
+              <strong>Reason:</strong> ${result.decisionPause.reason}<br>
+              <strong>Severity:</strong> ${result.decisionPause.severity}<br>
+              <strong>Block Decision:</strong> ${result.decisionPause.blockDecision ? 'Yes' : 'No'}<br>
+              ${result.decisionPause.suggestedDeferralTime ? `
+                <strong>Suggested Time:</strong> ${new Date(result.decisionPause.suggestedDeferralTime).toLocaleString()}<br>
+              ` : ''}
+              ${result.decisionPause.neurodivergentContext ? `
+                <strong>Neurodivergent Context:</strong> ${result.decisionPause.neurodivergentContext.pattern} pattern detected<br>
+              ` : ''}
+            </div>
+            ${result.decisionPause.overrideAllowed ? `
+              <div class="override-section" style="margin-top: 15px;">
+                <h4>✋ Human Override Available</h4>
+                <p>You may override this pause with explicit acknowledgment (production system would require minimum 10 characters).</p>
+                <button onclick="handleOverride()" style="margin-top: 10px;">Override Decision Pause</button>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+
+      // Recommendations
+      if (result.recommendations.length > 0) {
+        html += `
+          <div class="result-section">
+            <h4>💡 Recommendations</h4>
+            <ul class="recommendations">
+              ${result.recommendations.map(r => `<li>${r}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+      }
+
+      // Violations
+      if (result.violations.length > 0) {
+        html += `
+          <div class="result-section">
+            <h4>🚨 Anti-Pattern Violations</h4>
+            <ul class="violations">
+              ${result.violations.map(v => `
+                <li>
+                  <div class="violation-type">${v.type.replace(/_/g, ' ').toUpperCase()}</div>
+                  <div>${v.description}</div>
+                  <div style="margin-top: 5px; font-style: italic; color: #666;">
+                    → ${v.recommendation}
+                  </div>
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+        `;
+      }
+
+      // Ancestral Accountability
+      if (result.ancestralAccountability) {
+        html += `
+          <div class="result-section">
+            <h4>🌳 Ancestral Accountability</h4>
+            <div class="accountability">
+              <strong>Seasonal Alignment:</strong> ${(result.ancestralAccountability.seasonalImpacts.alignment * 100).toFixed(0)}%<br>
+              <strong>Current Season:</strong> ${result.ancestralAccountability.seasonalImpacts.currentSeason}<br>
+              ${result.ancestralAccountability.seasonalImpacts.considerations.length > 0 ? `
+                <strong>Considerations:</strong>
+                <ul style="margin-top: 5px; margin-left: 20px;">
+                  ${result.ancestralAccountability.seasonalImpacts.considerations.map(c => `<li>${c}</li>`).join('')}
+                </ul>
+              ` : ''}
+              
+              <div style="margin-top: 15px;">
+                <strong>Multi-Generational Review Schedule:</strong>
+                <ul class="schedule-list">
+                  ${result.ancestralAccountability.reviewSchedule.slice(0, 3).map(s => `
+                    <li>
+                      <span class="schedule-horizon">${s.horizon}</span>
+                      <span>${new Date(s.date).getFullYear()}</span>
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      html += '</div>';
+
+      container.innerHTML = html;
+      container.classList.add('show');
+      
+      // Scroll to results
+      container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function handleOverride() {
+      alert('In a production system, this would:\n\n' +
+            '1. Request explicit acknowledgment (min 10 chars)\n' +
+            '2. Verify daily override limit not exceeded\n' +
+            '3. Log override to audit trail\n' +
+            '4. Generate override ID for tracking\n' +
+            '5. Allow decision to proceed with full accountability');
+    }
+
+    // Auto-refresh temporal state every minute
+    setInterval(updateTemporalState, 60000);
+  </script>
+</body>
+</html>
