@@ -95,6 +95,30 @@ Methodology and tools for tracing decisions to ecological consequences across mu
 - [Specification Document](./intergenerational-audit.md) - Complete framework specification
 - [JavaScript Module](./intergenerational-audit.js) - Core audit engine and modeling functions
 
+### 6. [Extraction Prevention Monitoring System](./extraction-prevention-monitor.md)
+
+**Status**: Implementation v1.0  
+**Related Issue**: [#10](https://github.com/Violet-Site-Systems/DAC/issues/10)
+
+Automatic shutdown detection for extractive patterns per BGI Framework Section 3.2. Monitors optimization functions, neural pattern harvesting, temporal compression, and dark patterns to ensure systems prioritize ecosystem health over engagement/growth metrics.
+
+**Key Features**:
+
+- Optimization function monitoring (engagement vs ecosystem metrics)
+- Neural pattern harvesting detection (attention hacking, addiction loops)
+- Temporal compression detection (biological rhythm violations)
+- Dark pattern detection and prevention
+- Data collection ethics monitoring
+- Revenue/growth pressure vs ethical constraints tracking
+- Automatic shutdown protocol with audit report generation
+- Zero false negative requirement (all extraction patterns caught)
+
+**Implementation**:
+
+- [Specification Document](./extraction-prevention-monitor.md) - Complete framework specification
+- [JavaScript Module](./extraction-prevention-monitor.js) - Core monitoring and shutdown engine
+- [Interactive Demo](./extraction-prevention-monitor-example.html) - Live demonstration
+
 ## BGI Framework Core Principles
 
 ### 1. Biocentric Primacy (§1.1)
@@ -123,7 +147,7 @@ Ancestral accountability: All decisions traceable to ecological consequences.
 | Three-Tier Consent | 📋 Planned | ⏳ Not Started | Issue #7 |
 | Context Drift Detection | 📋 Planned | ⏳ Not Started | Issue #8 |
 | Temporal Fidelity Clock | 📋 Planned | ⏳ Not Started | Issue #9 |
-| Extraction Prevention | 📋 Planned | ⏳ Not Started | Issue #10 |
+| Extraction Prevention | ✅ Complete | ✅ Complete | v1.0 |
 | Intergenerational Audit | ✅ Complete | ✅ Complete | v1.0 |
 
 ## Integration Architecture
@@ -183,6 +207,7 @@ Ancestral accountability: All decisions traceable to ecological consequences.
 | Sapience Markers | SBL-1.0, EAL-1.0 |
 | Three-Tier Consent | EAL-1.0, CGL-1.0 |
 | Temporal Fidelity | SUL-1.0, SBL-1.0 |
+| Extraction Prevention | SBL-1.0, EAL-1.0 |
 
 **License Key**:
 
@@ -209,6 +234,8 @@ Priority implementation issues:
 - [x] Issue #5: LOVE-evolution Checkpoint Protocol (✅ Complete - v1.0)
 - [ ] Issue #6: Biocentric Impact Assessment API (Spec complete ✅)
 - [ ] Issue #7: Three-Tier Consent Architecture
+- [ ] Issue #9: Temporal Fidelity Clock
+- [x] Issue #10: Extraction Prevention Monitoring System (✅ Complete - v1.0)
 - [ ] Issue #11: Bioregional Data Standards (Spec complete ✅)
 - [ ] Issue #12: #RightsOfSapience Markers (Spec complete ✅)
 - [x] Issue #13: Intergenerational Consequence Audit Framework (✅ Complete - v1.0)

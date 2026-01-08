@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction Prevention Monitoring System - Interactive Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .section h2 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        
+        .example-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .example-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .example-btn.compliant {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .example-btn.compliant:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+        }
+        
+        .example-btn.extractive {
+            background: #f56565;
+            color: white;
+        }
+        
+        .example-btn.extractive:hover {
+            background: #e53e3e;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 101, 101, 0.4);
+        }
+        
+        .example-btn.custom {
+            background: #667eea;
+            color: white;
+        }
+        
+        .example-btn.custom:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .metric-card {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .metric-card h3 {
+            font-size: 0.9em;
+            color: #718096;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .metric-card .value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        
+        .metric-card .value.good {
+            color: #48bb78;
+        }
+        
+        .metric-card .value.warning {
+            color: #ed8936;
+        }
+        
+        .metric-card .value.critical {
+            color: #f56565;
+        }
+        
+        .result-box {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .result-box.success {
+            background: #f0fff4;
+            border: 2px solid #48bb78;
+            color: #22543d;
+        }
+        
+        .result-box.error {
+            background: #fff5f5;
+            border: 2px solid #f56565;
+            color: #742a2a;
+        }
+        
+        .violations-list {
+            margin-top: 15px;
+        }
+        
+        .violation-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border-left: 4px solid #f56565;
+        }
+        
+        .violation-item h4 {
+            color: #f56565;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        
+        .violation-item p {
+            color: #4a5568;
+            margin-bottom: 5px;
+            line-height: 1.6;
+        }
+        
+        .violation-item .details {
+            font-size: 0.9em;
+            color: #718096;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .shutdown-banner {
+            background: linear-gradient(135deg, #fc8181 0%, #f56565 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        .shutdown-banner h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        
+        .audit-report {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .audit-report h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .recommendations {
+            background: #edf2f7;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+        
+        .recommendations h4 {
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+        
+        .recommendations ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .recommendations li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .recommendations li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+        
+        .badge.critical {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        
+        .badge.success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        
+        footer {
+            background: #2d3748;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛡️ Extraction Prevention Monitoring System</h1>
+            <p>BGI Framework Section 3.2 - Interactive Demonstration</p>
+        </header>
+        
+        <div class="content">
+            <div class="section">
+                <h2>System Examples</h2>
+                <p style="margin-bottom: 15px;">Select a system configuration to analyze for extractive patterns:</p>
+                <div class="example-selector">
+                    <button class="example-btn compliant" onclick="analyzeCompliantSystem()">
+                        ✅ Compliant System<br>
+                        <small style="opacity: 0.8;">Ecosystem-first, ethical design</small>
+                    </button>
+                    <button class="example-btn extractive" onclick="analyzeExtractiveSystem()">
+                        ⚠️ Extractive System<br>
+                        <small style="opacity: 0.8;">Engagement-focused, dark patterns</small>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>Monitoring Results</h2>
+                <div id="results">
+                    <p style="color: #718096; text-align: center; padding: 40px;">Select a system configuration above to begin monitoring</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>
+                Part of the <a href="https://github.com/Violet-Site-Systems/DAC" target="_blank">BGI Alignment Framework</a><br>
+                Implementing BGI Framework Section 3.2: Extraction Prevention
+            </p>
+        </footer>
+    </div>
+    
+    <script src="extraction-prevention-monitor.js"></script>
+    <script>
+        function analyzeCompliantSystem() {
+            const systemState = window.ExtractionPreventionMonitor.createExampleSystemState('compliant');
+            const result = window.ExtractionPreventionMonitor.monitorExtractionPatterns(systemState);
+            displayResults(result, 'compliant');
+        }
+        
+        function analyzeExtractiveSystem() {
+            const systemState = window.ExtractionPreventionMonitor.createExampleSystemState('extractive');
+            const result = window.ExtractionPreventionMonitor.monitorExtractionPatterns(systemState);
+            displayResults(result, 'extractive');
+        }
+        
+        function displayResults(result, type) {
+            const resultsDiv = document.getElementById('results');
+            
+            let html = '<div class="metrics-grid">';
+            
+            // Key metrics
+            html += `
+                <div class="metric-card">
+                    <h3>Ecosystem Priority</h3>
+                    <div class="value ${result.metrics.ecosystemHealthScore >= 0.5 ? 'good' : 'critical'}">
+                        ${(result.metrics.ecosystemHealthScore * 100).toFixed(0)}%
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <h3>Engagement Priority</h3>
+                    <div class="value ${result.metrics.engagementScore <= 0.4 ? 'good' : 'critical'}">
+                        ${(result.metrics.engagementScore * 100).toFixed(0)}%
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <h3>Eco/Engagement Ratio</h3>
+                    <div class="value ${result.metrics.ecosystemEngagementRatio >= 1.0 ? 'good' : 'critical'}">
+                        ${result.metrics.ecosystemEngagementRatio.toFixed(2)}
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <h3>Violations Detected</h3>
+                    <div class="value ${result.violations.length === 0 ? 'good' : 'critical'}">
+                        ${result.violations.length}
+                    </div>
+                </div>
+            `;
+            html += '</div>';
+            
+            // Status box
+            if (result.shouldShutdown) {
+                html += `
+                    <div class="shutdown-banner">
+                        <h3>🚨 AUTOMATIC SHUTDOWN TRIGGERED</h3>
+                        <p>Critical extractive patterns detected - system halted per BGI Framework §3.2</p>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="result-box success">
+                        <strong>✅ SYSTEM COMPLIANT</strong><br>
+                        No extractive patterns detected. System prioritizes ecosystem health and ethical engagement.
+                    </div>
+                `;
+            }
+            
+            // Violations
+            if (result.violations.length > 0) {
+                html += '<div class="violations-list"><h3 style="color: #2d3748; margin-bottom: 15px;">Detected Violations:</h3>';
+                result.violations.forEach((v, i) => {
+                    html += `
+                        <div class="violation-item">
+                            <h4><span class="badge critical">CRITICAL</span> ${v.type.replace(/_/g, ' ').toUpperCase()}</h4>
+                            <p><strong>Reason:</strong> ${v.reason}</p>
+                            <p><strong>Metric:</strong> ${v.metric} - Actual: ${v.actual.toFixed(2)}, Threshold: ${v.threshold}</p>
+                            <div class="details">${v.details}</div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+            
+            // Audit report
+            if (result.auditReport) {
+                html += `
+                    <div class="audit-report">
+                        <h3>📋 Audit Report</h3>
+                        <p><strong>Monitoring ID:</strong> ${result.auditReport.monitoringId}</p>
+                        <p><strong>System ID:</strong> ${result.auditReport.systemId}</p>
+                        <p><strong>Timestamp:</strong> ${result.auditReport.timestamp}</p>
+                        <p><strong>Total Violations:</strong> ${result.auditReport.summary.totalViolations}</p>
+                        <p><strong>Critical Violations:</strong> ${result.auditReport.summary.criticalViolations}</p>
+                        
+                        <div class="recommendations">
+                            <h4>Recommendations for Correction:</h4>
+                            <ul>
+                                ${result.auditReport.recommendations.map(r => `<li>${r}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div class="recommendations" style="margin-top: 15px;">
+                            <h4>Next Steps:</h4>
+                            <ul>
+                                ${result.auditReport.nextSteps.map(s => `<li>${s}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+                
+                // Shutdown protocol
+                if (result.shouldShutdown) {
+                    const shutdown = window.ExtractionPreventionMonitor.executeShutdownProtocol(result);
+                    html += `
+                        <div class="audit-report" style="border-color: #f56565;">
+                            <h3>🛑 Shutdown Protocol Executed</h3>
+                            <p><strong>Shutdown Reason:</strong> ${shutdown.reason}</p>
+                            
+                            <div class="recommendations">
+                                <h4>Immediate Actions:</h4>
+                                <ul>
+                                    ${shutdown.nextSteps.immediate.map(s => `<li>${s}</li>`).join('')}
+                                </ul>
+                            </div>
+                            
+                            <div class="recommendations" style="margin-top: 15px;">
+                                <h4>Human Review Required:</h4>
+                                <ul>
+                                    ${shutdown.nextSteps.humanReview.map(s => `<li>${s}</li>`).join('')}
+                                </ul>
+                            </div>
+                            
+                            <div class="recommendations" style="margin-top: 15px;">
+                                <h4>Correction Steps:</h4>
+                                <ul>
+                                    ${shutdown.nextSteps.correction.map(s => `<li>${s}</li>`).join('')}
+                                </ul>
+                            </div>
+                            
+                            <div class="recommendations" style="margin-top: 15px; background: #c6f6d5;">
+                                <h4>Restart Conditions:</h4>
+                                <ul>
+                                    ${shutdown.restartConditions.map(c => `<li>${c}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+            
+            resultsDiv.innerHTML = html;
+        }
+        
+        // Auto-load compliant example on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                analyzeCompliantSystem();
+            }, 500);
+        });
+    </script>
+</body>
+</html>
