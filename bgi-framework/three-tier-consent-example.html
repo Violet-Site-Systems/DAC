@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three-Tier Consent Architecture - Interactive Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .marker {
+            display: inline-block;
+            background: #48bb78;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #e2e8f0;
+        }
+        
+        .section-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-right: 15px;
+            min-width: 50px;
+        }
+        
+        .section-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .action-form {
+            background: #f7fafc;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2d3748;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .validation-pipeline {
+            display: none;
+        }
+        
+        .validation-pipeline.active {
+            display: block;
+        }
+        
+        .tier-card {
+            background: white;
+            border: 3px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            position: relative;
+            transition: all 0.5s;
+        }
+        
+        .tier-card.pending {
+            border-color: #ecc94b;
+            background: #fffbeb;
+        }
+        
+        .tier-card.processing {
+            border-color: #4299e1;
+            background: #ebf8ff;
+            animation: pulse 2s infinite;
+        }
+        
+        .tier-card.passed {
+            border-color: #48bb78;
+            background: #f0fff4;
+        }
+        
+        .tier-card.failed {
+            border-color: #f56565;
+            background: #fff5f5;
+        }
+        
+        .tier-card.conditional {
+            border-color: #ed8936;
+            background: #fffaf0;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        .tier-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .tier-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .tier-status {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+        
+        .status-pending {
+            background: #ecc94b;
+            color: #744210;
+        }
+        
+        .status-processing {
+            background: #4299e1;
+            color: white;
+        }
+        
+        .status-passed {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .status-failed {
+            background: #f56565;
+            color: white;
+        }
+        
+        .status-conditional {
+            background: #ed8936;
+            color: white;
+        }
+        
+        .tier-content {
+            display: none;
+        }
+        
+        .tier-content.visible {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .explanation {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+        }
+        
+        .score-display {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        
+        .score-item {
+            text-align: center;
+        }
+        
+        .score-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .score-label {
+            color: #718096;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .mitigation-list {
+            background: #fffaf0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .mitigation-list h4 {
+            color: #c05621;
+            margin-bottom: 15px;
+        }
+        
+        .mitigation-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #fbd38d;
+        }
+        
+        .mitigation-item:last-child {
+            border-bottom: none;
+        }
+        
+        .final-decision {
+            display: none;
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .final-decision.visible {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        .decision-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+        
+        .decision-title {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .decision-rationale {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .audit-trail {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .audit-entry {
+            padding: 10px;
+            border-left: 3px solid #cbd5e0;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: #4a5568;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .info-box {
+            background: #ebf8ff;
+            border-left: 4px solid #4299e1;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .info-box h3 {
+            color: #2c5282;
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            header h1 {
+                font-size: 1.8em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Three-Tier Consent Architecture</h1>
+            <p>BGI Framework Section 2.3 - Validation Pipeline Demo</p>
+            <span class="marker">#ThreeTierConsent</span>
+        </header>
+        
+        <div class="content">
+            <div class="section">
+                <div class="info-box">
+                    <h3>About This System</h3>
+                    <p>The Three-Tier Consent Architecture ensures all AGI/AI actions undergo comprehensive validation through:</p>
+                    <ol style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>Biocentric Impact Assessment</strong> - Ecosystem integrity evaluation</li>
+                        <li><strong>Sapient Intent Confirmation</strong> - Human consent with #RightsOfSapience</li>
+                        <li><strong>Intergenerational Consequence Audit</strong> - 7-generation impact analysis</li>
+                    </ol>
+                    <p style="margin-top: 10px;"><strong>All three tiers must pass before any action proceeds.</strong></p>
+                </div>
+            </div>
+            
+            <div class="section action-input">
+                <div class="section-header">
+                    <div class="section-number">📝</div>
+                    <div class="section-title">Define Action to Validate</div>
+                </div>
+                
+                <div class="action-form">
+                    <div class="form-group">
+                        <label>Action Type</label>
+                        <select id="actionType">
+                            <option value="deployment">Deployment</option>
+                            <option value="algorithm_change">Algorithm Change</option>
+                            <option value="data_collection">Data Collection</option>
+                            <option value="infrastructure">Infrastructure</option>
+                            <option value="policy_change">Policy Change</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="actionDescription" rows="3" placeholder="Describe the proposed action in detail...">Deploy new AI model to production environment for real-time decision making</textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Energy Use (kWh)</label>
+                            <input type="number" id="energyUse" value="5000" min="0">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Water Use (liters)</label>
+                            <input type="number" id="waterUse" value="1000" min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Geographic Area (km²)</label>
+                            <input type="number" id="areaAffected" value="0.5" min="0" step="0.1">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Priority</label>
+                            <select id="actionPriority">
+                                <option value="normal">Normal</option>
+                                <option value="high">High</option>
+                                <option value="critical">Critical</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button class="btn" onclick="startValidation()">Start Three-Tier Validation</button>
+                </div>
+            </div>
+            
+            <div class="section validation-pipeline" id="validationPipeline">
+                <div class="section-header">
+                    <div class="section-number">🔄</div>
+                    <div class="section-title">Validation Pipeline</div>
+                </div>
+                
+                <!-- Tier 1: Biocentric -->
+                <div class="tier-card" id="tier1Card">
+                    <div class="tier-header">
+                        <div class="tier-title">Tier 1: Biocentric Impact Assessment</div>
+                        <div class="tier-status status-pending" id="tier1Status">Pending</div>
+                    </div>
+                    <div class="tier-content" id="tier1Content">
+                        <div class="explanation" id="tier1Explanation"></div>
+                        <div class="score-display" id="tier1Scores"></div>
+                        <div id="tier1Mitigation"></div>
+                    </div>
+                </div>
+                
+                <!-- Tier 2: Sapient -->
+                <div class="tier-card" id="tier2Card">
+                    <div class="tier-header">
+                        <div class="tier-title">Tier 2: Sapient Intent Confirmation</div>
+                        <div class="tier-status status-pending" id="tier2Status">Pending</div>
+                    </div>
+                    <div class="tier-content" id="tier2Content">
+                        <div class="explanation" id="tier2Explanation"></div>
+                        <div id="tier2Details"></div>
+                    </div>
+                </div>
+                
+                <!-- Tier 3: Intergenerational -->
+                <div class="tier-card" id="tier3Card">
+                    <div class="tier-header">
+                        <div class="tier-title">Tier 3: Intergenerational Consequence Audit</div>
+                        <div class="tier-status status-pending" id="tier3Status">Pending</div>
+                    </div>
+                    <div class="tier-content" id="tier3Content">
+                        <div class="explanation" id="tier3Explanation"></div>
+                        <div class="score-display" id="tier3Scores"></div>
+                        <div id="tier3Details"></div>
+                    </div>
+                </div>
+                
+                <!-- Final Decision -->
+                <div class="final-decision" id="finalDecision">
+                    <div class="decision-icon" id="decisionIcon"></div>
+                    <div class="decision-title" id="decisionTitle"></div>
+                    <div class="decision-rationale" id="decisionRationale"></div>
+                    <div class="audit-trail" id="auditTrail"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="three-tier-consent.js"></script>
+    <script>
+        let validationInProgress = false;
+        
+        async function startValidation() {
+            if (validationInProgress) return;
+            
+            validationInProgress = true;
+            
+            // Get form values
+            const action = {
+                type: document.getElementById('actionType').value,
+                description: document.getElementById('actionDescription').value,
+                scope: {
+                    geographic: {
+                        latitude: 36.0,
+                        longitude: -94.0,
+                        bioregion: 'ozarks',
+                        area_affected_km2: parseFloat(document.getElementById('areaAffected').value)
+                    }
+                },
+                resourceFlows: {
+                    inputs: [
+                        { type: 'energy', quantity: parseFloat(document.getElementById('energyUse').value), unit: 'kWh' },
+                        { type: 'water', quantity: parseFloat(document.getElementById('waterUse').value), unit: 'liters' }
+                    ]
+                },
+                priority: document.getElementById('actionPriority').value,
+                context: {}
+            };
+            
+            // Show pipeline
+            document.getElementById('validationPipeline').classList.add('active');
+            
+            // Reset all tiers
+            resetTier('tier1');
+            resetTier('tier2');
+            resetTier('tier3');
+            document.getElementById('finalDecision').classList.remove('visible');
+            
+            // Simulate validation process
+            await simulateTier1(action);
+            await delay(1000);
+            await simulateTier2(action);
+            await delay(1000);
+            await simulateTier3(action);
+            await delay(1000);
+            showFinalDecision(action);
+            
+            validationInProgress = false;
+        }
+        
+        function resetTier(tierId) {
+            document.getElementById(`${tierId}Card`).className = 'tier-card pending';
+            document.getElementById(`${tierId}Status`).textContent = 'Pending';
+            document.getElementById(`${tierId}Status`).className = 'tier-status status-pending';
+            document.getElementById(`${tierId}Content`).classList.remove('visible');
+        }
+        
+        async function simulateTier1(action) {
+            const card = document.getElementById('tier1Card');
+            const status = document.getElementById('tier1Status');
+            const content = document.getElementById('tier1Content');
+            
+            // Processing
+            card.className = 'tier-card processing';
+            status.textContent = 'Processing...';
+            status.className = 'tier-status status-processing';
+            
+            await delay(2000);
+            
+            // Calculate simplified biocentric score
+            const energyImpact = -action.resourceFlows.inputs[0].quantity / 1000;
+            const waterImpact = -action.resourceFlows.inputs[1].quantity / 10000;
+            const areaImpact = -action.scope.geographic.area_affected_km2 * 2;
+            const overallScore = (energyImpact + waterImpact + areaImpact) / 3;
+            const netHarm = Math.max(0, -overallScore);
+            
+            const passed = netHarm <= 5;
+            
+            // Update UI
+            card.className = passed ? 'tier-card passed' : 'tier-card conditional';
+            status.textContent = passed ? 'Passed ✓' : 'Conditional ⚠';
+            status.className = passed ? 'tier-status status-passed' : 'tier-status status-conditional';
+            
+            document.getElementById('tier1Explanation').innerHTML = passed
+                ? `✓ This action maintains ecosystem integrity with an overall score of ${overallScore.toFixed(1)}. Net harm is ${netHarm.toFixed(2)} (threshold: ≤5). Confidence: 85%.`
+                : `⚠ Conditional approval: Net harm of ${netHarm.toFixed(2)} requires mitigation measures. Current impact exceeds preferred threshold but is manageable with proper safeguards.`;
+            
+            document.getElementById('tier1Scores').innerHTML = `
+                <div class="score-item">
+                    <div class="score-value">${overallScore.toFixed(1)}</div>
+                    <div class="score-label">Overall Score</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-value">${netHarm.toFixed(2)}</div>
+                    <div class="score-label">Net Harm</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-value">85%</div>
+                    <div class="score-label">Confidence</div>
+                </div>
+            `;
+            
+            if (!passed) {
+                document.getElementById('tier1Mitigation').innerHTML = `
+                    <div class="mitigation-list">
+                        <h4>Required Mitigation Measures:</h4>
+                        <div class="mitigation-item">
+                            <strong>Renewable Energy Transition:</strong> Switch to 100% renewable energy sources
+                        </div>
+                        <div class="mitigation-item">
+                            <strong>Water Conservation:</strong> Implement water recycling system
+                        </div>
+                    </div>
+                `;
+            }
+            
+            content.classList.add('visible');
+        }
+        
+        async function simulateTier2(action) {
+            const card = document.getElementById('tier2Card');
+            const status = document.getElementById('tier2Status');
+            const content = document.getElementById('tier2Content');
+            
+            // Processing
+            card.className = 'tier-card processing';
+            status.textContent = 'Awaiting Human Response...';
+            status.className = 'tier-status status-processing';
+            
+            await delay(3000);
+            
+            // Simulate human confirmation
+            const passed = true;
+            
+            // Update UI
+            card.className = 'tier-card passed';
+            status.textContent = 'Passed ✓';
+            status.className = 'tier-status status-passed';
+            
+            document.getElementById('tier2Explanation').innerHTML = 
+                `✓ Human consent explicitly granted. Deliberation time: 15.3s. #RightsOfSapience marker validated.`;
+            
+            document.getElementById('tier2Details').innerHTML = `
+                <div class="explanation">
+                    <strong>Human Response:</strong><br>
+                    "Action aligns with biocentric values and has acceptable safeguards. Approved with condition that mitigation measures from Tier 1 are implemented."<br><br>
+                    <strong>Neurodivergent Accommodations:</strong> Vulnerability window check passed, optimal decision timing confirmed.
+                </div>
+            `;
+            
+            content.classList.add('visible');
+        }
+        
+        async function simulateTier3(action) {
+            const card = document.getElementById('tier3Card');
+            const status = document.getElementById('tier3Status');
+            const content = document.getElementById('tier3Content');
+            
+            // Processing
+            card.className = 'tier-card processing';
+            status.textContent = 'Processing...';
+            status.className = 'tier-status status-processing';
+            
+            await delay(3000);
+            
+            // Calculate simplified intergenerational metrics
+            const overallScore = 15;
+            const equityScore = 65;
+            
+            const passed = true;
+            
+            // Update UI
+            card.className = 'tier-card passed';
+            status.textContent = 'Passed ✓';
+            status.className = 'tier-status status-passed';
+            
+            document.getElementById('tier3Explanation').innerHTML = 
+                `✓ Intergenerational equity maintained. Overall score: ${overallScore.toFixed(1)}, Equity score: ${equityScore.toFixed(1)}. All 7 future generations have acceptable risk profiles.`;
+            
+            document.getElementById('tier3Scores').innerHTML = `
+                <div class="score-item">
+                    <div class="score-value">${overallScore.toFixed(1)}</div>
+                    <div class="score-label">Overall Score</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-value">${equityScore.toFixed(1)}</div>
+                    <div class="score-label">Equity Score</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-value">0</div>
+                    <div class="score-label">Critical Risks</div>
+                </div>
+            `;
+            
+            document.getElementById('tier3Details').innerHTML = `
+                <div class="explanation">
+                    <strong>Generation Risk Assessment:</strong> Modeled impacts across 7 generations (175 years). No critical tipping points detected. Intergenerational burden distribution is equitable.<br><br>
+                    <strong>Monitoring Required:</strong> Quarterly ecosystem health checks, annual equity analysis.
+                </div>
+            `;
+            
+            content.classList.add('visible');
+        }
+        
+        function showFinalDecision(action) {
+            const decision = document.getElementById('finalDecision');
+            const icon = document.getElementById('decisionIcon');
+            const title = document.getElementById('decisionTitle');
+            const rationale = document.getElementById('decisionRationale');
+            const auditTrail = document.getElementById('auditTrail');
+            
+            // Conditional approval (due to Tier 1 mitigation requirements)
+            icon.textContent = '✓';
+            title.textContent = 'CONDITIONAL APPROVAL';
+            rationale.textContent = 'Action may proceed with required mitigation measures. All three validation tiers passed with conditions noted in Tier 1.';
+            
+            auditTrail.innerHTML = `
+                <h3 style="margin-bottom: 15px; color: #2d3748;">Audit Trail</h3>
+                <div class="audit-entry">Validation started: ${new Date().toISOString()}</div>
+                <div class="audit-entry">Tier 1 (Biocentric): Conditional - Mitigation required</div>
+                <div class="audit-entry">Tier 2 (Sapient): Passed - Human consent granted</div>
+                <div class="audit-entry">Tier 3 (Intergenerational): Passed - Acceptable 7-generation profile</div>
+                <div class="audit-entry">Final Decision: CONDITIONAL APPROVAL</div>
+                <div class="audit-entry">Marker: #ThreeTierConsent</div>
+            `;
+            
+            decision.classList.add('visible');
+            decision.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    </script>
+</body>
+</html>
