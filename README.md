@@ -75,7 +75,7 @@ The dashboard provides:
 - **Critical Gaps Analysis**: Identification of 19 gaps categorized by priority (5 critical, 6 high, 7 medium, 1 low)
 - **Improvement Roadmap**: 4-phase plan to reach 85%+ alignment over 12 months
 
-![Compliance Dashboard Screenshot](./graphics/compliance-dashboard-screenshot.png)
+![Compliance Dashboard Screenshot showing BGI alignment metrics, license compliance status, environmental impact metrics, critical gaps analysis, and improvement roadmap](./graphics/compliance-dashboard-screenshot.png)
 
 ## DAO Guide Agent
 
