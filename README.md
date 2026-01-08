@@ -43,6 +43,12 @@ Visit the [licenses directory](./licenses/) for:
 - Comparison table and use cases
 - Compliance requirements
 
+## BGI Alignment Framework
+
+For technical specifications and implementations of the Beneficial AGI (BGI) Alignment Framework, see the [BGI Framework documentation](./bgi-framework/README.md).
+
+The BGI Framework provides concrete technical standards for building AGI systems that prioritize biocentric values, sapient partnership, and temporal fidelity with biological rhythms.
+
 ## DAO Guide Agent
 
 Need help creating your DAO? Our AI-powered [DAO Guide Agent](https://chakra-ai.io/agent/ded78833-31ec-442b-84b6-c123c107ba64/modify) assists with DAO creation and AI governance.
