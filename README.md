@@ -60,6 +60,23 @@ The project includes comprehensive resources for verifying BGI Framework alignme
 
 Current licenses provide ~50% coverage of BGI Framework requirements. The compliance resources identify gaps and provide roadmap for enhanced alignment.
 
+## 📊 Compliance Dashboard
+
+Interactive dashboard for real-time BGI Framework alignment and license compliance tracking:
+
+**[View Live Compliance Dashboard](https://violet-site-systems.github.io/DAC/compliance-dashboard.html)**
+
+The dashboard provides:
+
+- **Overall BGI Alignment Score**: Current 50% compliance with target of 85%
+- **BGI Framework Pillars**: Detailed breakdown across Biocentric Primacy, Sapient Partnership, Temporal Fidelity, and Implementation Mandates
+- **License-by-License Status**: Individual compliance scores for all six sustainability licenses (SUL, EIL, SBL, CGL, EAL, CAL)
+- **Environmental Metrics**: Real-time tracking of energy efficiency, carbon footprint, resource optimization, and ecosystem impact
+- **Critical Gaps Analysis**: Identification of 19 gaps categorized by priority (5 critical, 6 high, 7 medium, 1 low)
+- **Improvement Roadmap**: 4-phase plan to reach 85%+ alignment over 12 months
+
+![Compliance Dashboard Screenshot](./graphics/compliance-dashboard-screenshot.png)
+
 ## DAO Guide Agent
 
 Need help creating your DAO? Our AI-powered [DAO Guide Agent](https://chakra-ai.io/agent/ded78833-31ec-442b-84b6-c123c107ba64/modify) assists with DAO creation and AI governance.
