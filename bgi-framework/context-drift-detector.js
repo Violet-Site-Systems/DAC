@@ -397,7 +397,7 @@ class CorrectionRitual {
     const requiredMarkers = CONTEXT_DRIFT_CONFIG.sapienceMarkers.requiredMarkers;
     const presentMarkers = context.currentContext?.markers || [];
     
-    const missing = requiredMarkers.filter(m => !presentMarkers.includes(m));
+    const missing = requiredMarkers.filter(marker => !presentMarkers.includes(marker));
     
     return {
       check: 'sapienceMarkers',
@@ -711,8 +711,9 @@ class ContextDriftDetector {
     const requiredMarkers = this.config.sapienceMarkers.requiredMarkers;
     const presentMarkers = currentContext.markers || [];
     
+    // Check if required markers are present (exact match)
     const missingMarkers = requiredMarkers.filter(marker => 
-      !presentMarkers.some(m => m.includes(marker) || m === marker)
+      !presentMarkers.includes(marker)
     );
     
     if (missingMarkers.length >= this.config.detection.missingMarkerThreshold) {
@@ -800,17 +801,43 @@ class ContextDriftDetector {
     
     requiredElements.forEach(element => {
       if (context1[element] && context2[element]) {
-        // Simple comparison - in a real system, this would be more sophisticated
-        if (JSON.stringify(context1[element]) === JSON.stringify(context2[element])) {
+        // Use deep equality check for objects and arrays
+        if (this.deepEqual(context1[element], context2[element])) {
           matchCount++;
         } else {
-          // Partial match scoring
+          // Partial match scoring for similar but not identical data
           matchCount += 0.5;
         }
       }
     });
     
     return matchCount / totalElements;
+  }
+  
+  /**
+   * Deep equality check for objects and arrays
+   */
+  deepEqual(obj1, obj2) {
+    if (obj1 === obj2) return true;
+    if (obj1 == null || obj2 == null) return false;
+    if (typeof obj1 !== typeof obj2) return false;
+    
+    // Handle arrays
+    if (Array.isArray(obj1) && Array.isArray(obj2)) {
+      if (obj1.length !== obj2.length) return false;
+      return obj1.every((val, idx) => this.deepEqual(val, obj2[idx]));
+    }
+    
+    // Handle objects
+    if (typeof obj1 === 'object' && typeof obj2 === 'object') {
+      const keys1 = Object.keys(obj1);
+      const keys2 = Object.keys(obj2);
+      if (keys1.length !== keys2.length) return false;
+      return keys1.every(key => this.deepEqual(obj1[key], obj2[key]));
+    }
+    
+    // Primitives
+    return obj1 === obj2;
   }
   
   /**
@@ -865,7 +892,7 @@ class ContextDriftDetector {
     let deviationScore = 0;
     requiredRefs.forEach(ref => {
       if (current[ref] && expected[ref]) {
-        if (JSON.stringify(current[ref]) !== JSON.stringify(expected[ref])) {
+        if (!this.deepEqual(current[ref], expected[ref])) {
           deviationScore += 1;
         }
       }
