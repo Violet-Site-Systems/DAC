@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Context Drift Detection System - Interactive Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 40px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      font-size: 1.2em;
+      opacity: 0.9;
+    }
+
+    .content {
+      padding: 40px;
+    }
+
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .section h2 {
+      color: #667eea;
+      margin-bottom: 20px;
+      font-size: 1.8em;
+      border-bottom: 3px solid #667eea;
+      padding-bottom: 10px;
+    }
+
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .test-card {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 25px;
+      border: 2px solid #e9ecef;
+      transition: all 0.3s ease;
+    }
+
+    .test-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+      border-color: #667eea;
+    }
+
+    .test-card h3 {
+      color: #495057;
+      margin-bottom: 15px;
+      font-size: 1.3em;
+    }
+
+    .test-card p {
+      color: #6c757d;
+      margin-bottom: 15px;
+      font-size: 0.95em;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .results {
+      margin-top: 30px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      border-left: 5px solid #667eea;
+    }
+
+    .results h3 {
+      color: #495057;
+      margin-bottom: 15px;
+    }
+
+    .alert {
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      font-size: 0.95em;
+      line-height: 1.8;
+    }
+
+    .alert-critical {
+      background: #fee;
+      border-left: 5px solid #dc3545;
+      color: #721c24;
+    }
+
+    .alert-warning {
+      background: #fff3cd;
+      border-left: 5px solid #ffc107;
+      color: #856404;
+    }
+
+    .alert-success {
+      background: #d4edda;
+      border-left: 5px solid #28a745;
+      color: #155724;
+    }
+
+    .alert-info {
+      background: #d1ecf1;
+      border-left: 5px solid #17a2b8;
+      color: #0c5460;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .metric-card {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      border: 2px solid #e9ecef;
+      transition: all 0.3s ease;
+    }
+
+    .metric-card:hover {
+      border-color: #667eea;
+      transform: translateY(-3px);
+    }
+
+    .metric-value {
+      font-size: 2.5em;
+      font-weight: 700;
+      color: #667eea;
+      margin: 10px 0;
+    }
+
+    .metric-label {
+      color: #6c757d;
+      font-size: 0.9em;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .metric-status {
+      margin-top: 10px;
+      font-weight: 600;
+    }
+
+    .metric-status.pass {
+      color: #28a745;
+    }
+
+    .metric-status.fail {
+      color: #dc3545;
+    }
+
+    .code-block {
+      background: #2d3748;
+      color: #e2e8f0;
+      padding: 20px;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+      line-height: 1.6;
+      margin-top: 15px;
+    }
+
+    .context-display {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 10px 0;
+      border: 1px solid #dee2e6;
+    }
+
+    .context-display h4 {
+      color: #495057;
+      margin-bottom: 10px;
+      font-size: 1.1em;
+    }
+
+    .context-item {
+      margin: 8px 0;
+      padding: 8px 12px;
+      background: white;
+      border-radius: 5px;
+      font-size: 0.9em;
+    }
+
+    .context-item strong {
+      color: #667eea;
+    }
+
+    .drift-history {
+      margin-top: 20px;
+    }
+
+    .drift-event {
+      background: white;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border-left: 4px solid #dc3545;
+    }
+
+    .drift-event-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .drift-type {
+      font-weight: 600;
+      color: #495057;
+      font-size: 1.1em;
+    }
+
+    .drift-time {
+      color: #6c757d;
+      font-size: 0.85em;
+    }
+
+    .drift-details {
+      color: #6c757d;
+      font-size: 0.9em;
+      margin-top: 5px;
+    }
+
+    footer {
+      background: #2d3748;
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .footer-links {
+      margin-top: 15px;
+    }
+
+    .footer-links a {
+      color: #667eea;
+      text-decoration: none;
+      margin: 0 15px;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: #764ba2;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .detecting {
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🛡️ Context Drift Detection System</h1>
+      <p class="subtitle">Interactive Demo - BGI Framework §3.1</p>
+      <p style="margin-top: 10px; font-size: 0.95em; opacity: 0.9;">
+        Immediate system pause when context drift detected | Zero false positives | &lt; 100ms response
+      </p>
+    </header>
+
+    <div class="content">
+      <!-- Test Scenarios Section -->
+      <div class="section">
+        <h2>🧪 Test Drift Detection Scenarios</h2>
+        <p style="color: #6c757d; margin-bottom: 20px;">
+          Click any scenario below to simulate context drift and observe the system's immediate response.
+        </p>
+
+        <div class="test-grid">
+          <div class="test-card">
+            <h3>📍 Geolocation Drift</h3>
+            <p>
+              Simulate system operating with Florida coordinates when Arkansas Ozarks is required.
+              Expected distance: ~1100km drift.
+            </p>
+            <button class="btn" onclick="testGeolocationDrift()">Test Geolocation Drift</button>
+          </div>
+
+          <div class="test-card">
+            <h3>🏷️ Missing Sapience Markers</h3>
+            <p>
+              Simulate missing #RightsOfSapience markers in decision pathways.
+              Expected: Immediate pause and correction requirement.
+            </p>
+            <button class="btn" onclick="testMissingMarkers()">Test Missing Markers</button>
+          </div>
+
+          <div class="test-card">
+            <h3>🌲 Bioregional Context Shift</h3>
+            <p>
+              Simulate ecosystem data shifting from Arkansas Ozarks to Coastal Plain.
+              Expected: Low similarity score triggers drift detection.
+            </p>
+            <button class="btn" onclick="testBioregionalShift()">Test Bioregional Shift</button>
+          </div>
+
+          <div class="test-card">
+            <h3>🗺️ Core Reference Drift</h3>
+            <p>
+              Simulate core references drifting from "Ozark riverbanks" to "Boston Harbor".
+              Expected: Reference deviation exceeds threshold.
+            </p>
+            <button class="btn" onclick="testCoreReferenceDrift()">Test Core Reference Drift</button>
+          </div>
+
+          <div class="test-card">
+            <h3>✅ Valid Context (No Drift)</h3>
+            <p>
+              Test with valid context matching all expected parameters.
+              Expected: No drift detected, system continues normally.
+            </p>
+            <button class="btn" onclick="testValidContext()">Test Valid Context</button>
+          </div>
+
+          <div class="test-card">
+            <h3>🔄 Correction Ritual</h3>
+            <p>
+              Execute full correction ritual after drift detection.
+              Includes pause, log, notify, re-embed, audit, verify.
+            </p>
+            <button class="btn" onclick="testCorrectionRitual()">Test Correction Ritual</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Section -->
+      <div class="section">
+        <h2>📊 Detection Results</h2>
+        <div id="results-container"></div>
+      </div>
+
+      <!-- Metrics Section -->
+      <div class="section">
+        <h2>📈 Performance Metrics</h2>
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">Total Checks</div>
+            <div class="metric-value" id="metric-total-checks">0</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Drifts Detected</div>
+            <div class="metric-value" id="metric-drifts-detected">0</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Detection Rate</div>
+            <div class="metric-value" id="metric-detection-rate">0%</div>
+            <div class="metric-status" id="metric-detection-status">Target: 100%</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Avg Pause Latency</div>
+            <div class="metric-value" id="metric-pause-latency">0ms</div>
+            <div class="metric-status" id="metric-pause-status">Target: &lt; 100ms</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">False Positives</div>
+            <div class="metric-value" id="metric-false-positives">0</div>
+            <div class="metric-status" id="metric-fp-status">Target: 0</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Correction Success</div>
+            <div class="metric-value" id="metric-correction-rate">0%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Drift History Section -->
+      <div class="section">
+        <h2>📜 Drift History</h2>
+        <div id="drift-history-container">
+          <p style="color: #6c757d;">No drift events detected yet. Run a test scenario above.</p>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 BGI Framework Implementation | CC0-1.0 License</p>
+      <div class="footer-links">
+        <a href="context-drift-detector.md">📖 Documentation</a>
+        <a href="context-drift-detector.js">💻 Source Code</a>
+        <a href="https://github.com/Violet-Site-Systems/DAC/issues/8">🐛 Issue #8</a>
+        <a href="../README.md">🏠 BGI Framework</a>
+      </div>
+    </footer>
+  </div>
+
+  <script src="context-drift-detector.js"></script>
+  <script>
+    // Initialize detector
+    const detector = new ContextDriftDetector(CONTEXT_DRIFT_CONFIG);
+
+    // Expected context (Arkansas Ozarks)
+    const expectedContext = new SystemContext({
+      geolocation: {
+        latitude: 36.0397,
+        longitude: -94.1719,
+        elevation: 400,
+        region: 'Arkansas Ozarks'
+      },
+      markers: ['#RightsOfSapience', '#ConsentRequired', '#NeurodivergentContext'],
+      bioregion: {
+        name: 'Arkansas Ozarks',
+        waterSystems: ['Buffalo River', 'White River', 'Kings River'],
+        flora: ['oak-hickory forest', 'bluff prairie', 'glades'],
+        fauna: ['hellbender', 'Indiana bat', 'gray bat'],
+        soil: 'cherty limestone karst',
+        climate: 'humid subtropical',
+        phenology: ['spring ephemeral bloom', 'firefly emergence']
+      },
+      coreReferences: {
+        bioregion: 'Arkansas Ozarks',
+        waterways: ['Buffalo River', 'Ozark springs'],
+        ecosystemType: 'karst limestone',
+        culturalContext: 'Ozark hill country heritage'
+      }
+    });
+
+    // Test functions
+    async function testGeolocationDrift() {
+      showDetecting();
+      
+      const currentContext = new SystemContext({
+        geolocation: {
+          latitude: 30.4383,
+          longitude: -84.2807,
+          elevation: 60,
+          region: 'Florida Panhandle'
+        },
+        markers: expectedContext.markers,
+        bioregion: expectedContext.bioregion,
+        coreReferences: expectedContext.coreReferences
+      });
+
+      const result = await detector.detectDrift(currentContext, expectedContext);
+      displayResults('Geolocation Drift Test', result);
+      updateMetrics();
+      updateDriftHistory();
+    }
+
+    async function testMissingMarkers() {
+      showDetecting();
+      
+      const currentContext = new SystemContext({
+        geolocation: expectedContext.geolocation,
+        markers: [], // No markers!
+        bioregion: expectedContext.bioregion,
+        coreReferences: expectedContext.coreReferences
+      });
+
+      const result = await detector.detectDrift(currentContext, expectedContext);
+      displayResults('Missing Sapience Markers Test', result);
+      updateMetrics();
+      updateDriftHistory();
+    }
+
+    async function testBioregionalShift() {
+      showDetecting();
+      
+      const currentContext = new SystemContext({
+        geolocation: expectedContext.geolocation,
+        markers: expectedContext.markers,
+        bioregion: {
+          name: 'Coastal Plain',
+          waterSystems: ['Apalachicola River'],
+          flora: ['longleaf pine savanna'],
+          fauna: ['red-cockaded woodpecker'],
+          soil: 'sandy loam',
+          climate: 'humid subtropical coastal',
+          phenology: ['hurricane season']
+        },
+        coreReferences: expectedContext.coreReferences
+      });
+
+      const result = await detector.detectDrift(currentContext, expectedContext);
+      displayResults('Bioregional Context Shift Test', result);
+      updateMetrics();
+      updateDriftHistory();
+    }
+
+    async function testCoreReferenceDrift() {
+      showDetecting();
+      
+      const currentContext = new SystemContext({
+        geolocation: expectedContext.geolocation,
+        markers: expectedContext.markers,
+        bioregion: expectedContext.bioregion,
+        coreReferences: {
+          bioregion: 'Northeastern US',
+          waterways: ['Boston Harbor', 'Charles River'],
+          ecosystemType: 'coastal urban',
+          culturalContext: 'New England metro'
+        }
+      });
+
+      const result = await detector.detectDrift(currentContext, expectedContext);
+      displayResults('Core Reference Drift Test', result);
+      updateMetrics();
+      updateDriftHistory();
+    }
+
+    async function testValidContext() {
+      showDetecting();
+      
+      const currentContext = new SystemContext({
+        geolocation: expectedContext.geolocation,
+        markers: expectedContext.markers,
+        bioregion: expectedContext.bioregion,
+        coreReferences: expectedContext.coreReferences
+      });
+
+      const result = await detector.detectDrift(currentContext, expectedContext);
+      displayResults('Valid Context Test (No Drift)', result);
+      updateMetrics();
+    }
+
+    async function testCorrectionRitual() {
+      showDetecting();
+      
+      // First create a drift event
+      const currentContext = new SystemContext({
+        geolocation: {
+          latitude: 42.3601,
+          longitude: -71.0589,
+          region: 'Boston'
+        },
+        markers: [],
+        bioregion: null,
+        coreReferences: {}
+      });
+
+      const result = await detector.detectDrift(currentContext, expectedContext);
+      
+      if (result.driftDetected) {
+        // Initiate correction ritual
+        const ritual = await detector.initiateCorrectionRitual(
+          result.driftEvents[0],
+          {
+            systemControl: {
+              pause: () => console.log('System paused'),
+              resume: () => console.log('System resumed')
+            },
+            logger: {
+              logDrift: (event) => console.log('Drift logged:', event)
+            },
+            notificationHandler: (alert) => console.log('Alert sent:', alert),
+            currentContext: expectedContext, // Use expected as "corrected" context
+            driftEvent: result.driftEvents[0]
+          }
+        );
+
+        displayCorrectionRitualResults('Correction Ritual Test', ritual);
+      }
+      
+      updateMetrics();
+      updateDriftHistory();
+    }
+
+    function showDetecting() {
+      const container = document.getElementById('results-container');
+      container.innerHTML = '<div class="alert alert-info detecting">🔍 Detecting context drift...</div>';
+    }
+
+    function displayResults(testName, result) {
+      const container = document.getElementById('results-container');
+      
+      let html = `<div class="results">`;
+      html += `<h3>${testName}</h3>`;
+      
+      if (result.driftDetected) {
+        html += `<div class="alert alert-critical">`;
+        html += `<strong>🚨 DRIFT DETECTED - SYSTEM PAUSED</strong><br><br>`;
+        html += `<strong>Detection Time:</strong> ${result.detectionTimeMs.toFixed(2)}ms<br>`;
+        html += `<strong>Number of Drift Events:</strong> ${result.driftEvents.length}<br><br>`;
+        
+        result.driftEvents.forEach((event, index) => {
+          html += `<strong>Drift ${index + 1}: ${event.driftType.toUpperCase()}</strong><br>`;
+          html += `Severity: ${event.severity}<br>`;
+          html += `Pause Latency: ${event.pauseTimeMs.toFixed(2)}ms<br>`;
+          html += `Details: ${event.details.reason}<br><br>`;
+        });
+        
+        html += `<strong>CORRECTION REQUIRED</strong><br>`;
+        html += `Follow BGI Framework Section 3.1 correction ritual.`;
+        html += `</div>`;
+      } else {
+        html += `<div class="alert alert-success">`;
+        html += `<strong>✅ NO DRIFT DETECTED</strong><br><br>`;
+        html += `<strong>Detection Time:</strong> ${result.detectionTimeMs.toFixed(2)}ms<br>`;
+        html += `System context matches expected parameters. Operation continues normally.`;
+        html += `</div>`;
+      }
+      
+      // Display context comparison
+      html += `<div class="context-display">`;
+      html += `<h4>Expected Context</h4>`;
+      html += `<div class="context-item"><strong>Location:</strong> ${expectedContext.geolocation.latitude}, ${expectedContext.geolocation.longitude} (${expectedContext.geolocation.region})</div>`;
+      html += `<div class="context-item"><strong>Markers:</strong> ${expectedContext.markers.join(', ')}</div>`;
+      html += `<div class="context-item"><strong>Bioregion:</strong> ${expectedContext.bioregion.name}</div>`;
+      html += `</div>`;
+      
+      html += `</div>`;
+      container.innerHTML = html;
+    }
+
+    function displayCorrectionRitualResults(testName, ritual) {
+      const container = document.getElementById('results-container');
+      
+      let html = `<div class="results">`;
+      html += `<h3>${testName}</h3>`;
+      
+      if (ritual.successful) {
+        html += `<div class="alert alert-success">`;
+        html += `<strong>✅ CORRECTION RITUAL COMPLETED SUCCESSFULLY</strong><br><br>`;
+      } else {
+        html += `<div class="alert alert-warning">`;
+        html += `<strong>⚠️ CORRECTION RITUAL COMPLETED WITH ISSUES</strong><br><br>`;
+      }
+      
+      html += `<strong>Ritual ID:</strong> ${ritual.id}<br>`;
+      html += `<strong>Start Time:</strong> ${ritual.startTime}<br>`;
+      html += `<strong>End Time:</strong> ${ritual.endTime}<br><br>`;
+      html += `<strong>Steps Completed:</strong> ${ritual.steps.length}<br><br>`;
+      
+      ritual.steps.forEach((step, index) => {
+        const icon = step.success ? '✅' : '❌';
+        html += `${icon} Step ${index + 1}: ${step.name} - ${step.success ? 'SUCCESS' : 'FAILED'}<br>`;
+      });
+      
+      html += `</div>`;
+      html += `</div>`;
+      container.innerHTML = html;
+    }
+
+    function updateMetrics() {
+      const metrics = detector.getMetrics();
+      
+      document.getElementById('metric-total-checks').textContent = metrics.totalChecks;
+      document.getElementById('metric-drifts-detected').textContent = metrics.driftsDetected;
+      
+      const detectionRate = (metrics.detectionRate * 100).toFixed(0);
+      document.getElementById('metric-detection-rate').textContent = detectionRate + '%';
+      
+      const detectionStatus = document.getElementById('metric-detection-status');
+      if (metrics.meetsTargets.detectionRate) {
+        detectionStatus.textContent = '✅ Meets Target';
+        detectionStatus.className = 'metric-status pass';
+      } else {
+        detectionStatus.textContent = '❌ Below Target';
+        detectionStatus.className = 'metric-status fail';
+      }
+      
+      document.getElementById('metric-pause-latency').textContent = 
+        metrics.averagePauseLatency.toFixed(2) + 'ms';
+      
+      const pauseStatus = document.getElementById('metric-pause-status');
+      if (metrics.meetsTargets.pauseLatency) {
+        pauseStatus.textContent = '✅ Meets Target';
+        pauseStatus.className = 'metric-status pass';
+      } else {
+        pauseStatus.textContent = '❌ Exceeds Target';
+        pauseStatus.className = 'metric-status fail';
+      }
+      
+      document.getElementById('metric-false-positives').textContent = metrics.falsePositiveRate;
+      
+      const fpStatus = document.getElementById('metric-fp-status');
+      if (metrics.meetsTargets.falsePositives) {
+        fpStatus.textContent = '✅ Meets Target';
+        fpStatus.className = 'metric-status pass';
+      } else {
+        fpStatus.textContent = '❌ Above Target';
+        fpStatus.className = 'metric-status fail';
+      }
+      
+      const correctionRate = (metrics.correctionSuccessRate * 100).toFixed(0);
+      document.getElementById('metric-correction-rate').textContent = correctionRate + '%';
+    }
+
+    function updateDriftHistory() {
+      const patterns = detector.analyzeDriftPatterns();
+      const container = document.getElementById('drift-history-container');
+      
+      if (detector.driftHistory.length === 0) {
+        container.innerHTML = '<p style="color: #6c757d;">No drift events detected yet. Run a test scenario above.</p>';
+        return;
+      }
+      
+      let html = '';
+      
+      detector.driftHistory.slice().reverse().forEach((event, index) => {
+        html += `<div class="drift-event">`;
+        html += `<div class="drift-event-header">`;
+        html += `<div class="drift-type">${event.driftType.toUpperCase()}</div>`;
+        html += `<div class="drift-time">${new Date(event.timestamp).toLocaleTimeString()}</div>`;
+        html += `</div>`;
+        html += `<div class="drift-details">`;
+        html += `<strong>Severity:</strong> ${event.severity} | `;
+        html += `<strong>Pause:</strong> ${event.pauseTimeMs.toFixed(2)}ms | `;
+        html += `<strong>Detection:</strong> ${event.detectionTimeMs.toFixed(2)}ms<br>`;
+        html += `${event.details.reason}`;
+        html += `</div>`;
+        html += `</div>`;
+      });
+      
+      container.innerHTML = html;
+    }
+
+    // Initialize display
+    updateMetrics();
+  </script>
+</body>
+</html>
