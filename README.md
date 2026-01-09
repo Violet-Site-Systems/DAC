@@ -113,3 +113,7 @@ We welcome contributions, feedback, and suggestions for improving these licenses
 ## License
 
 The license texts are released under CC0 1.0 Universal (public domain) to enable widespread adoption.
+
+---
+
+This project is a H+AI Partnership between Github Copilot and Colleen Pridemore
