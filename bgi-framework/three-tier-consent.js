@@ -317,15 +317,67 @@ async function tier1BiocentricAssessment(action, options = {}) {
 
 /**
  * Perform biocentric assessment (integration with Biocentric Impact Assessment API)
- * This is a simplified implementation - production would integrate with the full API
- * specified in biocentric-impact-api.md (Issue #6)
+ * Integrates with biocentric-impact-api.js (Issue #6)
  * 
- * TODO: Replace with actual API integration when Biocentric Impact Assessment API is implemented
+ * This function now uses the full Biocentric Impact Assessment API.
+ * If the API is not available (e.g., in Node.js environments without the module),
+ * it falls back to a simplified implementation.
  */
 async function performBiocentricAssessment(action, options) {
-  // Simplified scoring for demonstration
-  // In production, this would make actual API calls to the biocentric assessment system
+  // Check if Biocentric Impact Assessment API is available
+  const hasBiocentricAPI = typeof BiocentricImpactAPI !== 'undefined';
   
+  if (hasBiocentricAPI) {
+    // Use the full Biocentric Impact Assessment API
+    try {
+      // Create assessment request compatible with the new API format
+      const assessmentRequest = {
+        action: {
+          type: action.type,
+          description: action.description,
+          scope: {
+            geographic: action.scope?.geographic || {},
+            temporal: action.scope?.temporal || {}
+          },
+          resources: {
+            energy_kwh: action.resourceFlows?.inputs?.find(i => i.type === 'energy')?.quantity || 0,
+            water_liters: action.resourceFlows?.inputs?.find(i => i.type === 'water')?.quantity || 0,
+            land_hectares: action.scope?.geographic?.area_affected_km2 ? 
+              action.scope.geographic.area_affected_km2 * 100 : 0, // Convert km² to hectares
+            materials: []
+          }
+        },
+        bioregional_context: options.bioregionalContext || null
+      };
+      
+      // Call the API
+      const response = BiocentricImpactAPI.apiAssess(assessmentRequest);
+      
+      // Convert API response to format expected by three-tier-consent
+      return {
+        overallScore: response.biocentric_impact_score.overall,
+        confidence: response.ecosystem_integrity.confidence_interval,
+        dimensions: response.biocentric_impact_score.dimensions,
+        netHarmCalculation: {
+          harmScore: response.net_harm_calculation.harm_score,
+          regenerationScore: response.net_harm_calculation.regeneration_score,
+          netImpact: response.net_harm_calculation.net_impact
+        },
+        ecosystemIntegrity: {
+          currentBaseline: response.ecosystem_integrity.current_baseline,
+          projectedImpact: response.ecosystem_integrity.projected_impact,
+          confidenceInterval: response.ecosystem_integrity.confidence_interval
+        },
+        requiredMitigation: response.required_mitigation
+      };
+    } catch (error) {
+      console.warn('Error using Biocentric Impact API, falling back to simplified assessment:', error);
+      // Fall through to simplified implementation
+    }
+  }
+  
+  // Fallback: Simplified implementation for environments without the full API
+  // or if the API call fails
   const dimensions = {
     biodiversity: calculateBiodiversityImpact(action),
     waterSystems: calculateWaterImpact(action),
@@ -381,7 +433,7 @@ async function performBiocentricAssessment(action, options) {
   };
 }
 
-// Simplified impact calculation functions
+// Simplified impact calculation functions (used as fallback)
 function calculateBiodiversityImpact(action) {
   const area = action.scope?.geographic?.area_affected_km2 || 0;
   return -area * 2; // Negative impact proportional to area
