@@ -228,7 +228,9 @@ npx hardhat run scripts/deploy.js --network sepolia
 npx hardhat run scripts/deploy.js --network mainnet
 ```
 
-**Note**: You'll need to create your deployment scripts in the `scripts/` directory. Refer to existing DAO frameworks like [OpenZeppelin Governor](https://docs.openzeppelin.com/contracts/4.x/governance) or [Aragon](https://aragon.org/) for contract templates.
+**Note**: You'll need to create your deployment scripts in the `scripts/` directory. Since this is a BGINexus.io project affiliated with the SingularityNET Foundation, refer to these resources for contract templates:
+- [SingularityNET Platform Contracts](https://github.com/singnet/platform-contracts) - Smart contracts for the SingularityNET decentralized AI marketplace and governance
+- [Cudos Network CosmWasm Contracts](https://github.com/CudoVentures/cudos-example-smart-contracts) - Example smart contracts for Cosmos-based governance on Cudos
 
 After deployment, save the contract addresses displayed in the console. You'll need these addresses to interact with your DAC node.
 
@@ -267,6 +269,8 @@ Common issues and solutions:
 
 - [Hardhat Documentation](https://hardhat.org/getting-started/)
 - [Building a DAO Tutorial](https://github.com/LearnWeb3DAO/Building-a-DAO)
+- [SingularityNET Platform Contracts](https://github.com/singnet/platform-contracts) - Official SingularityNET smart contracts
+- [Cudos Network Documentation](https://github.com/CudoVentures/cudos-docs) - Cudos blockchain documentation
 - [Web3.js Documentation](https://web3js.readthedocs.io/)
 - [Ethers.js Documentation](https://docs.ethers.io/)
 
