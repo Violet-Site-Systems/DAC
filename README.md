@@ -106,6 +106,176 @@ This intelligent assistant helps you:
 - Implement AI-powered governance systems
 - Ensure alignment with community governance principles
 
+## 🚀 DAC Node Setup
+
+This repository provides the DAC framework documentation, governance principles, and sustainability licenses. To set up your own DAC node with smart contracts, you'll need to create a separate blockchain project following these instructions.
+
+Setting up a Decentralized Autonomous Community (DAC) node involves deploying smart contracts and configuring a local or cloud-based environment to participate in community governance.
+
+### Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- **Node.js** (v18+ recommended)
+- **Package Manager**: npm or yarn
+- **Blockchain Development Framework**: [Hardhat](https://hardhat.org/) or [Foundry](https://github.com/foundry-rs/foundry) for contract compilation and testing
+
+### Step 1: Environment Preparation
+
+Ensure you have Node.js v18 or higher installed:
+
+```bash
+# Verify Node.js installation
+node --version
+
+# Verify npm installation
+npm --version
+```
+
+You can download Node.js from [nodejs.org](https://nodejs.org/) if not already installed.
+
+For contract compilation, we'll use Hardhat (installed in Step 2). Alternatively, you can use [Foundry](https://github.com/foundry-rs/foundry):
+
+```bash
+# Optional: Install Foundry (Rust-based alternative to Hardhat)
+curl -L https://foundry.paradigm.xyz | bash
+foundryup
+```
+
+### Step 2: Project Setup
+
+Create a new directory for your DAC node project and initialize it:
+
+```bash
+# Create a new project directory
+mkdir my-dac-node
+cd my-dac-node
+
+# Initialize a new Node.js project
+npm init -y
+
+# Install Hardhat as a dev dependency
+npm install --save-dev hardhat
+
+# Initialize Hardhat project
+npx hardhat init
+```
+
+When prompted, select "Create a JavaScript project" or "Create a TypeScript project" based on your preference.
+
+### Step 3: Configuration
+
+Create and configure your environment variables:
+
+1. **Create .env file** in your project root:
+
+```bash
+touch .env
+```
+
+2. **Add the following configuration** to your `.env` file:
+
+```plaintext
+# Private key for contract deployment (NEVER commit this!)
+PRIVATE_KEY=your_private_key_here
+
+# Provider URL (Infura, Alchemy, or other Web3 provider)
+# Use testnet for testing (e.g., Sepolia), mainnet for production
+PROVIDER_URL=https://sepolia.infura.io/v3/YOUR_INFURA_PROJECT_ID
+
+# API Keys for block explorers (e.g., Etherscan)
+ETHERSCAN_API_KEY=your_etherscan_api_key_here
+
+# Network configuration
+NETWORK=sepolia  # or localhost for testing, mainnet for production
+```
+
+**Security Note**: Never commit your `.env` file or share your private keys. Ensure `.env` is listed in `.gitignore`.
+
+### Step 4: Local Node Deployment (Optional - For Testing)
+
+For local testing and development, you can run a local blockchain node:
+
+```bash
+# Start a local Hardhat node
+npx hardhat node
+```
+
+This will start a local blockchain at `http://localhost:8545`. Configure your wallet (e.g., MetaMask) to connect to this local RPC URL.
+
+**MetaMask Configuration**:
+1. Open MetaMask
+2. Click on the network dropdown
+3. Select "Add Network"
+4. Enter the following details:
+   - Network Name: Hardhat Local
+   - RPC URL: `http://localhost:8545`
+   - Chain ID: `31337`
+   - Currency Symbol: `ETH`
+
+### Step 5: Smart Contract Development and Deployment
+
+First, create your governance contracts. You can use templates from existing DAO frameworks or create custom contracts. Then deploy them:
+
+```bash
+# Example: Deploy your governance contracts to local network
+npx hardhat run scripts/deploy.js --network localhost
+
+# Deploy to testnet (e.g., Sepolia) for testing
+npx hardhat run scripts/deploy.js --network sepolia
+
+# Deploy to mainnet (use with caution and after thorough testing)
+npx hardhat run scripts/deploy.js --network mainnet
+```
+
+**Note**: You'll need to create your deployment scripts in the `scripts/` directory. Since this is a BGINexus.io project affiliated with the SingularityNET Foundation, refer to these resources for contract templates:
+- [SingularityNET Platform Contracts](https://github.com/singnet/platform-contracts) - Smart contracts for the SingularityNET decentralized AI marketplace and governance
+- [Cudos Network CosmWasm Contracts](https://github.com/CudoVentures/cudos-example-smart-contracts) - Example smart contracts for Cosmos-based governance on Cudos
+
+After deployment, save the contract addresses displayed in the console. You'll need these addresses to interact with your DAC node.
+
+### Step 6: Verify Deployment
+
+Verify your contracts on Etherscan (for testnets and mainnet):
+
+```bash
+# Example: Verify a contract with constructor arguments
+npx hardhat verify --network <network_name> <CONTRACT_ADDRESS> "Constructor Arg 1" "Constructor Arg 2"
+
+# Example without constructor arguments
+npx hardhat verify --network sepolia 0x1234567890123456789012345678901234567890
+```
+
+**Note**: Replace `<network_name>` with your target network (e.g., `sepolia`, `mainnet`) and `<CONTRACT_ADDRESS>` with your deployed contract address. Include constructor arguments in the same order and format as used during deployment.
+
+### Post-Deployment
+
+Once your DAC node is deployed:
+
+1. **Configure Governance Parameters**: Set up voting mechanisms, proposal thresholds, and other governance rules
+2. **Invite Community Members**: Share contract addresses and participation guidelines
+3. **Monitor Node Health**: Regularly check node status and community activity
+4. **Participate in Governance**: Engage in proposal creation and voting
+
+### Troubleshooting
+
+Common issues and solutions:
+
+- **"Insufficient funds" error**: Ensure your wallet has enough ETH for gas fees
+- **"Network connection failed"**: Verify your provider URL and network configuration
+- **"Contract deployment failed"**: Check your contract code for errors and ensure all dependencies are installed
+
+### Additional Resources
+
+- [Hardhat Documentation](https://hardhat.org/getting-started/)
+- [Building a DAO Tutorial](https://github.com/LearnWeb3DAO/Building-a-DAO)
+- [SingularityNET Platform Contracts](https://github.com/singnet/platform-contracts) - Official SingularityNET smart contracts
+- [Cudos Network Documentation](https://github.com/CudoVentures/cudos-docs) - Cudos blockchain documentation
+- [Web3.js Documentation](https://web3js.readthedocs.io/)
+- [Ethers.js Documentation](https://docs.ethers.io/)
+
+For more assistance with DAO creation and governance, visit our [DAO Guide Agent](https://chakra-ai.io/agent/ded78833-31ec-442b-84b6-c123c107ba64/modify).
+
 ## Contributing
 
 We welcome contributions, feedback, and suggestions for improving these licenses. Please open an issue or submit a pull request.
