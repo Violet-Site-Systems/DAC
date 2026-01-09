@@ -116,4 +116,4 @@ The license texts are released under CC0 1.0 Universal (public domain) to enable
 
 ---
 
-This project is a H+AI Partnership between Github Copilot and Colleen Pridemore
+This project is a H+AI Partnership between GitHub Copilot and Colleen Pridemore
