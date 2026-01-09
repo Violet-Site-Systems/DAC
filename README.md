@@ -108,7 +108,9 @@ This intelligent assistant helps you:
 
 ## 🚀 DAC Node Setup
 
-Setting up a Decentralized Autonomous Community (DAC) node through the Violet-Site-Systems DAC framework involves deploying smart contracts and configuring a local or cloud-based environment to participate in community governance.
+This repository provides the DAC framework documentation, governance principles, and sustainability licenses. To set up your own DAC node with smart contracts, you'll need to create a separate blockchain project following these instructions.
+
+Setting up a Decentralized Autonomous Community (DAC) node involves deploying smart contracts and configuring a local or cloud-based environment to participate in community governance.
 
 ### Prerequisites
 
@@ -120,7 +122,7 @@ Before you begin, ensure you have the following installed:
 
 ### Step 1: Environment Preparation
 
-Install Node.js v18 or higher:
+Ensure you have Node.js v18 or higher installed:
 
 ```bash
 # Verify Node.js installation
@@ -130,43 +132,48 @@ node --version
 npm --version
 ```
 
-Install a blockchain development framework:
+You can download Node.js from [nodejs.org](https://nodejs.org/) if not already installed.
+
+For contract compilation, we'll use Hardhat (installed in Step 2). Alternatively, you can use [Foundry](https://github.com/foundry-rs/foundry):
 
 ```bash
-# For Hardhat (install as dev dependency in your project)
-npm install --save-dev hardhat
-
-# Or for Foundry (alternative)
+# Optional: Install Foundry (Rust-based alternative to Hardhat)
 curl -L https://foundry.paradigm.xyz | bash
 foundryup
 ```
 
-### Step 2: Repository Setup
+### Step 2: Project Setup
 
-Clone the DAC repository and install dependencies:
+Create a new directory for your DAC node project and initialize it:
 
 ```bash
-# Clone the repository
-git clone https://github.com/Violet-Site-Systems/DAC.git
+# Create a new project directory
+mkdir my-dac-node
+cd my-dac-node
 
-# Navigate to the project directory
-cd DAC
+# Initialize a new Node.js project
+npm init -y
 
-# Install dependencies
-npm install
+# Install Hardhat as a dev dependency
+npm install --save-dev hardhat
+
+# Initialize Hardhat project
+npx hardhat init
 ```
+
+When prompted, select "Create a JavaScript project" or "Create a TypeScript project" based on your preference.
 
 ### Step 3: Configuration
 
 Create and configure your environment variables:
 
-1. **Create .env file** from the provided template:
+1. **Create .env file** in your project root:
 
 ```bash
-cp .env.example .env
+touch .env
 ```
 
-2. **Configure required variables** in your `.env` file:
+2. **Add the following configuration** to your `.env` file:
 
 ```plaintext
 # Private key for contract deployment (NEVER commit this!)
@@ -206,20 +213,22 @@ This will start a local blockchain at `http://localhost:8545`. Configure your wa
    - Chain ID: `31337`
    - Currency Symbol: `ETH`
 
-### Step 5: Smart Contract Deployment
+### Step 5: Smart Contract Development and Deployment
 
-Deploy the governance and community contracts to your chosen network:
+First, create your governance contracts. You can use templates from existing DAO frameworks or create custom contracts. Then deploy them:
 
 ```bash
-# Deploy to local network
+# Example: Deploy your governance contracts to local network
 npx hardhat run scripts/deploy.js --network localhost
 
-# Deploy to testnet (e.g., Sepolia)
+# Deploy to testnet (e.g., Sepolia) for testing
 npx hardhat run scripts/deploy.js --network sepolia
 
-# Deploy to mainnet (use with caution)
+# Deploy to mainnet (use with caution and after thorough testing)
 npx hardhat run scripts/deploy.js --network mainnet
 ```
+
+**Note**: You'll need to create your deployment scripts in the `scripts/` directory. Refer to existing DAO frameworks like [OpenZeppelin Governor](https://docs.openzeppelin.com/contracts/4.x/governance) or [Aragon](https://aragon.org/) for contract templates.
 
 After deployment, save the contract addresses displayed in the console. You'll need these addresses to interact with your DAC node.
 
