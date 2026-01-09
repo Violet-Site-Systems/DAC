@@ -77,6 +77,24 @@ The dashboard provides:
 
 ![Compliance Dashboard Screenshot showing BGI alignment metrics, license compliance status, environmental impact metrics, critical gaps analysis, and improvement roadmap](./graphics/compliance-dashboard-screenshot.png)
 
+## 🌍 Biocentric Impact Assessment API
+
+Evaluate decisions and actions against ecosystem integrity metrics with the **[Biocentric Impact Assessment API](./bgi-framework/biocentric-impact-api.md)**:
+
+**[Try Interactive Demo](./bgi-framework/biocentric-impact-api-example.html)**
+
+This API implements the core BGI Framework principle of **Biocentric Primacy**: zero net harm to biosphere regeneration cycles. It provides:
+
+- **Multi-dimensional Impact Scoring**: Evaluate actions across 6 core dimensions (Biodiversity, Water Systems, Soil Health, Air Quality, Carbon Cycle, and Regeneration Capacity)
+- **Bioregional Data Integration**: Context-aware assessments tied to specific ecosystems
+- **Real-time Monitoring**: Track actual vs. predicted impacts
+- **Mitigation Requirements**: Automatic calculation of measures needed to achieve zero net harm
+- **Three-Tier Consent Integration**: Serves as Tier 1 in the comprehensive consent architecture
+
+The API enforces non-negotiable ecological constraints before any action proceeds, ensuring technology development prioritizes ecosystem health.
+
+![Biocentric Impact Assessment API Demo showing interactive assessment form with action details, geographic scope, temporal scope, resource flows, and example scenarios](./graphics/biocentric-api-screenshot.png)
+
 ## DAO Guide Agent
 
 Need help creating your DAO? Our AI-powered [DAO Guide Agent](https://chakra-ai.io/agent/ded78833-31ec-442b-84b6-c123c107ba64/modify) assists with DAO creation and AI governance.
