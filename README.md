@@ -133,8 +133,8 @@ npm --version
 Install a blockchain development framework:
 
 ```bash
-# For Hardhat
-npm install --global hardhat
+# For Hardhat (install as dev dependency in your project)
+npm install --save-dev hardhat
 
 # Or for Foundry (alternative)
 curl -L https://foundry.paradigm.xyz | bash
@@ -173,13 +173,14 @@ cp .env.example .env
 PRIVATE_KEY=your_private_key_here
 
 # Provider URL (Infura, Alchemy, or other Web3 provider)
-PROVIDER_URL=https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID
+# Use testnet for testing (e.g., Sepolia), mainnet for production
+PROVIDER_URL=https://sepolia.infura.io/v3/YOUR_INFURA_PROJECT_ID
 
 # API Keys for block explorers (e.g., Etherscan)
 ETHERSCAN_API_KEY=your_etherscan_api_key_here
 
 # Network configuration
-NETWORK=mainnet  # or testnet, localhost
+NETWORK=sepolia  # or localhost for testing, mainnet for production
 ```
 
 **Security Note**: Never commit your `.env` file or share your private keys. Ensure `.env` is listed in `.gitignore`.
@@ -227,8 +228,14 @@ After deployment, save the contract addresses displayed in the console. You'll n
 Verify your contracts on Etherscan (for testnets and mainnet):
 
 ```bash
-npx hardhat verify --network <network_name> <CONTRACT_ADDRESS> <CONSTRUCTOR_ARGS>
+# Example: Verify a contract with constructor arguments
+npx hardhat verify --network <network_name> <CONTRACT_ADDRESS> "Constructor Arg 1" "Constructor Arg 2"
+
+# Example without constructor arguments
+npx hardhat verify --network sepolia 0x1234567890123456789012345678901234567890
 ```
+
+**Note**: Replace `<network_name>` with your target network (e.g., `sepolia`, `mainnet`) and `<CONTRACT_ADDRESS>` with your deployed contract address. Include constructor arguments in the same order and format as used during deployment.
 
 ### Post-Deployment
 
