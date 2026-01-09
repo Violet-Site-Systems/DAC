@@ -106,6 +106,156 @@ This intelligent assistant helps you:
 - Implement AI-powered governance systems
 - Ensure alignment with community governance principles
 
+## 🚀 DAC Node Setup
+
+Setting up a Decentralized Autonomous Community (DAC) node through the Violet-Site-Systems DAC framework involves deploying smart contracts and configuring a local or cloud-based environment to participate in community governance.
+
+### Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- **Node.js** (v18+ recommended)
+- **Package Manager**: npm or yarn
+- **Blockchain Development Framework**: [Hardhat](https://hardhat.org/) or [Foundry](https://github.com/foundry-rs/foundry) for contract compilation and testing
+
+### Step 1: Environment Preparation
+
+Install Node.js v18 or higher:
+
+```bash
+# Verify Node.js installation
+node --version
+
+# Verify npm installation
+npm --version
+```
+
+Install a blockchain development framework:
+
+```bash
+# For Hardhat
+npm install --global hardhat
+
+# Or for Foundry (alternative)
+curl -L https://foundry.paradigm.xyz | bash
+foundryup
+```
+
+### Step 2: Repository Setup
+
+Clone the DAC repository and install dependencies:
+
+```bash
+# Clone the repository
+git clone https://github.com/Violet-Site-Systems/DAC.git
+
+# Navigate to the project directory
+cd DAC
+
+# Install dependencies
+npm install
+```
+
+### Step 3: Configuration
+
+Create and configure your environment variables:
+
+1. **Create .env file** from the provided template:
+
+```bash
+cp .env.example .env
+```
+
+2. **Configure required variables** in your `.env` file:
+
+```plaintext
+# Private key for contract deployment (NEVER commit this!)
+PRIVATE_KEY=your_private_key_here
+
+# Provider URL (Infura, Alchemy, or other Web3 provider)
+PROVIDER_URL=https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID
+
+# API Keys for block explorers (e.g., Etherscan)
+ETHERSCAN_API_KEY=your_etherscan_api_key_here
+
+# Network configuration
+NETWORK=mainnet  # or testnet, localhost
+```
+
+**Security Note**: Never commit your `.env` file or share your private keys. Ensure `.env` is listed in `.gitignore`.
+
+### Step 4: Local Node Deployment (Optional - For Testing)
+
+For local testing and development, you can run a local blockchain node:
+
+```bash
+# Start a local Hardhat node
+npx hardhat node
+```
+
+This will start a local blockchain at `http://localhost:8545`. Configure your wallet (e.g., MetaMask) to connect to this local RPC URL.
+
+**MetaMask Configuration**:
+1. Open MetaMask
+2. Click on the network dropdown
+3. Select "Add Network"
+4. Enter the following details:
+   - Network Name: Hardhat Local
+   - RPC URL: `http://localhost:8545`
+   - Chain ID: `31337`
+   - Currency Symbol: `ETH`
+
+### Step 5: Smart Contract Deployment
+
+Deploy the governance and community contracts to your chosen network:
+
+```bash
+# Deploy to local network
+npx hardhat run scripts/deploy.js --network localhost
+
+# Deploy to testnet (e.g., Sepolia)
+npx hardhat run scripts/deploy.js --network sepolia
+
+# Deploy to mainnet (use with caution)
+npx hardhat run scripts/deploy.js --network mainnet
+```
+
+After deployment, save the contract addresses displayed in the console. You'll need these addresses to interact with your DAC node.
+
+### Step 6: Verify Deployment
+
+Verify your contracts on Etherscan (for testnets and mainnet):
+
+```bash
+npx hardhat verify --network <network_name> <CONTRACT_ADDRESS> <CONSTRUCTOR_ARGS>
+```
+
+### Post-Deployment
+
+Once your DAC node is deployed:
+
+1. **Configure Governance Parameters**: Set up voting mechanisms, proposal thresholds, and other governance rules
+2. **Invite Community Members**: Share contract addresses and participation guidelines
+3. **Monitor Node Health**: Regularly check node status and community activity
+4. **Participate in Governance**: Engage in proposal creation and voting
+
+### Troubleshooting
+
+Common issues and solutions:
+
+- **"Insufficient funds" error**: Ensure your wallet has enough ETH for gas fees
+- **"Network connection failed"**: Verify your provider URL and network configuration
+- **"Contract deployment failed"**: Check your contract code for errors and ensure all dependencies are installed
+
+### Additional Resources
+
+- [Hardhat Documentation](https://hardhat.org/getting-started/)
+- [Building a DAO Tutorial](https://github.com/LearnWeb3DAO/Building-a-DAO)
+- [Web3.js Documentation](https://web3js.readthedocs.io/)
+- [Ethers.js Documentation](https://docs.ethers.io/)
+
+For more assistance with DAO creation and governance, visit our [DAO Guide Agent](https://chakra-ai.io/agent/ded78833-31ec-442b-84b6-c123c107ba64/modify).
+
 ## Contributing
 
 We welcome contributions, feedback, and suggestions for improving these licenses. Please open an issue or submit a pull request.
