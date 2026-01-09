@@ -160,15 +160,13 @@ class BiocentricImpactScore {
   calculateOverall() {
     const dimensionConfigs = BIOCENTRIC_API_CONFIG.dimensions;
     let weightedSum = 0;
-    let totalWeight = 0;
     
     for (const [key, value] of Object.entries(this.dimensions)) {
-      const weight = dimensionConfigs[key]?.weight || 0.167;
+      const weight = dimensionConfigs[key]?.weight || (1.0 / 6.0);
       weightedSum += value * weight;
-      totalWeight += weight;
     }
     
-    this.overall = totalWeight > 0 ? weightedSum / totalWeight : 0;
+    this.overall = weightedSum;
     return this.overall;
   }
   
@@ -197,7 +195,9 @@ class NetHarmCalculation {
     // Regeneration is the positive component
     this.regeneration_score = Math.max(0, overallScore);
     
-    // Net impact
+    // Net impact: positive regeneration reduces harm, so net = harm - regeneration
+    // Net impact > 0 means more harm than regeneration (bad)
+    // Net impact <= 0 means sufficient regeneration to offset harm (good)
     this.net_impact = this.harm_score - this.regeneration_score;
     
     // Check zero net harm threshold

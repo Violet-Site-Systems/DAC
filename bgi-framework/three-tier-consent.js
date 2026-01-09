@@ -342,8 +342,8 @@ async function performBiocentricAssessment(action, options) {
           resources: {
             energy_kwh: action.resourceFlows?.inputs?.find(i => i.type === 'energy')?.quantity || 0,
             water_liters: action.resourceFlows?.inputs?.find(i => i.type === 'water')?.quantity || 0,
-            land_hectares: action.scope?.geographic?.area_affected_km2 ? 
-              action.scope.geographic.area_affected_km2 * 100 : 0, // Convert km² to hectares
+            // Convert km² to hectares (1 km² = 100 hectares)
+            land_hectares: (action.scope?.geographic?.area_affected_km2 || 0) * 100,
             materials: []
           }
         },
