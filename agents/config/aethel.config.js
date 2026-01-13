@@ -75,7 +75,8 @@ export const availableModels = [
  * @returns {boolean} True if model supports orchestration
  */
 export function isAgenticModel(model) {
-  return model.includes('agentic');
+  const agenticModels = ['asi1-agentic', 'asi1-fast-agentic', 'asi1-extended-agentic'];
+  return agenticModels.includes(model);
 }
 
 export default aethelConfig;

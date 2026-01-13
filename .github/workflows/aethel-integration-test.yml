@@ -11,6 +11,9 @@ jobs:
   test-aethel-integration:
     runs-on: ubuntu-latest
     
+    permissions:
+      contents: read
+    
     strategy:
       matrix:
         node-version: [18.x, 20.x]
@@ -51,14 +54,13 @@ jobs:
         working-directory: ./agents
         run: npm run example:aethel
         timeout-minutes: 5
-        continue-on-error: false
       
-      - name: Report test results
-        if: always()
+      - name: Report success
+        if: success()
+        run: echo "✅ Aethel integration test passed on Node.js ${{ matrix.node-version }}"
+      
+      - name: Report failure
+        if: failure()
         run: |
-          if [ ${{ job.status }} == 'success' ]; then
-            echo "✅ Aethel integration test passed on Node.js ${{ matrix.node-version }}"
-          else
-            echo "❌ Aethel integration test failed on Node.js ${{ matrix.node-version }}"
-            exit 1
-          fi
+          echo "❌ Aethel integration test failed on Node.js ${{ matrix.node-version }}"
+          exit 1

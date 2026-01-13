@@ -247,7 +247,7 @@ export class AethelAgent extends Agent {
       });
       this.conversationHistory.push(assistantMessage);
 
-      // Trim history if needed
+      // Trim history if needed (multiply by 2 to account for user-assistant message pairs)
       if (this.conversationHistory.length > this.maxHistory * 2) {
         this.conversationHistory = this.conversationHistory.slice(-this.maxHistory * 2);
       }
@@ -316,8 +316,11 @@ export class AethelAgent extends Agent {
    * @returns {Promise<Object>} Orchestration result
    */
   async orchestrate(task, agents, options = {}) {
-    if (!this.model.includes('agentic')) {
-      throw new Error('Orchestration requires an agentic model (e.g., asi1-agentic)');
+    // Import config to check if model is agentic
+    const { isAgenticModel } = await import('../config/aethel.config.js');
+    
+    if (!isAgenticModel(this.model)) {
+      throw new Error('Orchestration requires an agentic model (asi1-agentic, asi1-fast-agentic, or asi1-extended-agentic)');
     }
 
     if (this.state !== AgentState.ACTIVE) {
