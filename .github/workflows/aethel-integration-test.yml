@@ -35,6 +35,7 @@ jobs:
       
       - name: Create .env file with API key
         working-directory: ./agents
+        if: ${{ secrets.ASI_ONE_API_KEY != '' }}
         run: |
           echo "ASI_ONE_API_KEY=${{ secrets.ASI_ONE_API_KEY }}" > .env
           echo "ASI_ONE_MODEL=asi1-fast" >> .env
@@ -43,6 +44,7 @@ jobs:
       
       - name: Verify .env file created
         working-directory: ./agents
+        if: ${{ secrets.ASI_ONE_API_KEY != '' }}
         run: |
           if [ ! -f .env ]; then
             echo "Error: .env file was not created"
@@ -52,8 +54,15 @@ jobs:
       
       - name: Run Aethel integration example
         working-directory: ./agents
+        if: ${{ secrets.ASI_ONE_API_KEY != '' }}
         run: npm run example:aethel
         timeout-minutes: 5
+      
+      - name: Skip test - API key not available
+        if: ${{ secrets.ASI_ONE_API_KEY == '' }}
+        run: |
+          echo "⚠️  Skipping Aethel integration test - ASI_ONE_API_KEY secret not configured"
+          echo "This is expected for pull requests from forks"
       
       - name: Report success
         if: success()

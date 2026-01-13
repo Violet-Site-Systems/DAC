@@ -10,6 +10,7 @@
 import { Agent, AgentState } from './Agent.js';
 import { v4 as uuidv4 } from 'uuid';
 import fetch from 'node-fetch';
+import { availableModels, isAgenticModel } from '../config/aethel.config.js';
 
 /**
  * AethelAgent Class
@@ -53,12 +54,21 @@ export class AethelAgent extends Agent {
     this.apiKey = config.apiKey;
     this.endpoint = config.endpoint || 'https://api.asi1.ai/v1/chat/completions';
     this.model = config.model || 'asi1-agentic';
+    
+    // Validate model
+    if (!availableModels.includes(this.model)) {
+      throw new Error(
+        `Invalid model: ${this.model}. Must be one of: ${availableModels.join(', ')}`
+      );
+    }
+    
     this.temperature = config.temperature !== undefined ? config.temperature : 0.7;
     this.maxTokens = config.maxTokens || 2048;
     this.maxHistory = config.maxHistory || 50;
     this.minRequestInterval = config.minRequestInterval || 100;
     this.stream = config.stream || false;
     this.timeout = config.timeout || 30000;
+    this.skipConnectionTest = config.skipConnectionTest || false;
 
     // Conversation history
     this.conversationHistory = [];
@@ -87,12 +97,15 @@ export class AethelAgent extends Agent {
    */
   async onSpawn() {
     try {
-      this._log('info', 'Testing ASI:One API connection...');
+      this._log('info', 'Initializing ASI:One agent...');
       
-      // Test API connection
-      await this.testConnection();
+      // Test API connection (optional)
+      if (!this.skipConnectionTest) {
+        this._log('info', 'Testing ASI:One API connection...');
+        await this.testConnection();
+        this._log('info', 'ASI:One API connection successful');
+      }
       
-      this._log('info', 'ASI:One API connection successful');
       this.emit('aethel-ready', {
         agentId: this.agentId,
         model: this.model,
@@ -214,6 +227,21 @@ export class AethelAgent extends Agent {
       throw new Error(`Cannot query agent in ${this.state} state`);
     }
 
+    // Validate prompt
+    if (typeof prompt !== 'string') {
+      throw new Error('Prompt must be a string');
+    }
+
+    if (prompt.length === 0) {
+      throw new Error('Prompt cannot be empty');
+    }
+
+    // Enforce reasonable maximum prompt length (100K characters)
+    const maxPromptLength = 100000;
+    if (prompt.length > maxPromptLength) {
+      throw new Error(`Prompt exceeds maximum length of ${maxPromptLength} characters`);
+    }
+
     try {
       this._log('info', 'Processing query', { promptLength: prompt.length });
 
@@ -236,6 +264,18 @@ export class AethelAgent extends Agent {
 
       // Make API request
       const response = await this.makeApiRequest(messages, options);
+
+      // Validate response structure before accessing choices[0].message
+      if (
+        !response ||
+        !Array.isArray(response.choices) ||
+        response.choices.length === 0 ||
+        !response.choices[0] ||
+        !response.choices[0].message
+      ) {
+        this._log('error', 'Invalid response format from ASI:One API', { response });
+        throw new Error('Invalid response format from ASI:One API: missing choices[0].message');
+      }
 
       // Extract assistant message
       const assistantMessage = response.choices[0].message;
@@ -316,9 +356,6 @@ export class AethelAgent extends Agent {
    * @returns {Promise<Object>} Orchestration result
    */
   async orchestrate(task, agents, options = {}) {
-    // Import config to check if model is agentic
-    const { isAgenticModel } = await import('../config/aethel.config.js');
-    
     if (!isAgenticModel(this.model)) {
       throw new Error('Orchestration requires an agentic model (asi1-agentic, asi1-fast-agentic, or asi1-extended-agentic)');
     }
@@ -368,6 +405,16 @@ Please orchestrate these agents to complete the task efficiently. Provide:
     this._log('info', 'Starting analysis', { analysisType });
 
     const dataStr = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+    
+    // Enforce reasonable maximum data size (50K characters)
+    const maxDataSize = 50000;
+    if (dataStr.length > maxDataSize) {
+      throw new Error(
+        `Data exceeds maximum size of ${maxDataSize} characters. ` +
+        `Current size: ${dataStr.length} characters. Please reduce data size or chunk the analysis.`
+      );
+    }
+    
     const analysisPrompt = `
 Analysis Type: ${analysisType}
 
