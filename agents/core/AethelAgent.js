@@ -237,6 +237,17 @@ export class AethelAgent extends Agent {
       // Make API request
       const response = await this.makeApiRequest(messages, options);
 
+      // Validate response structure before accessing choices[0].message
+      if (
+        !response ||
+        !Array.isArray(response.choices) ||
+        response.choices.length === 0 ||
+        !response.choices[0] ||
+        !response.choices[0].message
+      ) {
+        this._log('error', 'Invalid response format from ASI:One API', { response });
+        throw new Error('Invalid response format from ASI:One API: missing choices[0].message');
+      }
       // Extract assistant message
       const assistantMessage = response.choices[0].message;
 
