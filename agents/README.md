@@ -118,13 +118,6 @@ console.log(result.content);
 
 **Full documentation**: [docs/AETHEL_INTEGRATION.md](docs/AETHEL_INTEGRATION.md)
 
-## Installation
-
-```bash
-cd agents
-npm install
-```
-
 ## Quick Start
 
 ### 1. Initialize the Framework
