@@ -1,0 +1,66 @@
+name: Aethel AI Integration Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test-aethel-integration:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
+        cache-dependency-path: agents/yarn.lock      
+     
+      - name: Install dependencies
+        working-directory: ./agents
+        run: yarn install --frozen-lockfile
+      
+      - name: Create .env file with API key
+        working-directory: ./agents
+        run: |
+          echo "ASI_ONE_API_KEY=${{ secrets.ASI_ONE_API_KEY }}" > .env
+          echo "ASI_ONE_MODEL=asi1-fast" >> .env
+          echo "ASI_ONE_MAX_TOKENS=500" >> .env
+          echo "ASI_ONE_TIMEOUT=60000" >> .env
+      
+      - name: Verify .env file created
+        working-directory: ./agents
+        run: |
+          if [ ! -f .env ]; then
+            echo "Error: .env file was not created"
+            exit 1
+          fi
+          echo ".env file created successfully"
+      
+      - name: Run Aethel integration example
+        working-directory: ./agents
+        run: npm run example:aethel
+        timeout-minutes: 5
+      
+      - name: Report success
+        if: success()
+        run: echo "✅ Aethel integration test passed on Node.js ${{ matrix.node-version }}"
+      
+      - name: Report failure
+        if: failure()
+        run: |
+          echo "❌ Aethel integration test failed on Node.js ${{ matrix.node-version }}"
+          exit 1

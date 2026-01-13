@@ -2,6 +2,17 @@
 node_modules/
 package-lock.json
 
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Secrets
+*.secret.js
+**/config/*.secret.js
+api-keys.json
+credentials.json
+
 # Logs
 logs/
 *.log

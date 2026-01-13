@@ -2,9 +2,11 @@
 
 Core Agentic Infrastructure for Decentralized Autonomous Communities (DACs)
 
+**Version**: 0.2.0
+
 ## Overview
 
-This framework implements **Phase 1.1: Core Agentic Infrastructure** as defined in the DAC roadmap. It provides the foundational architecture for creating, managing, and coordinating autonomous agents within the DAC ecosystem.
+This framework implements **Phase 1.1: Core Agentic Infrastructure** as defined in the DAC roadmap. It provides the foundational architecture for creating, managing, and coordinating autonomous agents within the DAC ecosystem, now with **ASI:One AI integration** for advanced AI-powered decision-making and orchestration.
 
 ## Features
 
@@ -16,6 +18,18 @@ This framework implements **Phase 1.1: Core Agentic Infrastructure** as defined 
 - **Communication Protocol**: Inter-agent messaging with routing and delivery
 - **Health Monitoring**: Heartbeat tracking and health check system
 - **Event-Driven Design**: Extensible event system for all agent operations
+
+### ✅ AI Integration (ASI:One Aethel)
+
+- **Natural Language Processing**: AI-powered query and response capabilities
+- **Multi-Agent Orchestration**: Coordinate multiple agents for complex tasks
+- **Decision Support**: AI-assisted decision making with criteria analysis
+- **Data Analysis**: Advanced data analysis with AI insights
+- **Conversation History**: Context-aware conversations across queries
+- **Token Usage Tracking**: Monitor and optimize API usage
+- **Multiple AI Models**: Support for asi1-mini, asi1-fast, asi1-extended, and agentic variants
+
+See [Aethel Integration Documentation](docs/AETHEL_INTEGRATION.md) for detailed information.
 
 ### 🚧 In Progress (Phase 1.1.2 - Weeks 5-7)
 
@@ -39,14 +53,21 @@ This framework implements **Phase 1.1: Core Agentic Infrastructure** as defined 
 agents/
 ├── core/
 │   ├── Agent.js              # Base agent class
+│   ├── AethelAgent.js        # ASI:One AI agent (NEW)
 │   ├── AgentRegistry.js      # Agent discovery and registration
 │   └── index.js              # Main exports
 ├── communication/
 │   └── CommunicationProtocol.js  # Inter-agent messaging
-├── custody/                  # (Phase 1.1.2 - Coming soon)
-├── config/                   # Configuration files
+├── config/
+│   └── aethel.config.js      # ASI:One configuration (NEW)
+├── custody/                  # Wallet and asset management
 ├── tests/                    # Test suites
-└── docs/                     # Additional documentation
+├── docs/
+│   ├── AETHEL_INTEGRATION.md # AI integration guide (NEW)
+│   └── SECURITY_BEST_PRACTICES.md
+└── examples/
+    ├── basic-usage.js
+    └── aethel-integration.js # AI integration example (NEW)
 ```
 
 ## Installation
@@ -55,6 +76,47 @@ agents/
 cd agents
 npm install
 ```
+
+**New in v0.2.0**: ASI:One AI integration requires an API key. See [AI Integration Setup](#ai-integration-setup) below.
+
+## AI Integration Setup
+
+### Prerequisites
+
+To use the ASI:One Aethel AI features, you'll need:
+
+1. An ASI:One API key from [https://asi1.ai/dashboard](https://asi1.ai/dashboard)
+2. Node.js >= 18.0.0
+
+### Quick Setup
+
+1. Copy the environment template:
+```bash
+cp .env.example .env
+```
+
+2. Add your API key to `.env`:
+```env
+ASI_ONE_API_KEY=your_api_key_here
+```
+
+3. Start using AI-powered agents:
+```javascript
+import { AethelAgent } from './core/index.js';
+import { aethelConfig } from './config/aethel.config.js';
+
+const aiAgent = new AethelAgent({
+  shardId: 'my-dac-shard',
+  apiKey: aethelConfig.apiKey,
+  model: 'asi1-agentic'
+});
+
+await aiAgent.spawn();
+const result = await aiAgent.query('Analyze governance proposals');
+console.log(result.content);
+```
+
+**Full documentation**: [docs/AETHEL_INTEGRATION.md](docs/AETHEL_INTEGRATION.md)
 
 ## Quick Start
 
@@ -301,6 +363,12 @@ npm test
 
 # Run tests in watch mode
 npm run test:watch
+
+# Run basic example
+npm run example
+
+# Run AI integration example (requires ASI_ONE_API_KEY)
+npm run example:aethel
 ```
 
 ## Configuration
@@ -374,6 +442,6 @@ For questions or issues:
 ---
 
 **Phase:** 1.1 Core Agentic Infrastructure  
-**Version:** 0.1.0  
-**Status:** Week 1-4 Complete, Week 5-7 In Progress  
+**Version:** 0.2.0  
+**Status:** Week 1-4 Complete, Week 5-7 In Progress, AI Integration Complete  
 **Last Updated:** January 2026

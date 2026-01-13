@@ -1,13 +1,14 @@
 {
   "name": "@dac/agent-framework",
-  "version": "0.1.0",
-  "description": "Core Agentic Infrastructure for Decentralized Autonomous Communities (DACs)",
+  "version": "0.2.0",
+  "description": "Core Agentic Infrastructure for Decentralized Autonomous Communities (DACs) with ASI:One AI Integration",
   "main": "core/index.js",
   "type": "module",
   "scripts": {
     "test": "node --test tests/*.test.js",
     "test:watch": "node --test --watch tests/*.test.js",
     "example": "node examples/basic-usage.js",
+    "example:aethel": "node examples/aethel-integration.js",
     "start": "node core/index.js",
     "dev": "node --watch core/index.js"
   },
@@ -18,14 +19,20 @@
     "autonomous",
     "community",
     "web3",
-    "blockchain"
+    "blockchain",
+    "asi",
+    "asi1.ai",
+    "aethel",
+    "ai-agents"
   ],
   "author": "DAC Contributors",
   "license": "SEE LICENSE IN ../licenses/",
   "dependencies": {
     "ethers": "^6.13.0",
     "uuid": "^10.0.0",
-    "eventemitter3": "^5.0.1"
+    "eventemitter3": "^5.0.1",
+    "node-fetch": "^3.3.2",
+    "dotenv": "^16.4.1"
   },
   "devDependencies": {},
   "engines": {
