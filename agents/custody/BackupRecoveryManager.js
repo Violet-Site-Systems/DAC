@@ -85,12 +85,12 @@ export class BackupRecoveryManager extends EventEmitter {
    * @param {Object} params - Backup parameters
    * @param {string} params.walletId - Wallet ID to backup
    * @param {string} params.password - Backup encryption password
-   * @param {string} [params.password2] - Wallet decryption password if different
+   * @param {string} [params.walletPassword] - Wallet decryption password if wallet is password-protected
    * @param {Object} [params.metadata] - Additional metadata to include
    * @returns {Object} Backup information
    */
   createBackup(params) {
-    const { walletId, password, password2, metadata = {} } = params;
+    const { walletId, password, walletPassword, metadata = {} } = params;
     
     // Get wallet info
     const wallet = this.walletManager.getWallet(walletId);
@@ -99,17 +99,19 @@ export class BackupRecoveryManager extends EventEmitter {
     }
     
     try {
-      // Get wallet for backup (includes sensitive data)
-      const walletForBackup = this.walletManager.wallets.get(walletId);
+      // Decrypt wallet to get the actual keys
+      const decryptedWallet = this.walletManager.getDecryptedWalletData(walletId, walletPassword);
       
-      // Create backup data
+      // Create backup data with decrypted keys
       const backupData = {
         walletId,
         type: wallet.type,
         address: wallet.address,
         publicKey: wallet.publicKey,
-        encrypted: walletForBackup.encrypted,
         derivationPath: wallet.derivationPath,
+        // Store decrypted sensitive data
+        privateKey: decryptedWallet.privateKey,
+        mnemonic: decryptedWallet.mnemonic || null,
         metadata: {
           ...metadata,
           backupDate: new Date().toISOString(),
@@ -206,26 +208,22 @@ export class BackupRecoveryManager extends EventEmitter {
       // Restore wallet based on type
       let restoredWallet;
       
-      if (backupData.type === 'hd') {
-        // Decrypt the wallet encrypted data to get mnemonic
-        const decryptedWallet = this.walletManager._decryptWalletData(backupData.encrypted);
-        
+      if (backupData.type === 'hd' && backupData.mnemonic) {
+        // Restore HD wallet from mnemonic
         restoredWallet = this.walletManager.createHDWallet({
           agentId,
-          mnemonic: decryptedWallet.mnemonic,
+          mnemonic: backupData.mnemonic,
           accountIndex: backupData.derivationPath ? 
             parseInt(backupData.derivationPath.split('/').pop()) : 0
         });
-      } else if (backupData.type === 'simple') {
-        // Decrypt to get private key
-        const decryptedWallet = this.walletManager._decryptWalletData(backupData.encrypted);
-        
+      } else if (backupData.type === 'simple' && backupData.privateKey) {
+        // Restore simple wallet from private key
         restoredWallet = this.walletManager.createSimpleWallet({
           agentId,
-          privateKey: decryptedWallet.privateKey
+          privateKey: backupData.privateKey
         });
       } else {
-        throw new Error(`Cannot restore wallet type: ${backupData.type}`);
+        throw new Error(`Cannot restore wallet type: ${backupData.type} - missing required data`);
       }
       
       this.emit('walletRestored', {
@@ -532,7 +530,9 @@ export class BackupRecoveryManager extends EventEmitter {
   }
 
   _encryptBackup(data, password) {
-    const key = crypto.scryptSync(password, 'backup-salt', 32);
+    // Generate unique salt for each backup
+    const salt = crypto.randomBytes(32);
+    const key = crypto.scryptSync(password, salt, 32);
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
     
@@ -545,12 +545,14 @@ export class BackupRecoveryManager extends EventEmitter {
     return {
       data: encrypted,
       iv: iv.toString('hex'),
-      authTag: authTag.toString('hex')
+      authTag: authTag.toString('hex'),
+      salt: salt.toString('hex')
     };
   }
 
   _decryptBackup(encrypted, password) {
-    const key = crypto.scryptSync(password, 'backup-salt', 32);
+    const salt = Buffer.from(encrypted.salt, 'hex');
+    const key = crypto.scryptSync(password, salt, 32);
     const decipher = crypto.createDecipheriv(
       'aes-256-gcm',
       key,

@@ -284,6 +284,43 @@ export class WalletManager extends EventEmitter {
   }
 
   /**
+   * Get decrypted wallet data (for backup/recovery use)
+   * 
+   * @param {string} walletId - Wallet ID
+   * @param {string} [password] - Decryption password if set
+   * @returns {Object} Decrypted wallet data
+   */
+  getDecryptedWalletData(walletId, password) {
+    const walletInfo = this.wallets.get(walletId);
+    if (!walletInfo) {
+      throw new Error(`Wallet ${walletId} not found`);
+    }
+    
+    if (walletInfo.type === WalletType.MULTISIG) {
+      throw new Error('Cannot decrypt multi-sig wallet');
+    }
+    
+    // Decrypt wallet data
+    return this._decryptWalletData(walletInfo.encrypted, password);
+  }
+
+  /**
+   * Get wallet info including encrypted data (for backup purposes)
+   * INTERNAL USE ONLY - For BackupRecoveryManager
+   * 
+   * @param {string} walletId - Wallet ID
+   * @returns {Object} Wallet info with encrypted data
+   */
+  getWalletForBackup(walletId) {
+    const walletInfo = this.wallets.get(walletId);
+    if (!walletInfo) {
+      throw new Error(`Wallet ${walletId} not found`);
+    }
+    
+    return walletInfo;
+  }
+
+  /**
    * Rotate wallet keys (create new key, maintain old for transition period)
    * 
    * @param {string} walletId - Wallet ID to rotate
@@ -414,8 +451,11 @@ export class WalletManager extends EventEmitter {
    * @private
    */
   _encryptWalletData(data, password) {
+    // Generate unique salt for each encryption
+    const salt = crypto.randomBytes(32);
+    
     const key = password 
-      ? crypto.scryptSync(password, 'salt', 32)
+      ? crypto.scryptSync(password, salt, 32)
       : Buffer.from(this.config.encryptionKey, 'hex');
     
     const iv = crypto.randomBytes(16);
@@ -431,6 +471,7 @@ export class WalletManager extends EventEmitter {
       encrypted,
       iv: iv.toString('hex'),
       authTag: authTag.toString('hex'),
+      salt: salt.toString('hex'),
       hasPassword: !!password
     };
   }
@@ -440,8 +481,10 @@ export class WalletManager extends EventEmitter {
    * @private
    */
   _decryptWalletData(encryptedData, password) {
+    const salt = Buffer.from(encryptedData.salt, 'hex');
+    
     const key = encryptedData.hasPassword && password
-      ? crypto.scryptSync(password, 'salt', 32)
+      ? crypto.scryptSync(password, salt, 32)
       : Buffer.from(this.config.encryptionKey, 'hex');
     
     const decipher = crypto.createDecipheriv(
