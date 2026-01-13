@@ -25,13 +25,13 @@ jobs:
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-          cache-dependency-path: agents/package-lock.json
-      
+        node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
+        cache-dependency-path: agents/yarn.lock      
+     
       - name: Install dependencies
         working-directory: ./agents
-        run: npm ci
+        run: yarn install --frozen-lockfile
       
       - name: Create .env file with API key
         working-directory: ./agents
