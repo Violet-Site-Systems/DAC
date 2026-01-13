@@ -174,7 +174,7 @@ async function main() {
     await coordinatorAgent.spawn();
 
     // Send AI query request via protocol
-    const messageResponse = await protocol.send({
+    await protocol.send({
       fromAgentId: coordinatorAgent.agentId,
       toAgentId: aethelAgent.agentId,
       type: 'request',
