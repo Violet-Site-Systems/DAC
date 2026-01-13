@@ -11,25 +11,21 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 /**
- * Validate required configuration
- */
-function validateConfig() {
-  if (!process.env.ASI_ONE_API_KEY) {
-    throw new Error(
-      'ASI_ONE_API_KEY is required. Please set it in your .env file or environment variables.\n' +
-      'Get your API key from: https://asi1.ai/dashboard'
-    );
-  }
-}
-
-// Validate on load
-validateConfig();
-
-/**
  * ASI:One Aethel Configuration Object
+ *
+ * Validation of the API key is performed lazily when the key is accessed,
+ * so that importing this module does not fail if AI features are unused.
  */
 export const aethelConfig = {
-  apiKey: process.env.ASI_ONE_API_KEY,
+  get apiKey() {
+    if (!process.env.ASI_ONE_API_KEY) {
+      throw new Error(
+        'ASI_ONE_API_KEY is required. Please set it in your .env file or environment variables.\n' +
+        'Get your API key from: https://asi1.ai/dashboard'
+      );
+    }
+    return process.env.ASI_ONE_API_KEY;
+  },
   endpoint: process.env.ASI_ONE_API_ENDPOINT || 'https://api.asi1.ai/v1/chat/completions',
   model: process.env.ASI_ONE_MODEL || 'asi1-agentic',
   temperature: parseFloat(process.env.ASI_ONE_TEMPERATURE || '0.7'),
