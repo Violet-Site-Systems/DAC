@@ -7,14 +7,19 @@
 
 import { WalletManager, WalletType } from './WalletManager.js';
 import { AssetManager, AssetType, TransactionStatus } from './AssetManager.js';
+import { BackupRecoveryManager, RecoveryMethod, BackupStatus } from './BackupRecoveryManager.js';
 
 export { WalletManager, WalletType };
 export { AssetManager, AssetType, TransactionStatus };
+export { BackupRecoveryManager, RecoveryMethod, BackupStatus };
 
 export default {
   WalletManager,
   WalletType,
   AssetManager,
   AssetType,
-  TransactionStatus
+  TransactionStatus,
+  BackupRecoveryManager,
+  RecoveryMethod,
+  BackupStatus
 };
