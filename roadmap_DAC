@@ -2,6 +2,9 @@ Roadmap for Decentralized Autonomous Communities (DACs)
 Version 1.3
 
 (Leveraging Next-Gen DeAI Economy Principles & Moral Technologies)
+
+**For detailed implementation steps with timelines and success criteria, see roadmap_DAC_implementation_steps.md**
+
 Vision: 
 
 High-Level: 
@@ -17,7 +20,7 @@ DACs embody a new paradigm of community intelligence, where the collective intel
 
 Guiding Principles & Moral Technologies: 
 
-To ensure our DACs mature into truly robust, equitable, and intelligent systems, we embed the following foundational principles and design generator functions based on Dr. Mihaela Ulieru's framework. These act as the "moral technology" underpinning the entire ecosystem: Context - Please see:  Moral Generator Functions
+To ensure our DACs mature into truly robust, equitable, and intelligent systems, we embed the following foundational principles and design generator functions based on Dr. Mihaela Ulieru's framework. These act as the "moral technology" underpinning the entire ecosystem. See Section 2.2 below for details on Moral Generator Functions.
 
 Our Foundational Principals (The Digital Commons Tenets):
 
@@ -84,9 +87,8 @@ Establish secure, private, and scalable communication protocols for agents, faci
 Implement self-custody mechanisms for agent assets and data, ensuring each DAC's autonomy and resource control, while instilling a sense of "Stewardship over ownership."
 
 Tokenomic Integration & Smart Contract Suite (Foundational for Communities)
-Next-Gen DeAI Ecosystem_ Tokenomics and Shard Economy_copy.docx
 
-Integrate the core tokenomic architecture from the Next-Gen DeAI Whitepaper: ASI as the base token, stakedASI for dedicated community participation, and shard-level reserves for yield distribution directly to DAC members.
+Integrate the core tokenomic architecture from the Next-Gen DeAI Whitepaper: ASI as the base token, stakedASI for dedicated community participation, and shard-level reserves for yield distribution directly to DAC members. For detailed implementation steps, see roadmap_DAC_implementation_steps.md Section 1.2.
 Design and deploy smart contracts for DAC creation, formally registered as "shards" in the DeAI economy, enabling their inherent economic autonomy with transparent rules to build "Clarity and Transparency in Intent Drive Trust and Beneficial Adaptation."
 Implement initial mechanisms for DACs to generate fees based on their collective output or services, with rules for burning a portion, funding shared community resources (like validators or a community treasury), and contributing to staking rewards for active members, rewarding "Contribution to collective well-being."
 Initial Community Governance & Health Monitoring Prototyping:
@@ -118,7 +120,7 @@ Access Commons – The SDK issues Access‑Tokens (non‑transferable ERC‑1155
 Reciprocity Commons – All data, annotation, and biocentric‑data contributions are recorded in a Reciprocity Ledger. Contributors receive a share of the DAC’s revenue in the TRUST token proportional to the immutable contribution weight assigned at ingestion.
 
 Governance Charter Template
-Governance Charter
+See governance_charter_template.md for complete governance framework.
 
 Phase 1 – Foundations
 Deploy ValueSharingModule alongside the Justice Module; configure default shares (5 % CBF, 2 % GR).
@@ -130,7 +132,7 @@ Charter Reference
 Phase 1 – Foundations
 Deploy the Council (Section 2) and the Proposal Manager contract; seed the Justice Module with the authority to execute emergency pauses.
 
-eurodivergent‑Biocentric AI Alignment theory.
+For background on neurodivergent‑biocentric AI alignment theory, see glossary_DAC.md.
 Expected Outcomes:
 
 An operational core agent framework capable of deploying DACs as economically aware "shards," designed with intrinsic transparency and communication protocols that foster H+AI partnerships.
@@ -230,10 +232,16 @@ The digital commons flourishing as a testament to self-evolving AI-driven econom
 
 
 Glossary:
-Glossary for DAC Roadmap
+See glossary_DAC.md for comprehensive terminology definitions.
 
 Document Editing Log:
-(DAS) Roadmap Edit Log
+See edit_log_DAC.md for complete version history and change tracking.
+
+Supporting Documentation:
+- roadmap_DAC_implementation_steps.md - Detailed implementation guide with timelines and success criteria
+- governance_charter_template.md - Complete governance framework template
+- glossary_DAC.md - Comprehensive terminology reference
+- edit_log_DAC.md - Version history and change tracking
 
 
 
