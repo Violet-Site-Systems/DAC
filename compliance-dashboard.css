@@ -84,6 +84,25 @@ body {
     margin-top: 10px;
 }
 
+.disclaimer-banner {
+    background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
+    border: 2px solid #fc8181;
+    border-radius: 8px;
+    padding: 16px 24px;
+    margin: 20px auto;
+    max-width: 900px;
+    color: #742a2a;
+    font-size: 0.95em;
+    line-height: 1.6;
+    text-align: left;
+    box-shadow: 0 4px 8px rgba(252, 129, 129, 0.2);
+}
+
+.disclaimer-banner strong {
+    color: #742a2a;
+    font-weight: 700;
+}
+
 /* Overall Compliance Section */
 .compliance-overview {
     padding: 40px;

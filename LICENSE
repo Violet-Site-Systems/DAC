@@ -1,0 +1,104 @@
+# License Information for DAC Repository
+
+This repository contains multiple components with different licensing:
+
+## License Texts (Sustainability Licenses)
+
+The six BGINexus.io sustainability license texts in the `/licenses` directory are released under:
+
+**CC0 1.0 Universal (Public Domain Dedication)**
+
+To the extent possible under law, the authors have waived all copyright and related or neighboring rights to these license texts. This work is published from: United States.
+
+You can copy, modify, distribute and perform the work, even for commercial purposes, all without asking permission.
+
+Full CC0 1.0 text: https://creativecommons.org/publicdomain/zero/1.0/
+
+## Source Code and Agent Framework
+
+The source code in this repository, including the agent framework (`/agents`), BGI framework implementation (`/bgi-framework`), and related code, is released under a **dual license**:
+
+### Base License: MIT License
+
+Copyright (c) 2026 DAC Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+### Additional Sustainability Commitments
+
+In addition to the MIT License terms above, users of this code are **encouraged** (though not legally required) to follow these sustainability principles from the BGINexus.io license framework:
+
+**From Sustainable Use License (SUL-1.0):**
+- Optimize code for energy efficiency
+- Prefer renewable energy-powered infrastructure when deploying
+- Measure and minimize carbon footprint for large deployments
+
+**From Social Benefit License (SBL-1.0):**
+- Use the software for public good and social benefit
+- Ensure accessibility in derivative works
+- Avoid discriminatory applications
+
+**From Ethical AI License (EAL-1.0):** *(Applicable to AI/ML components)*
+- Implement transparency and explainability
+- Conduct bias testing and fairness assessments
+- Respect privacy and data protection principles
+
+**From Community Governance License (CGL-1.0):**
+- Foster inclusive community participation
+- Maintain transparent decision-making processes
+- Respect diverse perspectives in governance
+
+**Note on "Encouraged" vs "Required":** We structure these as encouraged practices rather than binding requirements to maintain compatibility with existing open-source ecosystems while promoting sustainable development practices. Organizations with stronger sustainability mandates may choose to fork this code under full SUL-1.0, SBL-1.0, EAL-1.0, or CGL-1.0 licensing.
+
+**For reference, see:**
+- [Sustainable Use License (SUL-1.0)](./licenses/SUL-1.0.md)
+- [Social Benefit License (SBL-1.0)](./licenses/SBL-1.0.md)
+- [Ethical AI License (EAL-1.0)](./licenses/EAL-1.0.md)
+- [Community Governance License (CGL-1.0)](./licenses/CGL-1.0.md)
+
+## Documentation and Website Content
+
+Documentation, website content (HTML/CSS/JS), and other written materials are released under:
+
+**Creative Commons Attribution 4.0 International (CC BY 4.0)**
+
+This license requires that reusers give credit to the creator. It allows reusers to distribute, remix, adapt, and build upon the material in any medium or format, even for commercial purposes.
+
+Full CC BY 4.0 text: https://creativecommons.org/licenses/by/4.0/
+
+---
+
+## Summary
+
+- **License Texts**: CC0 1.0 Universal (Public Domain)
+- **Source Code**: MIT License + Encouraged Sustainability Commitments (SUL-1.0, SBL-1.0, EAL-1.0, CGL-1.0 principles)
+- **Documentation**: CC BY 4.0
+
+## Why This Approach?
+
+This repository creates and promotes new sustainability licenses while maintaining broad compatibility with existing open-source ecosystems. By using MIT as the base license with encouraged sustainability commitments, we:
+
+1. **Demonstrate by example** - Show how sustainability principles can be integrated with existing licenses
+2. **Maintain compatibility** - Ensure the code can be used in existing MIT-licensed projects
+3. **Promote adoption** - Encourage but don't mandate sustainability practices
+4. **Provide a transition path** - Organizations can adopt full sustainability licenses when ready
+
+For projects requiring stricter sustainability compliance, we recommend using the full sustainability licenses directly. See `/licenses/README.md` for guidance on choosing the right license.
+
+For specific details about any component, please refer to the relevant directory's README or documentation.

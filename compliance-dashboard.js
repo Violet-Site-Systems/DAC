@@ -1,3 +1,29 @@
+/**
+ * Compliance Dashboard - Demonstration Version
+ * 
+ * ⚠️ IMPORTANT: This dashboard displays SIMULATED DATA for demonstration purposes.
+ * 
+ * This is a design mockup and prototype that illustrates the intended compliance 
+ * tracking architecture for the DAC project. The metrics, scores, and compliance 
+ * indicators shown are NOT based on actual runtime monitoring or live system 
+ * measurements.
+ * 
+ * Actual implementation of real-time monitoring, data collection from live systems,
+ * and integration with production BGI framework metrics is part of the project roadmap
+ * and requires additional development work.
+ * 
+ * Current functionality:
+ * - Static data visualization
+ * - UI/UX demonstration
+ * - Planning and design validation
+ * 
+ * Future implementation:
+ * - Real-time data collection from DAC agents
+ * - Live BGI framework metrics monitoring
+ * - Actual compliance score calculations
+ * - Integration with production systems
+ */
+
 // Dashboard Data and Initialization
 document.addEventListener('DOMContentLoaded', function() {
     initializeDashboard();

@@ -1,5 +1,28 @@
 # ASI:One Aethel AI Integration
 
+## ⚠️ Important Notice
+
+**This integration is for internal development and testing purposes only.**
+
+The ASI:One Aethel AI integration is designed for:
+- Internal development and experimentation
+- Proof-of-concept demonstrations
+- Research into AI-powered agent orchestration
+- Testing AI governance patterns
+
+**This is NOT intended for production use in its current form.**
+
+### For Fork Contributors & External PRs
+
+If you're contributing to this repository via a forked PR:
+- **You do NOT need an ASI:One API key** to contribute
+- The CI/CD workflows will **automatically skip** Aethel integration tests when API credentials are unavailable
+- This is expected behavior and will not cause PR failures
+- You can still work on and test all other components of the agent framework
+- Only maintainers with API access need to verify Aethel integration functionality
+
+See the [Contributing Without API Access](#contributing-without-api-access) section below for details.
+
 ## Overview
 
 This document provides comprehensive guidance for integrating ASI:One AI capabilities into the DAC Agent Framework through the `AethelAgent` class. ASI:One provides advanced AI models with natural language processing, reasoning, and multi-agent orchestration capabilities.
@@ -606,6 +629,31 @@ async function cachedQuery(prompt) {
 ## Troubleshooting
 
 ### Common Issues
+
+#### 0. Contributing Without API Access (Fork PRs)
+
+**Situation**: You're contributing via a forked repository and don't have an ASI:One API key.
+
+**This is perfectly fine!** The repository is designed to work this way:
+
+**What happens:**
+- CI/CD workflows detect when the `ASI_ONE_API_KEY` secret is unavailable
+- Aethel integration tests are **automatically skipped** with a clear message
+- All other tests and checks continue to run normally
+- Your PR will not fail due to missing API credentials
+
+**What you can do:**
+- Work on any non-Aethel components of the agent framework
+- Test your changes locally without the Aethel integration
+- Submit PRs with confidence - they will be properly tested by maintainers
+- Focus on core agent functionality, protocol, registry, custody, etc.
+
+**What you cannot do without an API key:**
+- Run the Aethel integration example (`npm run example:aethel`)
+- Test Aethel-specific features locally
+- Verify AI query responses
+
+**For maintainers:** If you need to test Aethel functionality on a fork PR, manually trigger the workflow after merging to a branch with access to the secret, or pull the PR locally and test with your credentials.
 
 #### 1. "ASI_ONE_API_KEY is required" Error
 
