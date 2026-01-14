@@ -225,6 +225,37 @@ Implements "no black-box decisions" as required by BGI Framework §1.2 (Real-tim
 - [JavaScript Module](./reasoning-lineage-transparency.js) - Core reasoning lineage engine
 - [Interactive Demo](./reasoning-lineage-transparency-example.html) - Live demonstration
 
+### 11. [Jacobian/CFSA Monitoring System](./jacobian-cfsa-implementation.md) 🆕
+
+**Status**: Reference Implementation (Option B)  
+**Related Issue**: Use Case Gathering and Option B Implementation
+
+Implements Coherence-First Sensitivity Analysis (CFSA) using Jacobian matrices for quantitative BGI Framework validation. Provides mathematical rigor for measuring alignment through real-time sensitivity analysis.
+
+**Key Features**:
+
+- Jacobian matrix computation across all framework layers (ecological, cognitive, consent, temporal)
+- Real-time sensitivity tracking: ∂(reward)/∂(ecosystem), ∂(decisions)/∂(temporal_params)
+- Determinant-based robustness metrics for consent validation
+- Eigenvalue analysis for detecting reasoning brittleness
+- Singular value decomposition for authority balance monitoring
+- #CoherenceTriumph logging when stability exceeds thresholds
+- Automated intervention protocols (LOVE Protocol activation)
+
+**Three Real-World Use Cases Documented**:
+
+1. **AGI Compliance Monitoring**: Urban infrastructure management with continuous ecological sensitivity tracking (||∂reward/∂ecosystem|| ≥ 0.2)
+2. **Decentralized Governance Validation**: DAO authority balance monitoring using SVD to prevent human/AGI power imbalances (>3σ threshold)
+3. **Bioregional Optimization Stability**: Climate adaptation AI with temporal brittleness detection via determinant analysis (det(J_temporal) ≠ 0)
+
+**Implementation**:
+
+- [Complete Documentation](./jacobian-cfsa-implementation.md) - Full framework specification with use cases
+- [JavaScript Module](./jacobian-cfsa-monitor.js) - Core CFSA computation and analysis engine
+- [Interactive Demo](./jacobian-cfsa-example.html) - Live demonstration with adjustable parameters
+
+> **Note**: This is an Option B reference implementation provided for Dr. Em's review and community feedback. It demonstrates how mathematical rigor can be integrated into BGI compliance systems, addressing Gap 1.1 from the BGI Gap Analysis.
+
 ## BGI Framework Core Principles
 
 ### 1. Biocentric Primacy (§1.1)
