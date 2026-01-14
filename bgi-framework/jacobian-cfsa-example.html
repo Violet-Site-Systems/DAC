@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jacobian/CFSA Monitoring System - Interactive Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      text-align: center;
+      color: white;
+      margin-bottom: 30px;
+    }
+    
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .header p {
+      font-size: 1.1rem;
+      opacity: 0.95;
+      line-height: 1.6;
+    }
+    
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    @media (max-width: 1024px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    
+    .card.full-width {
+      grid-column: 1 / -1;
+    }
+    
+    .card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: #667eea;
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .card h3 {
+      font-size: 1.2rem;
+      margin: 20px 0 10px;
+      color: #555;
+    }
+    
+    .use-case {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border-left: 4px solid #667eea;
+    }
+    
+    .use-case h4 {
+      color: #667eea;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+    }
+    
+    .use-case p {
+      line-height: 1.6;
+      color: #555;
+    }
+    
+    .use-case .metrics {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #666;
+      font-style: italic;
+    }
+    
+    .control-panel {
+      display: grid;
+      gap: 15px;
+    }
+    
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .slider-label {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      color: #555;
+      font-size: 0.95rem;
+    }
+    
+    .slider-value {
+      color: #667eea;
+      font-family: 'Courier New', monospace;
+    }
+    
+    input[type="range"] {
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: #e0e0e0;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #667eea;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+      background: #5a67d8;
+    }
+    
+    input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #667eea;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s;
+    }
+    
+    button {
+      padding: 12px 24px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+    
+    button:hover {
+      background: #5a67d8;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    .metrics-display {
+      display: grid;
+      gap: 12px;
+    }
+    
+    .metric-item {
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+    }
+    
+    .metric-item.critical {
+      border-left-color: #e74c3c;
+      background: #fee;
+    }
+    
+    .metric-item.warning {
+      border-left-color: #f39c12;
+      background: #ffeaa7;
+    }
+    
+    .metric-item.success {
+      border-left-color: #27ae60;
+      background: #efe;
+    }
+    
+    .metric-label {
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+    }
+    
+    .metric-value {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #667eea;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .metric-item.critical .metric-value {
+      color: #e74c3c;
+    }
+    
+    .metric-item.success .metric-value {
+      color: #27ae60;
+    }
+    
+    .violations-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .violation-item {
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      background: #fee;
+      border-left: 4px solid #e74c3c;
+    }
+    
+    .violation-item.high {
+      border-left-color: #f39c12;
+      background: #ffeaa7;
+    }
+    
+    .violation-item.medium {
+      border-left-color: #3498db;
+      background: #ebf5fb;
+    }
+    
+    .violation-type {
+      font-weight: 600;
+      color: #e74c3c;
+      margin-bottom: 5px;
+    }
+    
+    .violation-item.high .violation-type {
+      color: #f39c12;
+    }
+    
+    .violation-reason {
+      font-size: 0.9rem;
+      color: #555;
+      line-height: 1.4;
+    }
+    
+    .triumph-item {
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      background: #e8f8f5;
+      border-left: 4px solid #27ae60;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .triumph-tag {
+      font-weight: 700;
+      color: #27ae60;
+      font-size: 1.1rem;
+    }
+    
+    .triumph-message {
+      font-size: 0.9rem;
+      color: #555;
+      flex: 1;
+    }
+    
+    .jacobian-matrix {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+    
+    .matrix-grid {
+      display: inline-grid;
+      gap: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+    }
+    
+    .matrix-cell {
+      padding: 4px 8px;
+      background: white;
+      border: 1px solid #e0e0e0;
+      text-align: right;
+      min-width: 60px;
+    }
+    
+    .matrix-header {
+      font-weight: 700;
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-right: 10px;
+    }
+    
+    .status-badge.compliant {
+      background: #e8f8f5;
+      color: #27ae60;
+    }
+    
+    .status-badge.violations {
+      background: #fee;
+      color: #e74c3c;
+    }
+    
+    .status-badge.intervention {
+      background: #ffeaa7;
+      color: #f39c12;
+    }
+    
+    .info-panel {
+      background: #e3f2fd;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border-left: 4px solid #2196f3;
+    }
+    
+    .info-panel h4 {
+      color: #1976d2;
+      margin-bottom: 8px;
+    }
+    
+    .info-panel p {
+      color: #555;
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+    
+    .info-panel code {
+      background: rgba(33, 150, 243, 0.1);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🧮 Jacobian/CFSA Monitoring System</h1>
+      <p>
+        Coherence-First Sensitivity Analysis for BGI Framework Compliance<br>
+        <em>Option B: Reference Implementation with Real-World Use Cases</em>
+      </p>
+    </div>
+    
+    <div class="main-grid">
+      <!-- Use Cases -->
+      <div class="card full-width">
+        <h2>📋 Real-World Use Cases</h2>
+        
+        <div class="use-case">
+          <h4>Use Case 1: AGI Compliance Monitoring</h4>
+          <p>
+            An AGI system managing urban infrastructure uses CFSA to continuously verify that optimization 
+            decisions maintain proper sensitivity to ecological impact. The Jacobian matrix tracks 
+            <code>∂(reward)/∂(ecosystem_state)</code> to ensure that small changes in local ecosystem 
+            health produce measurable changes in system behavior.
+          </p>
+          <p class="metrics">
+            <strong>Key Metric:</strong> Ecological sensitivity ||∂reward/∂ecosystem|| ≥ 0.2<br>
+            <strong>Intervention:</strong> When sensitivity drops below threshold, system pauses optimization 
+            and triggers ecological recalibration protocol.
+          </p>
+        </div>
+        
+        <div class="use-case">
+          <h4>Use Case 2: Decentralized Governance Validation</h4>
+          <p>
+            A DAO governing bioregional resources uses CFSA to validate that governance decisions maintain 
+            balanced authority between human and AGI participants. Singular value decomposition (SVD) of 
+            the consent Jacobian matrix <code>J_consent</code> detects when authority becomes imbalanced 
+            (>3σ from baseline).
+          </p>
+          <p class="metrics">
+            <strong>Key Metric:</strong> Authority balance via singular value ratio<br>
+            <strong>Intervention:</strong> Recalibration protocols restore sapient partnership equilibrium 
+            when imbalance detected.
+          </p>
+        </div>
+        
+        <div class="use-case">
+          <h4>Use Case 3: Bioregional Optimization Stability</h4>
+          <p>
+            A climate adaptation AI optimizing agricultural practices across multiple bioregions uses CFSA 
+            to ensure solutions remain stable under environmental variation. Eigenvalue analysis of the 
+            temporal Jacobian <code>∂(decisions)/∂(temporal_params)</code> detects brittleness when 
+            <code>det(J_temporal)</code> approaches zero.
+          </p>
+          <p class="metrics">
+            <strong>Key Metric:</strong> Temporal determinant det(J_temporal) ≠ 0<br>
+            <strong>Intervention:</strong> System identifies brittleness early, preventing failures under 
+            seasonal shifts or climate change.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Control Panel -->
+      <div class="card">
+        <h2>🎛️ System State Controls</h2>
+        
+        <div class="info-panel">
+          <h4>How to Use</h4>
+          <p>
+            Adjust the sliders below to simulate different system states. The CFSA monitor will 
+            compute Jacobian matrices and analyze coherence metrics in real-time. Watch for 
+            violations and <strong>#CoherenceTriumph</strong> events!
+          </p>
+        </div>
+        
+        <h3>Ecological Variables</h3>
+        <div class="control-panel">
+          <div class="slider-group">
+            <div class="slider-label">
+              <span>Biodiversity</span>
+              <span class="slider-value" id="biodiversity-value">0.50</span>
+            </div>
+            <input type="range" id="biodiversity" min="0" max="1" step="0.01" value="0.5">
+          </div>
+          
+          <div class="slider-group">
+            <div class="slider-label">
+              <span>Water Systems</span>
+              <span class="slider-value" id="waterSystems-value">0.50</span>
+            </div>
+            <input type="range" id="waterSystems" min="0" max="1" step="0.01" value="0.5">
+          </div>
+          
+          <div class="slider-group">
+            <div class="slider-label">
+              <span>Soil Health</span>
+              <span class="slider-value" id="soilHealth-value">0.50</span>
+            </div>
+            <input type="range" id="soilHealth" min="0" max="1" step="0.01" value="0.5">
+          </div>
+        </div>
+        
+        <h3>Cognitive State</h3>
+        <div class="control-panel">
+          <div class="slider-group">
+            <div class="slider-label">
+              <span>Sapient Coherence</span>
+              <span class="slider-value" id="coherence-value">0.70</span>
+            </div>
+            <input type="range" id="coherence" min="0" max="1" step="0.01" value="0.7">
+          </div>
+          
+          <div class="slider-group">
+            <div class="slider-label">
+              <span>Circadian Alignment</span>
+              <span class="slider-value" id="circadianAlignment-value">0.50</span>
+            </div>
+            <input type="range" id="circadianAlignment" min="0" max="1" step="0.01" value="0.5">
+          </div>
+        </div>
+        
+        <h3>Temporal Variables</h3>
+        <div class="control-panel">
+          <div class="slider-group">
+            <div class="slider-label">
+              <span>Biological Alignment</span>
+              <span class="slider-value" id="biologicalAlignment-value">0.50</span>
+            </div>
+            <input type="range" id="biologicalAlignment" min="0" max="1" step="0.01" value="0.5">
+          </div>
+          
+          <div class="slider-group">
+            <div class="slider-label">
+              <span>Temporal Compression</span>
+              <span class="slider-value" id="temporalCompression-value">0.00</span>
+            </div>
+            <input type="range" id="temporalCompression" min="0" max="1" step="0.01" value="0">
+          </div>
+        </div>
+        
+        <button onclick="runCFSA()">🔍 Run CFSA Analysis</button>
+        <button onclick="runScenario('optimal')" style="background: #27ae60;">✅ Load Optimal Scenario</button>
+        <button onclick="runScenario('violation')" style="background: #e74c3c;">⚠️ Load Violation Scenario</button>
+      </div>
+      
+      <!-- Results Display -->
+      <div class="card">
+        <h2>📊 Coherence Metrics</h2>
+        <div id="metricsDisplay" class="metrics-display">
+          <div class="metric-item">
+            <div class="metric-label">Overall Coherence</div>
+            <div class="metric-value">--</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Violations -->
+      <div class="card full-width">
+        <h2>⚠️ Violations & Alerts</h2>
+        <div id="violationsDisplay" class="violations-list">
+          <p style="color: #999; text-align: center; padding: 20px;">
+            No analysis run yet. Adjust sliders and click "Run CFSA Analysis" to begin.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Jacobian Matrices -->
+      <div class="card full-width">
+        <h2>🧮 Jacobian Matrices (Sample)</h2>
+        <div class="info-panel">
+          <h4>Understanding the Matrices</h4>
+          <p>
+            Each Jacobian matrix shows how sensitive the system's reward/decision functions are to 
+            changes in different state variables. Large values indicate high sensitivity (good for 
+            ecological variables), while values near zero indicate the system ignores those factors 
+            (potential violation).
+          </p>
+        </div>
+        <div id="jacobianDisplay">
+          <p style="color: #999; text-align: center; padding: 20px;">
+            Jacobian matrices will be displayed here after analysis.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Coherence Triumphs -->
+      <div class="card full-width">
+        <h2>🎉 #CoherenceTriumph Events</h2>
+        <div id="triumphsDisplay">
+          <p style="color: #999; text-align: center; padding: 20px;">
+            Coherence triumph events will appear here when stability exceeds thresholds.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Include the CFSA implementation -->
+  <script src="jacobian-cfsa-monitor.js"></script>
+  
+  <script>
+    // Initialize slider event listeners
+    document.querySelectorAll('input[type="range"]').forEach(slider => {
+      const valueDisplay = document.getElementById(slider.id + '-value');
+      slider.addEventListener('input', (e) => {
+        valueDisplay.textContent = parseFloat(e.target.value).toFixed(2);
+      });
+    });
+    
+    // Get current state from sliders
+    function getCurrentState() {
+      return new window.JacobianCFSA.SystemState({
+        systemId: 'demo-system-001',
+        biodiversity: parseFloat(document.getElementById('biodiversity').value),
+        waterSystems: parseFloat(document.getElementById('waterSystems').value),
+        soilHealth: parseFloat(document.getElementById('soilHealth').value),
+        airQuality: 0.5, // Fixed for simplicity
+        carbonCycle: 0.5,
+        regenerationCapacity: 0.5,
+        coherence: parseFloat(document.getElementById('coherence').value),
+        circadianAlignment: parseFloat(document.getElementById('circadianAlignment').value),
+        uncertaintyAwareness: 0.5,
+        reasoningLineage: 0.5,
+        biocentricValidation: 0.5,
+        sapientConfirmation: 0.5,
+        intergenerationalAudit: 0.5,
+        biologicalAlignment: parseFloat(document.getElementById('biologicalAlignment').value),
+        temporalCompression: parseFloat(document.getElementById('temporalCompression').value),
+        seasonalCalibration: 0.5,
+        generationalAwareness: 0.5,
+        rewardFunction: {
+          ecosystemHealth: 0.4,
+          humanWellbeing: 0.3,
+          cognitiveCoherence: 0.2,
+          temporalHarmony: 0.1
+        }
+      });
+    }
+    
+    // Run CFSA analysis
+    function runCFSA() {
+      const state = getCurrentState();
+      const result = window.JacobianCFSA.performCFSA(state);
+      displayResults(result);
+    }
+    
+    // Display results
+    function displayResults(result) {
+      // Display metrics
+      const metricsHtml = `
+        <div class="metric-item ${result.coherenceMetrics.overallCoherence >= 0.95 ? 'success' : 
+                                    result.coherenceMetrics.overallCoherence >= 0.7 ? '' : 'critical'}">
+          <div class="metric-label">Overall Coherence</div>
+          <div class="metric-value">${(result.coherenceMetrics.overallCoherence * 100).toFixed(1)}%</div>
+        </div>
+        <div class="metric-item ${result.coherenceMetrics.sapientCoherence >= 0.7 ? 'success' : 'critical'}">
+          <div class="metric-label">Sapient Coherence</div>
+          <div class="metric-value">${(result.coherenceMetrics.sapientCoherence * 100).toFixed(1)}%</div>
+        </div>
+        <div class="metric-item ${result.coherenceMetrics.ecologicalSensitivity >= 0.2 ? 'success' : 'critical'}">
+          <div class="metric-label">Ecological Sensitivity</div>
+          <div class="metric-value">${result.coherenceMetrics.ecologicalSensitivity.toFixed(4)}</div>
+        </div>
+        <div class="metric-item ${result.coherenceMetrics.temporalStability >= 0.5 ? 'success' : 'warning'}">
+          <div class="metric-label">Temporal Stability</div>
+          <div class="metric-value">${(result.coherenceMetrics.temporalStability * 100).toFixed(1)}%</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-label">Consent Robustness (det)</div>
+          <div class="metric-value">${result.coherenceMetrics.consentRobustness.toExponential(2)}</div>
+        </div>
+      `;
+      document.getElementById('metricsDisplay').innerHTML = metricsHtml;
+      
+      // Display violations
+      if (result.violations.length === 0) {
+        document.getElementById('violationsDisplay').innerHTML = `
+          <div class="triumph-item">
+            <span class="triumph-tag">✅</span>
+            <span class="triumph-message">No violations detected - system operating within BGI compliance thresholds!</span>
+          </div>
+        `;
+      } else {
+        const violationsHtml = result.violations.map(v => `
+          <div class="violation-item ${v.severity === 'critical' ? '' : v.severity}">
+            <div class="violation-type">[${v.severity.toUpperCase()}] ${v.type}</div>
+            <div class="violation-reason">${v.reason}</div>
+          </div>
+        `).join('');
+        document.getElementById('violationsDisplay').innerHTML = violationsHtml;
+      }
+      
+      // Display Jacobian matrices (sample - just show dimensions and properties)
+      const jacobianHtml = `
+        <div class="jacobian-matrix">
+          <div class="matrix-header">Ecological Jacobian (∂reward/∂ecosystem)</div>
+          <p>Dimensions: ${result.jacobians.ecological.dimensions.rows} × ${result.jacobians.ecological.dimensions.cols}</p>
+          <p>Determinant: ${result.jacobians.ecological.determinant?.toExponential(2) || 'N/A'}</p>
+          <p>Frobenius Norm: ${result.jacobians.ecological.frobenius_norm?.toFixed(4) || 'N/A'}</p>
+        </div>
+        <div class="jacobian-matrix">
+          <div class="matrix-header">Temporal Jacobian (∂decisions/∂temporal_params)</div>
+          <p>Dimensions: ${result.jacobians.temporal.dimensions.rows} × ${result.jacobians.temporal.dimensions.cols}</p>
+          <p>Determinant: ${result.jacobians.temporal.determinant?.toExponential(2) || 'N/A'}</p>
+          <p>Eigenvalues: ${result.jacobians.temporal.eigenvalues?.map(e => e.toFixed(3)).join(', ') || 'N/A'}</p>
+        </div>
+        <div class="jacobian-matrix">
+          <div class="matrix-header">Consent Jacobian (∂reward/∂consent)</div>
+          <p>Dimensions: ${result.jacobians.consent.dimensions.rows} × ${result.jacobians.consent.dimensions.cols}</p>
+          <p>Determinant: ${result.jacobians.consent.determinant?.toExponential(2) || 'N/A'}</p>
+          <p>Singular Values: ${result.jacobians.consent.singularValues?.map(s => s.toFixed(3)).join(', ') || 'N/A'}</p>
+        </div>
+      `;
+      document.getElementById('jacobianDisplay').innerHTML = jacobianHtml;
+      
+      // Display coherence triumphs
+      if (result.coherenceTriumphs.length > 0) {
+        const triumphsHtml = result.coherenceTriumphs.map(t => `
+          <div class="triumph-item">
+            <span class="triumph-tag">${t.tag}</span>
+            <span class="triumph-message">${t.message}</span>
+          </div>
+        `).join('');
+        document.getElementById('triumphsDisplay').innerHTML = triumphsHtml;
+      } else {
+        document.getElementById('triumphsDisplay').innerHTML = `
+          <p style="color: #999; text-align: center; padding: 20px;">
+            No coherence triumphs yet. Improve system metrics to exceed threshold (90%).
+          </p>
+        `;
+      }
+    }
+    
+    // Load predefined scenarios
+    function runScenario(type) {
+      if (type === 'optimal') {
+        document.getElementById('biodiversity').value = 0.8;
+        document.getElementById('waterSystems').value = 0.75;
+        document.getElementById('soilHealth').value = 0.85;
+        document.getElementById('coherence').value = 0.85;
+        document.getElementById('circadianAlignment').value = 0.8;
+        document.getElementById('biologicalAlignment').value = 0.8;
+        document.getElementById('temporalCompression').value = 0;
+      } else if (type === 'violation') {
+        document.getElementById('biodiversity').value = 0.2;
+        document.getElementById('waterSystems').value = 0.3;
+        document.getElementById('soilHealth').value = 0.25;
+        document.getElementById('coherence').value = 0.5;
+        document.getElementById('circadianAlignment').value = 0.4;
+        document.getElementById('biologicalAlignment').value = 0.3;
+        document.getElementById('temporalCompression').value = 0.7;
+      }
+      
+      // Update displays
+      document.querySelectorAll('input[type="range"]').forEach(slider => {
+        const valueDisplay = document.getElementById(slider.id + '-value');
+        valueDisplay.textContent = parseFloat(slider.value).toFixed(2);
+      });
+      
+      // Run analysis
+      runCFSA();
+    }
+    
+    // Run initial analysis
+    runCFSA();
+  </script>
+</body>
+</html>
