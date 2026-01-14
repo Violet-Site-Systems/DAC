@@ -177,7 +177,7 @@ async function main() {
     await protocol.send({
       fromAgentId: coordinatorAgent.agentId,
       toAgentId: aethelAgent.agentId,
-      type: 'request',
+      type: 'notification',
       payload: {
         type: 'ai-query',
         payload: {
