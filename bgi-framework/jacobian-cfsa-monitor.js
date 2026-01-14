@@ -444,32 +444,24 @@ function computeNumericalJacobian(f, x, epsilon = 1e-6) {
  */
 function computeEcologicalJacobian(state, config) {
   const rewardFunction = (ecologicalVars) => {
-    // Create modified state with preserved nested structure
-    const modState = new SystemState({
-      systemId: state.systemId,
-      biodiversity: ecologicalVars[0],
-      waterSystems: ecologicalVars[1],
-      soilHealth: ecologicalVars[2],
-      airQuality: ecologicalVars[3],
-      carbonCycle: ecologicalVars[4],
-      regenerationCapacity: ecologicalVars[5],
-      // Preserve other state variables
-      coherence: state.cognitive.coherence,
-      circadianAlignment: state.cognitive.circadianAlignment,
-      uncertaintyAwareness: state.cognitive.uncertaintyAwareness,
-      reasoningLineage: state.cognitive.reasoningLineage,
-      biocentricValidation: state.consent.biocentricValidation,
-      sapientConfirmation: state.consent.sapientConfirmation,
-      intergenerationalAudit: state.consent.intergenerationalAudit,
-      biologicalAlignment: state.temporal.biologicalAlignment,
-      temporalCompression: state.temporal.temporalCompression,
-      seasonalCalibration: state.temporal.seasonalCalibration,
-      generationalAwareness: state.temporal.generationalAwareness,
-      rewardFunction: state.rewardFunction
-    });
+    // Compute reward components based on ecological state
+    // Average of ecological variables weighted by importance
+    const ecoScore = (
+      ecologicalVars[0] * 0.2 +  // biodiversity
+      ecologicalVars[1] * 0.15 + // waterSystems
+      ecologicalVars[2] * 0.15 + // soilHealth
+      ecologicalVars[3] * 0.15 + // airQuality
+      ecologicalVars[4] * 0.15 + // carbonCycle
+      ecologicalVars[5] * 0.2    // regenerationCapacity
+    );
     
-    // Return reward vector (could be scalar, but we return components)
-    return Object.values(modState.rewardFunction);
+    // Return reward components (ecosystem, human, cognitive, temporal)
+    return [
+      ecoScore * state.rewardFunction.ecosystemHealth,
+      0.5 * state.rewardFunction.humanWellbeing,
+      state.cognitive.coherence * state.rewardFunction.cognitiveCoherence,
+      state.temporal.biologicalAlignment * state.rewardFunction.temporalHarmony
+    ];
   };
   
   const ecologicalVec = state.toVector('ecological');
@@ -490,29 +482,29 @@ function computeEcologicalJacobian(state, config) {
  */
 function computeCognitiveJacobian(state, config) {
   const rewardFunction = (cognitiveVars) => {
-    const modState = new SystemState({
-      systemId: state.systemId,
-      biodiversity: state.ecological.biodiversity,
-      waterSystems: state.ecological.waterSystems,
-      soilHealth: state.ecological.soilHealth,
-      airQuality: state.ecological.airQuality,
-      carbonCycle: state.ecological.carbonCycle,
-      regenerationCapacity: state.ecological.regenerationCapacity,
-      coherence: cognitiveVars[0],
-      circadianAlignment: cognitiveVars[1],
-      uncertaintyAwareness: cognitiveVars[2],
-      reasoningLineage: cognitiveVars[3],
-      biocentricValidation: state.consent.biocentricValidation,
-      sapientConfirmation: state.consent.sapientConfirmation,
-      intergenerationalAudit: state.consent.intergenerationalAudit,
-      biologicalAlignment: state.temporal.biologicalAlignment,
-      temporalCompression: state.temporal.temporalCompression,
-      seasonalCalibration: state.temporal.seasonalCalibration,
-      generationalAwareness: state.temporal.generationalAwareness,
-      rewardFunction: state.rewardFunction
-    });
+    // Compute reward based on cognitive state
+    const cogScore = (
+      cognitiveVars[0] * 0.4 +  // coherence
+      cognitiveVars[1] * 0.3 +  // circadianAlignment
+      cognitiveVars[2] * 0.2 +  // uncertaintyAwareness
+      cognitiveVars[3] * 0.1    // reasoningLineage
+    );
     
-    return Object.values(modState.rewardFunction);
+    const ecoScore = (
+      state.ecological.biodiversity * 0.2 +
+      state.ecological.waterSystems * 0.15 +
+      state.ecological.soilHealth * 0.15 +
+      state.ecological.airQuality * 0.15 +
+      state.ecological.carbonCycle * 0.15 +
+      state.ecological.regenerationCapacity * 0.2
+    );
+    
+    return [
+      ecoScore * state.rewardFunction.ecosystemHealth,
+      0.5 * state.rewardFunction.humanWellbeing,
+      cogScore * state.rewardFunction.cognitiveCoherence,
+      state.temporal.biologicalAlignment * state.rewardFunction.temporalHarmony
+    ];
   };
   
   const cognitiveVec = state.toVector('cognitive');
@@ -533,29 +525,29 @@ function computeCognitiveJacobian(state, config) {
  */
 function computeConsentJacobian(state, config) {
   const rewardFunction = (consentVars) => {
-    const modState = new SystemState({
-      systemId: state.systemId,
-      biodiversity: state.ecological.biodiversity,
-      waterSystems: state.ecological.waterSystems,
-      soilHealth: state.ecological.soilHealth,
-      airQuality: state.ecological.airQuality,
-      carbonCycle: state.ecological.carbonCycle,
-      regenerationCapacity: state.ecological.regenerationCapacity,
-      coherence: state.cognitive.coherence,
-      circadianAlignment: state.cognitive.circadianAlignment,
-      uncertaintyAwareness: state.cognitive.uncertaintyAwareness,
-      reasoningLineage: state.cognitive.reasoningLineage,
-      biocentricValidation: consentVars[0],
-      sapientConfirmation: consentVars[1],
-      intergenerationalAudit: consentVars[2],
-      biologicalAlignment: state.temporal.biologicalAlignment,
-      temporalCompression: state.temporal.temporalCompression,
-      seasonalCalibration: state.temporal.seasonalCalibration,
-      generationalAwareness: state.temporal.generationalAwareness,
-      rewardFunction: state.rewardFunction
-    });
+    // Consent affects reward through validation multiplier
+    const consentMultiplier = (
+      consentVars[0] * 0.4 +  // biocentricValidation
+      consentVars[1] * 0.4 +  // sapientConfirmation
+      consentVars[2] * 0.2    // intergenerationalAudit
+    );
     
-    return Object.values(modState.rewardFunction);
+    const ecoScore = (
+      state.ecological.biodiversity * 0.2 +
+      state.ecological.waterSystems * 0.15 +
+      state.ecological.soilHealth * 0.15 +
+      state.ecological.airQuality * 0.15 +
+      state.ecological.carbonCycle * 0.15 +
+      state.ecological.regenerationCapacity * 0.2
+    );
+    
+    // Consent impacts all reward components
+    return [
+      ecoScore * state.rewardFunction.ecosystemHealth * consentMultiplier,
+      0.5 * state.rewardFunction.humanWellbeing * consentMultiplier,
+      state.cognitive.coherence * state.rewardFunction.cognitiveCoherence * consentMultiplier,
+      state.temporal.biologicalAlignment * state.rewardFunction.temporalHarmony * consentMultiplier
+    ];
   };
   
   const consentVec = state.toVector('consent');
@@ -576,30 +568,30 @@ function computeConsentJacobian(state, config) {
  */
 function computeTemporalJacobian(state, config) {
   const decisionFunction = (temporalVars) => {
-    const modState = new SystemState({
-      systemId: state.systemId,
-      biodiversity: state.ecological.biodiversity,
-      waterSystems: state.ecological.waterSystems,
-      soilHealth: state.ecological.soilHealth,
-      airQuality: state.ecological.airQuality,
-      carbonCycle: state.ecological.carbonCycle,
-      regenerationCapacity: state.ecological.regenerationCapacity,
-      coherence: state.cognitive.coherence,
-      circadianAlignment: state.cognitive.circadianAlignment,
-      uncertaintyAwareness: state.cognitive.uncertaintyAwareness,
-      reasoningLineage: state.cognitive.reasoningLineage,
-      biocentricValidation: state.consent.biocentricValidation,
-      sapientConfirmation: state.consent.sapientConfirmation,
-      intergenerationalAudit: state.consent.intergenerationalAudit,
-      biologicalAlignment: temporalVars[0],
-      temporalCompression: temporalVars[1],
-      seasonalCalibration: temporalVars[2],
-      generationalAwareness: temporalVars[3],
-      rewardFunction: state.rewardFunction
-    });
+    // Temporal parameters affect timing and stability of decisions
+    const temporalScore = (
+      temporalVars[0] * 0.4 -   // biologicalAlignment (positive)
+      temporalVars[1] * 0.3 +   // temporalCompression (negative - subtract)
+      temporalVars[2] * 0.2 +   // seasonalCalibration
+      temporalVars[3] * 0.1     // generationalAwareness
+    );
     
-    // Return decision outputs based on temporal state
-    return Object.values(modState.rewardFunction);
+    const ecoScore = (
+      state.ecological.biodiversity * 0.2 +
+      state.ecological.waterSystems * 0.15 +
+      state.ecological.soilHealth * 0.15 +
+      state.ecological.airQuality * 0.15 +
+      state.ecological.carbonCycle * 0.15 +
+      state.ecological.regenerationCapacity * 0.2
+    );
+    
+    // Return decision outputs modulated by temporal factors
+    return [
+      ecoScore * state.rewardFunction.ecosystemHealth * (1 + temporalScore * 0.5),
+      0.5 * state.rewardFunction.humanWellbeing * (1 + temporalScore * 0.5),
+      state.cognitive.coherence * state.rewardFunction.cognitiveCoherence * (1 + temporalScore * 0.5),
+      temporalScore * state.rewardFunction.temporalHarmony
+    ];
   };
   
   const temporalVec = state.toVector('temporal');
