@@ -55,6 +55,7 @@ function initializeDashboard() {
 }
 
 function animateScore() {
+    // SIMULATED DATA: Hard-coded compliance percentage for demonstration
     const scoreValue = 50; // Overall compliance percentage
     const circle = document.getElementById('overallScore');
     const scoreText = document.getElementById('overallScoreValue');
@@ -139,6 +140,8 @@ function showLicenseDetails(licenseName) {
 }
 
 function simulateRealTimeUpdates() {
+    // SIMULATED DATA: Periodic random metric updates for demonstration only
+    // In production, this would fetch real data from monitoring systems
     // Simulate periodic metric updates (every 30 seconds for demo)
     setInterval(() => {
         updateRandomMetric();

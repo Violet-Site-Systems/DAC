@@ -35,8 +35,10 @@ jobs:
 
       - name: Check for API key availability
         id: check_api_key
+        env:
+          API_KEY: ${{ secrets.ASI_ONE_API_KEY }}
         run: |
-          if [ -z "${{ secrets.ASI_ONE_API_KEY }}" ]; then
+          if [ -z "$API_KEY" ]; then
             echo "api_key_available=false" >> $GITHUB_OUTPUT
             echo "⚠️ ASI_ONE_API_KEY secret not available (fork PR or missing secret)"
           else
