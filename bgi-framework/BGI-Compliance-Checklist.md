@@ -451,6 +451,19 @@ This checklist helps developers, organizations, and auditors verify alignment wi
 
 **Enhancement Recommendation**: Add CFSA framework to all licenses
 
+> **📝 EDITORIAL NOTE - Call for Comment**:  
+> A reference implementation ("Option B") for Jacobian/CFSA monitoring is now available at:
+> - **Implementation**: [`jacobian-cfsa-monitor.js`](./jacobian-cfsa-monitor.js)
+> - **Interactive Demo**: [`jacobian-cfsa-example.html`](./jacobian-cfsa-example.html)
+> - **Documentation**: [`jacobian-cfsa-implementation.md`](./jacobian-cfsa-implementation.md)
+>
+> **Real-World Use Cases Documented**:
+> 1. **AGI Compliance Monitoring**: Urban infrastructure management with continuous ecological sensitivity tracking (||∂reward/∂ecosystem|| ≥ 0.2)
+> 2. **Decentralized Governance Validation**: DAO authority balance monitoring using singular value decomposition to prevent human/AGI power imbalances (>3σ threshold)
+> 3. **Bioregional Optimization Stability**: Climate adaptation AI with temporal brittleness detection via determinant analysis (det(J_temporal) ≠ 0)
+>
+> This implementation is provided as a reference for Dr. Em's review and community feedback. Comments welcome on mathematical approaches, practical usability, and integration patterns.
+
 ---
 
 ### 7.2 Threshold Calibration
@@ -893,7 +906,7 @@ This checklist helps developers, organizations, and auditors verify alignment wi
 
 **Biocentric Primacy**: Prioritization of ecosystem integrity above human convenience
 
-**CFSA**: Coherence-First Sensitivity Analysis - Jacobian-based mathematical validation framework
+**CFSA**: Coherence-First Sensitivity Analysis - Jacobian-based mathematical validation framework. *See Option B reference implementation and use cases in [`jacobian-cfsa-implementation.md`](./jacobian-cfsa-implementation.md)*
 
 **Coherence Threshold**: Mathematical measure of system alignment stability (BGI standard: 0.7)
 
