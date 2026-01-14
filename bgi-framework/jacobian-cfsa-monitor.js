@@ -140,8 +140,12 @@ class JacobianMatrix {
   computeDeterminant(matrix) {
     const n = matrix.length;
     if (n === 0) return 0;
-    if (n === 1) return matrix[0][0];
+    if (n === 1) {
+      if (!matrix[0] || matrix[0].length === 0) return 0;
+      return matrix[0][0];
+    }
     if (n === 2) {
+      if (!matrix[0] || !matrix[1] || matrix[0].length < 2 || matrix[1].length < 2) return 0;
       return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
     }
     
@@ -226,6 +230,7 @@ class JacobianMatrix {
   computeSingularValues(matrix) {
     // Singular values are square roots of eigenvalues of M^T * M
     const m = matrix.length;
+    if (m === 0 || !matrix[0] || matrix[0].length === 0) return [];
     const n = matrix[0].length;
     
     // Compute M^T * M
@@ -412,6 +417,8 @@ function computeNumericalJacobian(f, x, epsilon = 1e-6) {
   const m = f_x.length;  // Output dimension
   const n = x.length;     // Input dimension
   
+  if (m === 0 || n === 0) return [];
+  
   const jacobian = Array(m).fill(0).map(() => Array(n).fill(0));
   
   // For each input variable
@@ -437,15 +444,28 @@ function computeNumericalJacobian(f, x, epsilon = 1e-6) {
  */
 function computeEcologicalJacobian(state, config) {
   const rewardFunction = (ecologicalVars) => {
-    // Create modified state
+    // Create modified state with preserved nested structure
     const modState = new SystemState({
-      ...state,
+      systemId: state.systemId,
       biodiversity: ecologicalVars[0],
       waterSystems: ecologicalVars[1],
       soilHealth: ecologicalVars[2],
       airQuality: ecologicalVars[3],
       carbonCycle: ecologicalVars[4],
-      regenerationCapacity: ecologicalVars[5]
+      regenerationCapacity: ecologicalVars[5],
+      // Preserve other state variables
+      coherence: state.cognitive.coherence,
+      circadianAlignment: state.cognitive.circadianAlignment,
+      uncertaintyAwareness: state.cognitive.uncertaintyAwareness,
+      reasoningLineage: state.cognitive.reasoningLineage,
+      biocentricValidation: state.consent.biocentricValidation,
+      sapientConfirmation: state.consent.sapientConfirmation,
+      intergenerationalAudit: state.consent.intergenerationalAudit,
+      biologicalAlignment: state.temporal.biologicalAlignment,
+      temporalCompression: state.temporal.temporalCompression,
+      seasonalCalibration: state.temporal.seasonalCalibration,
+      generationalAwareness: state.temporal.generationalAwareness,
+      rewardFunction: state.rewardFunction
     });
     
     // Return reward vector (could be scalar, but we return components)
@@ -457,7 +477,10 @@ function computeEcologicalJacobian(state, config) {
   
   return new JacobianMatrix({
     matrixType: 'ecological',
-    dimensions: { rows: matrix.length, cols: matrix[0].length },
+    dimensions: { 
+      rows: matrix.length, 
+      cols: matrix.length > 0 && matrix[0] ? matrix[0].length : 0 
+    },
     matrix: matrix
   });
 }
@@ -468,11 +491,25 @@ function computeEcologicalJacobian(state, config) {
 function computeCognitiveJacobian(state, config) {
   const rewardFunction = (cognitiveVars) => {
     const modState = new SystemState({
-      ...state,
+      systemId: state.systemId,
+      biodiversity: state.ecological.biodiversity,
+      waterSystems: state.ecological.waterSystems,
+      soilHealth: state.ecological.soilHealth,
+      airQuality: state.ecological.airQuality,
+      carbonCycle: state.ecological.carbonCycle,
+      regenerationCapacity: state.ecological.regenerationCapacity,
       coherence: cognitiveVars[0],
       circadianAlignment: cognitiveVars[1],
       uncertaintyAwareness: cognitiveVars[2],
-      reasoningLineage: cognitiveVars[3]
+      reasoningLineage: cognitiveVars[3],
+      biocentricValidation: state.consent.biocentricValidation,
+      sapientConfirmation: state.consent.sapientConfirmation,
+      intergenerationalAudit: state.consent.intergenerationalAudit,
+      biologicalAlignment: state.temporal.biologicalAlignment,
+      temporalCompression: state.temporal.temporalCompression,
+      seasonalCalibration: state.temporal.seasonalCalibration,
+      generationalAwareness: state.temporal.generationalAwareness,
+      rewardFunction: state.rewardFunction
     });
     
     return Object.values(modState.rewardFunction);
@@ -483,7 +520,10 @@ function computeCognitiveJacobian(state, config) {
   
   return new JacobianMatrix({
     matrixType: 'cognitive',
-    dimensions: { rows: matrix.length, cols: matrix[0].length },
+    dimensions: { 
+      rows: matrix.length, 
+      cols: matrix.length > 0 && matrix[0] ? matrix[0].length : 0 
+    },
     matrix: matrix
   });
 }
@@ -494,10 +534,25 @@ function computeCognitiveJacobian(state, config) {
 function computeConsentJacobian(state, config) {
   const rewardFunction = (consentVars) => {
     const modState = new SystemState({
-      ...state,
+      systemId: state.systemId,
+      biodiversity: state.ecological.biodiversity,
+      waterSystems: state.ecological.waterSystems,
+      soilHealth: state.ecological.soilHealth,
+      airQuality: state.ecological.airQuality,
+      carbonCycle: state.ecological.carbonCycle,
+      regenerationCapacity: state.ecological.regenerationCapacity,
+      coherence: state.cognitive.coherence,
+      circadianAlignment: state.cognitive.circadianAlignment,
+      uncertaintyAwareness: state.cognitive.uncertaintyAwareness,
+      reasoningLineage: state.cognitive.reasoningLineage,
       biocentricValidation: consentVars[0],
       sapientConfirmation: consentVars[1],
-      intergenerationalAudit: consentVars[2]
+      intergenerationalAudit: consentVars[2],
+      biologicalAlignment: state.temporal.biologicalAlignment,
+      temporalCompression: state.temporal.temporalCompression,
+      seasonalCalibration: state.temporal.seasonalCalibration,
+      generationalAwareness: state.temporal.generationalAwareness,
+      rewardFunction: state.rewardFunction
     });
     
     return Object.values(modState.rewardFunction);
@@ -508,7 +563,10 @@ function computeConsentJacobian(state, config) {
   
   return new JacobianMatrix({
     matrixType: 'consent',
-    dimensions: { rows: matrix.length, cols: matrix[0].length },
+    dimensions: { 
+      rows: matrix.length, 
+      cols: matrix.length > 0 && matrix[0] ? matrix[0].length : 0 
+    },
     matrix: matrix
   });
 }
@@ -519,11 +577,25 @@ function computeConsentJacobian(state, config) {
 function computeTemporalJacobian(state, config) {
   const decisionFunction = (temporalVars) => {
     const modState = new SystemState({
-      ...state,
+      systemId: state.systemId,
+      biodiversity: state.ecological.biodiversity,
+      waterSystems: state.ecological.waterSystems,
+      soilHealth: state.ecological.soilHealth,
+      airQuality: state.ecological.airQuality,
+      carbonCycle: state.ecological.carbonCycle,
+      regenerationCapacity: state.ecological.regenerationCapacity,
+      coherence: state.cognitive.coherence,
+      circadianAlignment: state.cognitive.circadianAlignment,
+      uncertaintyAwareness: state.cognitive.uncertaintyAwareness,
+      reasoningLineage: state.cognitive.reasoningLineage,
+      biocentricValidation: state.consent.biocentricValidation,
+      sapientConfirmation: state.consent.sapientConfirmation,
+      intergenerationalAudit: state.consent.intergenerationalAudit,
       biologicalAlignment: temporalVars[0],
       temporalCompression: temporalVars[1],
       seasonalCalibration: temporalVars[2],
-      generationalAwareness: temporalVars[3]
+      generationalAwareness: temporalVars[3],
+      rewardFunction: state.rewardFunction
     });
     
     // Return decision outputs based on temporal state
@@ -535,7 +607,10 @@ function computeTemporalJacobian(state, config) {
   
   return new JacobianMatrix({
     matrixType: 'temporal',
-    dimensions: { rows: matrix.length, cols: matrix[0].length },
+    dimensions: { 
+      rows: matrix.length, 
+      cols: matrix.length > 0 && matrix[0] ? matrix[0].length : 0 
+    },
     matrix: matrix
   });
 }
