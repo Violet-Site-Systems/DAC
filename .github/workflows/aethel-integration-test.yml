@@ -10,38 +10,53 @@ on:
 jobs:
   test-aethel-integration:
     runs-on: ubuntu-latest
-    
+
     permissions:
       contents: read
-    
+
     strategy:
       matrix:
         node-version: [18.x, 20.x]
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'yarn'
-        cache-dependency-path: agents/yarn.lock      
-     
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
+          cache-dependency-path: agents/yarn.lock
+
       - name: Install dependencies
         working-directory: ./agents
         run: yarn install --frozen-lockfile
-      
+
+      - name: Check for API key availability
+        id: check_api_key
+        env:
+          API_KEY: ${{ secrets.ASI_ONE_API_KEY }}
+        run: |
+          if [ -z "$API_KEY" ]; then
+            echo "api_key_available=false" >> $GITHUB_OUTPUT
+            echo "⚠️ ASI_ONE_API_KEY secret not available (fork PR or missing secret)"
+          else
+            echo "api_key_available=true" >> $GITHUB_OUTPUT
+            echo "✓ ASI_ONE_API_KEY secret available"
+          fi
+
       - name: Create .env file with API key
+        if: steps.check_api_key.outputs.api_key_available == 'true'
         working-directory: ./agents
         run: |
           echo "ASI_ONE_API_KEY=${{ secrets.ASI_ONE_API_KEY }}" > .env
           echo "ASI_ONE_MODEL=asi1-fast" >> .env
           echo "ASI_ONE_MAX_TOKENS=500" >> .env
           echo "ASI_ONE_TIMEOUT=60000" >> .env
-      
+
       - name: Verify .env file created
+        if: steps.check_api_key.outputs.api_key_available == 'true'
         working-directory: ./agents
         run: |
           if [ ! -f .env ]; then
@@ -49,16 +64,25 @@ jobs:
             exit 1
           fi
           echo ".env file created successfully"
-      
+
       - name: Run Aethel integration example
+        if: steps.check_api_key.outputs.api_key_available == 'true'
         working-directory: ./agents
         run: npm run example:aethel
         timeout-minutes: 5
-      
+
+      - name: Skip Aethel integration test (no API key)
+        if: steps.check_api_key.outputs.api_key_available == 'false'
+        run: |
+          echo "⚠️ Skipping Aethel integration test - ASI_ONE_API_KEY not available"
+          echo "This is expected for fork PRs. Integration tests require API access."
+          echo "✓ Test skipped successfully"
+
       - name: Report success
         if: success()
-        run: echo "✅ Aethel integration test passed on Node.js ${{ matrix.node-version }}"
-      
+        run: |
+          echo "✅ Aethel integration test passed on Node.js ${{ matrix.node-version }}"
+
       - name: Report failure
         if: failure()
         run: |

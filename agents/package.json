@@ -26,7 +26,7 @@
     "ai-agents"
   ],
   "author": "DAC Contributors",
-  "license": "SEE LICENSE IN ../licenses/",
+  "license": "MIT AND (SUL-1.0 OR SBL-1.0 OR EAL-1.0 OR CGL-1.0)",
   "dependencies": {
     "ethers": "^6.13.0",
     "uuid": "^10.0.0",

@@ -108,6 +108,28 @@ The API enforces non-negotiable ecological constraints before any action proceed
 
 ![Biocentric Impact Assessment API Demo showing interactive assessment form with action details, geographic scope, temporal scope, resource flows, and example scenarios](./graphics/biocentric-api-screenshot.png)
 
+## 🤖 Agent Framework
+
+The DAC project includes an experimental agent framework (`/agents`) that demonstrates AI-powered agent capabilities for decentralized autonomous systems.
+
+### ASI:One (@Aethel) Integration
+
+**⚠️ For Internal Development & Testing Only**
+
+The agent framework includes integration with ASI:One AI services (asi1.ai) via the `AethelAgent` class. This integration is designed for:
+
+- **Internal development and testing** of AI-powered agent capabilities
+- **Proof-of-concept demonstrations** of multi-agent orchestration
+- **Research and experimentation** with AI governance patterns
+
+**Important Notes:**
+- The Aethel integration requires API credentials that are **not publicly available**
+- CI/CD workflows that test Aethel integration will **skip gracefully on fork PRs** without API access
+- This is **not intended for production use** in its current form
+- See `/agents/docs/AETHEL_INTEGRATION.md` for technical details and usage guidance
+
+For more information about the agent framework architecture and capabilities, see the [Agent Framework README](/agents/README.md).
+
 ## DAO Guide Agent
 
 Need help creating your DAO? Our AI-powered [DAO Guide Agent](https://chakra-ai.io/agent/ded78833-31ec-442b-84b6-c123c107ba64/modify) assists with DAO creation and AI governance.
