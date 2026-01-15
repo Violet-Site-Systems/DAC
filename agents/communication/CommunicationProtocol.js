@@ -73,7 +73,7 @@ export class CommunicationProtocol extends EventEmitter {
     // Configuration
     this.config = {
       maxQueueSize: config.maxQueueSize || 100,
-      messageTimeout: config.messageTimeout || 30000, // 30 seconds
+      messageTimeout: config.messageTimeout || 120000, // 120 seconds (2 minutes)
       rateLimitPerMinute: config.rateLimitPerMinute || 100,
       enableEncryption: config.enableEncryption || false,
       ...config

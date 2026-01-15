@@ -27,7 +27,7 @@ async function main() {
     },
     protocol: {
       rateLimitPerMinute: 50,
-      messageTimeout: 10000
+      messageTimeout: 120000
     }
   });
   console.log('✓ Framework initialized\n');
