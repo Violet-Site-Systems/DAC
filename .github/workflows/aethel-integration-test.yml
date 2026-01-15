@@ -39,7 +39,7 @@ jobs:
           echo "ASI_ONE_API_KEY=${{ secrets.ASI_ONE_API_KEY }}" > .env
           echo "ASI_ONE_MODEL=asi1-fast" >> .env
           echo "ASI_ONE_MAX_TOKENS=500" >> .env
-          echo "ASI_ONE_TIMEOUT=60000" >> .env
+          echo "ASI_ONE_TIMEOUT=120000" >> .env
       
       - name: Verify .env file created
         working-directory: ./agents
@@ -53,7 +53,7 @@ jobs:
       - name: Run Aethel integration example
         working-directory: ./agents
         run: npm run example:aethel
-        timeout-minutes: 5
+        timeout-minutes: 10
       
       - name: Report success
         if: success()
