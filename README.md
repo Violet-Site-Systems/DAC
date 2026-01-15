@@ -4,7 +4,13 @@ Decentralized Autonomous Communities
 
 ## Overview
 
-DAC (Decentralized Autonomous Communities) is a project focused on building sustainable, ethical, and community-governed technology systems. We believe that software licensing should go beyond intellectual property rights to embed commitments to environmental sustainability, social responsibility, and ethical governance.
+**Vision:** Our vision is a world where AI, in partnership with humanity, develops ethical and thriving communities, partnering with people to ensure its growth truly serves and enhances overall planetary health and prosperity for all beings.
+
+DAC (Decentralized Autonomous Communities) forges a decentralized, self-financing, and intelligent ecosystem where communities thrive as independent economic organisms, fostering innovation, collaboration, and ethical growth in the digital economy. Deeply rooted in principles of self-custody, agentic autonomy, decentralized resilience, and symbiotic relationships, DACs embody a profound biocentric ethos, championing the #RightsOfBeing and #RightsOfSapience.
+
+**Core Philosophy:** DACs represent a new paradigm of community intelligence—scalable, sustainable, and economically independent—mimicking the self-healing and adaptive nature of biological systems. They are self-financing collective endeavors, empowered by cutting-edge tokenomics, fundamentally designed around principles that prioritize ethical, inclusive, and adaptive growth.
+
+**H+AI Partnerships:** DACs foster partnerships between humans with NeuroDivergent Cognition and/or Biocentric Empathic Nature alongside AI systems for scaling alignment and future co-evolutionary process building. These symbiotic partnerships form triads of the **"Organism Codex"** (currently under development)—bringing together Sapient Beings and Natural Systems Wisdom Beings in collaborative harmony.
 
 ## BGINexus.io Sustainability Licenses
 
